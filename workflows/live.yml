@@ -1,0 +1,38 @@
+name: Update Kick Live JSON
+on:
+  schedule:
+    - cron: "*/15 * * * *"  # cada 15 min (ajusta)
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch live
+        run: |
+          python3 - << 'PY'
+import json, urllib.request, sys
+channels = ["reenz","otrocanal"]  # <-- tus slugs
+out = []
+for slug in channels:
+    try:
+        with urllib.request.urlopen(f"https://kick.com/api/v2/channels/{slug}") as r:
+            data = json.load(r)
+        out.append({
+            "slug": slug,
+            "live": bool(data.get("livestream")),
+            "title": data.get("livestream",{}).get("session_title"),
+            "thumbnail": data.get("livestream",{}).get("thumbnail",{}).get("url"),
+            "viewers": data.get("livestream",{}).get("viewers",0)
+        })
+    except Exception as e:
+        out.append({"slug": slug, "error": str(e)})
+open("channels_live.json","w").write(json.dumps(out, ensure_ascii=False, indent=2))
+PY
+      - name: Commit JSON
+        run: |
+          git config user.name "gh-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git add channels_live.json
+          git commit -m "Update live JSON" || echo "No changes"
+          git push
