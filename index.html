@@ -283,7 +283,7 @@
     const VIDEOS_REFRESH_MS = 5 * 60_000;
 
     // ===== Kick cache/proxy =====
-    const PROXY_URL = '/api/kick-status';
+    /* PROXY_URL eliminado: usamos API pública de Kick */
     const CACHE_TTL_MS = 60_000;
     const KICK_CACHE = new Map();
     const cacheGet = (slug) => {
@@ -295,7 +295,20 @@
     const cacheSet = (slug, v) => { KICK_CACHE.set(String(slug).toLowerCase(), { v, t: Date.now() }); return v; };
 
     async function fetchKickStatus(slug) {
-      if (!slug) return { live: null };
+  if (!slug) return { live: null };
+  // Consulta directa a la API pública de Kick (funciona en hosting estático)
+  try {
+    const r = await fetch(`https://kick.com/api/v2/channels/${encodeURIComponent(String(slug).toLowerCase())}`, {
+      headers: { 'accept': 'application/json' }
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const data = await r.json();
+    return { live: !!data?.livestream, stream: data?.livestream || null };
+  } catch (e) {
+    console.error('Kick error', slug, e);
+    return { live: null };
+  }
+};
       const cached = cacheGet(slug);
       if (cached) return cached;
       try {
@@ -305,7 +318,7 @@
       } catch {
         return cacheSet(slug, { live: null });
       }
-    }
+    
     function liveFromCache(slug) {
       if (!slug) return null;
       const e = KICK_CACHE.get(String(slug).toLowerCase());
