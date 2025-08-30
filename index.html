@@ -295,20 +295,31 @@
     const cacheSet = (slug, v) => { KICK_CACHE.set(String(slug).toLowerCase(), { v, t: Date.now() }); return v; };
 
     async function fetchKickStatus(slug) {
-  if (!slug) return { live: null };
-  // Consulta directa a la API pública de Kick (funciona en hosting estático)
-  try {
-    const r = await fetch(`https://kick.com/api/v2/channels/${encodeURIComponent(String(slug).toLowerCase())}`, {
-      headers: { 'accept': 'application/json' }
-    });
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    const data = await r.json();
-    return { live: !!data?.livestream, stream: data?.livestream || null };
-  } catch (e) {
-    console.error('Kick error', slug, e);
-    return { live: null };
-  }
-};
+      if (!slug) return { live: null };
+
+      // 1) cache hit
+      const cached = cacheGet(slug);
+      if (cached) return cached;
+
+      try {
+        const r = await fetch(`https://kick.com/api/v2/channels/${encodeURIComponent(String(slug).toLowerCase())}`, {
+          headers: { 'accept': 'application/json' }
+        });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const data = await r.json();
+
+        // 2) guardar en caché y devolver eso
+        return cacheSet(slug, {
+          live: !!data?.livestream,
+          stream: data?.livestream || null
+        });
+      } catch (e) {
+        console.error('Kick error', slug, e);
+        // 3) cachear fallo como estado desconocido para evitar reintentos inmediatos
+        return cacheSet(slug, { live: null });
+      }
+    }
+
       
 
     function liveFromCache(slug) {
