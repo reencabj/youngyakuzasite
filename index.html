@@ -309,16 +309,8 @@
     return { live: null };
   }
 };
-      const cached = cacheGet(slug);
-      if (cached) return cached;
-      try {
-        const r = await fetch(`${PROXY_URL}?slug=${encodeURIComponent(String(slug).toLowerCase())}`);
-        const j = await r.json();
-        return cacheSet(slug, { live: j?.live ?? null, stream: j?.stream ?? null });
-      } catch {
-        return cacheSet(slug, { live: null });
-      }
-    
+      
+
     function liveFromCache(slug) {
       if (!slug) return null;
       const e = KICK_CACHE.get(String(slug).toLowerCase());
