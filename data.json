@@ -1,0 +1,385 @@
+[
+  {
+    "nombre": "Sawasha Takohida",
+    "ooc": "Lit Killah",
+    "alias": "Sawacha",
+    "rango": 1,
+    "kick": "litkillah",
+    "foto": "img/sawahsa.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://www.instagram.com/reencabj/" },
+      { "label": "Twitter", "href": "https://x.com/ReenCabj" }
+    ]
+  },
+  {
+    "nombre": "Mikaro Tanashi",
+    "ooc": "Reen",
+    "alias": "Miky",
+    "rango": 1,
+    "foto": "img/miky.jpg",
+    "kick": "reenz",
+    "links": [
+      { "label": "Instagram", "href": "https://www.instagram.com/reencabj/" },
+      { "label": "Twitter", "href": "https://x.com/ReenCabj" },
+      { "label": "Youtube", "href": "https://youtube.com/channel/UCJG4me5jUbX9rVGyFpZRpPw"},
+      { "label": "Discord", "href": "https://discord.gg/FJCUZ8y4An"},
+      { "label": "TikTok", "href": "https://tiktok.com/@rzreen"}
+    ]
+  },
+  {
+    "nombre": "Yoshi Tekoho",
+    "ooc": "Kenai Souza",
+    "alias": "Chochi",
+    "rango": 1,
+    "kick": "kenai",
+    "foto": "img/yoshi.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://www.instagram.com/kenaisouza/" },
+      { "label": "Youtube", "href": "https://youtube.com/kenaisouza"},
+      { "label": "Twitter", "href": "https://x.com/KenaiSouza" }
+    ]
+  },
+  {
+    "nombre": "Itadura Lakosa",
+    "ooc": "Chali",
+    "alias": "Ita",
+    "rango": 1,
+    "kick": "chali",
+    "foto": "img/itadurax.jpg",
+      "links": [
+      { "label": "Instagram", "href": "https://www.instagram.com/chali.flx/" },
+      { "label": "Twitter", "href": "https://x.com/ChaliJoaquin" }
+    ]
+  },
+  {
+    "nombre": "Nokoho Niai",
+    "ooc": "Fatality",
+    "alias": "Nokoji",
+    "rango": 1,
+    "kick": "ifatality",
+    "foto": "img/nokoho.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://www.instagram.com/fatalityx_/" },
+      { "label": "Youtube", "href": "https://www.youtube.com/@Fatalityedits"},
+      { "label": "Twitter", "href": "https://x.com/xFatalityy" }
+    ]
+  },
+  {
+    "nombre": "Tanashe Tutoto",
+    "ooc": "Kabeto",
+    "alias": "Dlagon",
+    "rango": 1,
+    "kick": "kabetotv",
+    "foto": "img/tanashe.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://www.instagram.com/kabeto/" },
+      { "label": "Twitter", "href": "https://x.com/Kabetokhk" }
+    ]
+  },
+  {
+    "nombre": "Chengu San",
+    "ooc": "Daka",
+    "alias": "Chengu",
+    "rango": 1,
+    "kick": "eldaka",
+    "foto": "img/chengu.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://www.instagram.com/daka_md/" },
+      { "label": "Twitter", "href": "https://x.com/DakaLiveShow" }
+    ]
+  },
+  {
+    "nombre": "Tetoko Tukola",
+    "ooc": "Briancito",
+    "alias": "Tetoki",
+    "rango": 1,
+    "kick": "notbriancito",
+    "foto": "img/tetoko.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://www.instagram.com/notbriancito/" },
+      { "label": "Twitter", "href": "https://x.com/briancitonto" }
+    ]
+  },
+  {
+    "nombre": "Keisuke Kudo",
+    "ooc": "Nohands",
+    "alias": "Kei",
+    "rango": 2,
+    "kick": "nohands",
+    "foto": "img/kei.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://www.instagram.com/mattvxvx" },
+      { "label": "Twitter", "href": "https://x.com/mattvxvx" }
+    ]
+  },
+  {
+    "nombre": "Alejandro Hopkins",
+    "ooc": "El Narcovich",
+    "alias": "Xocas",
+    "rango": 2,
+    "kick": "narcovich",
+    "foto": "img/xocas.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://www.instagram.com/el.narcovich/" },
+      { "label": "Twitter", "href": "https://x.com/ElNarcovich" }
+    ]
+  },
+  {
+    "nombre": "Kowa Vidal",
+    "ooc": "Ferchu",
+    "alias": "Kowa",
+    "rango": 2,
+    "kick": "ferchucabj",
+    "foto": "img/kowa.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://www.instagram.com/feerchucabj/" },
+      { "label": "Twitter", "href": "https://x.com/FeerchuCdm" }
+    ]
+  }
+  ,
+  {
+    "nombre": "Alex Hopkins",
+    "ooc": "kZeco",
+    "alias": "Zeco",
+    "rango": 2,
+    "kick": "kzeco",
+    "foto": "img/zeco.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://www.instagram.com/kzeco/" },
+      { "label": "Twitter", "href": "https://x.com/kzeco1" }
+    ]
+  }
+  ,
+  {
+    "nombre": "Nate Vidal",
+    "ooc": "Aguss",
+    "alias": "Sobri",
+    "rango": 2,
+    "kick": "Agusss04",
+    "foto": "img/sobri.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://www.instagram.com/el_aguss04/" },
+      { "label": "Twitter", "href": "https://x.com/Elaguss_04" }
+    ]
+  },
+  {
+    "nombre": "William Weed",
+    "ooc": "Kemo",
+    "alias": "Carucha",
+    "rango": 2,
+    "kick": "9kemo",
+    "foto": "img/carucha.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://www.instagram.com/guille.piris" },
+      { "label": "Twitter", "href": "https://x.com/KemoPiris" },
+      { "label": "TikTok", "href": "https://www.tiktok.com/@kemopelado" }
+    ]
+  },
+  {
+    "nombre": "Doffy Deckard",
+    "ooc": "Emma",
+    "alias": "Doffy",
+    "rango": 2,
+    "kick": "iemmanuel",
+    "foto": "img/dufi.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://instagram.com/Emmaibnz_" },
+      { "label": "Twitter", "href": "https://twitter.com/Emmaibnz_" }
+    ]
+  },
+  {
+    "nombre": "Keku Lote",
+    "ooc": "CricoBellako",
+    "alias": "Keku",
+    "rango": 2,
+    "kick": "cricobellako",
+    "foto": "img/keku.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://instagram.com/angel_vazquuez" },
+      { "label": "Twitter", "href": "https://twitter.com/cricobellako" }
+    ]
+  },
+  {
+    "nombre": "Allen Lewis",
+    "ooc": "NxBraian",
+    "alias": "Negro",
+    "rango": 2,
+    "kick": "nxbraian",
+    "foto": "img/allen.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://instagram.com/_braianzapata" },
+      { "label": "Twitter", "href": "https://twitter.com/_braianzapata" }
+    ]
+  },
+  {
+    "nombre": "Brisa Luzdios",
+    "ooc": "Kattu",
+    "alias": "Brisa",
+    "rango": 2,
+    "kick": "kattu9",
+    "foto": "img/brisa.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://instagram.com/Kattucabeza" },
+      { "label": "Twitter", "href": "https://twitter.com/Kattucabeza" }
+    ]
+  },
+  {
+    "nombre": "Miku Lotariko",
+    "ooc": "Kareen",
+    "alias": "Miku",
+    "rango": 2,
+    "kick": "klarent",
+    "foto": "img/miku.jpg",
+    "links": [
+      { "label": "Twitter", "href": "https://twitter.com/kaaren_s" }
+    ]
+  },
+  {
+    "nombre": "Po Yamamada",
+    "ooc": "Gomy",
+    "alias": "Po",
+    "rango": 2,
+    "kick": "nosoygomy",
+    "foto": "img/po.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://instagram.com/nosoygomy" },
+      { "label": "Twitter", "href": "https://twitter.com/@SoyGOMY" }
+    ]
+  },
+  {
+    "nombre": "Travis Hardmann",
+    "ooc": "Feleen",
+    "alias": "Travieso",
+    "rango": 2,
+    "kick": "feleen",
+    "foto": "img/Travis.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://instagram.com/Sergio_Casanueva" },
+      { "label": "Twitter", "href": "https://twitter.com/Sergio_Casanew" }
+    ]
+  },
+  {
+    "nombre": "Gigi Ross",
+    "ooc": "Giulli ",
+    "alias": "Gigi",
+    "rango": 2,
+    "kick": "gigidv",
+    "foto": "img/gg.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://instagram.com/giullilii" },
+      { "label": "Twitter", "href": "https://twitter.com/@giiiiiiigii" },
+      { "label": "TikTok", "href": "hhttps://www.tiktok.com/@giullilii" }
+    ]
+  },
+  {
+    "nombre": "Mila Bonnie",
+    "ooc": "Vainillita",
+    "alias": "Mili",
+    "rango": 2,
+    "kick": "vainillitta",
+    "foto": "img/vaini.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://instagram.com/vainillitaaa" },
+      { "label": "TikTok", "href": "https://tiktok.com/@Vainillita90" },
+      { "label": "Twitter", "href": "https://x.com/Vainillittaaa" }
+    ]
+  },
+  {
+    "nombre": "Wei Cheng",
+    "ooc": "Qaruk",
+    "alias": "Chino",
+    "rango": 2,
+    "kick": "qaruk",
+    "foto": "img/chino.jpg",
+    "links": [
+      { "label": "TikTok", "href": "https://tiktok.com/@qarukl" },
+      { "label": "Twitter", "href": "https://twitter.com/Qarukl" }
+    ]
+  },
+  {
+    "nombre": "Cris Owend",
+    "ooc": "Daytetona",
+    "alias": "El Nene",
+    "rango": 2,
+    "kick": "daytetona",
+    "foto": "img/nene.jpg"
+  },
+  {
+    "nombre": "Mark Jhonson",
+    "ooc": "Josue",
+    "alias": "Mark",
+    "rango": 3,
+    "kick": "jossueelsv",
+    "foto": "img/mark.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://youtube.com/@jossueelsv?si=hTe7qNtj6QkRvzwd" },
+      { "label": "YouTube", "href": "https://www.instagram.com/jossuelsv" }
+    ]
+  },
+  {
+    "nombre": "Jayce Drayton",
+    "ooc": "Juanma",
+    "alias": "Toro",
+    "rango": 2,
+    "kick": "jjuanma",
+    "foto": "img/toro.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://www.instagram.com/juanma.mi" },
+      { "label": "Twitter", "href": "https://x.com/juanma_mi7" }
+    ]
+  },
+  {
+    "nombre": "Gabriel Gonzalez",
+    "ooc": "G4SPl",
+    "alias": "Gavi-Lan",
+    "rango": 2,
+    "kick": "g4spl",
+    "foto": "img/gabi.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://www.instagram.com/gaspar_giupponi/" },
+      { "label": "Twitter", "href": "https://x.com/Memes_dela_hoja" }
+    ]
+  },
+  {
+    "nombre": "Javier Gonzalez",
+    "ooc": "Chinooxzzz",
+    "alias": "Chile",
+    "rango": 2,
+    "kick": "chinoxzzz",
+    "foto": "img/chile.jpg",
+    "links": [
+      { "label": "Instagram", "href": "https://www.instagram.com/javimnx/" },
+      { "label": "TikTok", "href": "https://www.tiktok.com/@chinoomr" }
+    ]
+  },
+  {
+    "nombre": "Axel Vidal",
+    "ooc": "Kenzo",
+    "alias": "Chatito",
+    "rango": 2,
+    "kick": "ikenzoo",
+    "foto": "img/chatito.jpg",
+    "links": [
+      { "label": "YouTube", "href": "https://www.youtube.com/@ikenzoop/videos" },
+      { "label": "Twitter", "href": "https://x.com/Joaqu1nGuzman" }
+    ]
+  }
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

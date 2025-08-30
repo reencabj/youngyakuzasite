@@ -1,0 +1,922 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Young Yakuza - Dovux Life RP</title>
+  <meta name="description" content="Listado de personajes, rangos y contenido de Young Yakuza." />
+  <link rel="icon" href="img/logo.png" />
+
+  <!-- CSS generado por Tailwind en modo build -->
+  <link rel="stylesheet" href="./tailwind.css">
+
+  <!-- Perf: conexiones anticipadas a orígenes externos usados por iframes/medios -->
+  <link rel="preconnect" href="https://player.kick.com">
+  <link rel="preconnect" href="https://kick.com">
+  <link rel="preconnect" href="https://www.youtube-nocookie.com">
+  <link rel="preconnect" href="https://i.ytimg.com">
+  <link rel="preconnect" href="https://i.postimg.cc">
+  <link rel="dns-prefetch" href="https://player.kick.com">
+
+  <!-- Perf: precarga del fondo grande -->
+  <link rel="preload" as="image" href="https://i.postimg.cc/KjMW2DQj/wpp.jpg">
+
+  <style>
+    .card:hover { transform: translateY(-2px); }
+    .fade-in { animation: fade .35s ease-in-out; }
+    @keyframes fade { from {opacity:0} to {opacity:1} }
+
+    /* MultiKick en fullscreen */
+    #view-multikick:fullscreen,
+    #view-multikick:-webkit-full-screen {
+      max-width: none !important;
+      width: 100vw;
+      height: 100vh;
+      margin: 0;
+      padding: 16px;
+      overflow: auto;
+      background: rgba(0,0,0,.6);
+    }
+    #view-multikick:fullscreen #mk-grid,
+    #view-multikick:-webkit-full-screen #mk-grid { gap: 12px; }
+
+    /* No pintar/construir layout de grandes contenedores fuera del viewport */
+    #grid, #galeria-grid, #videos-grid { content-visibility:auto; contain-intrinsic-size: 1px 600px; }
+    /* Solo afecta a la Galería */
+    #view-galeria .yy-zoomable { transition: transform .2s ease, box-shadow .2s ease; }
+    #view-galeria .yy-zoomable:hover { transform: scale(1.03); }
+
+    /* Botón descargar sobre cada miniatura */
+    #view-galeria .yy-dl-btn{
+      position:absolute; right:.5rem; top:.5rem;
+      background:rgba(0,0,0,.55); border:1px solid #262626;
+      backdrop-filter: blur(4px); border-radius:.5rem;
+      padding:.35rem .5rem; font-size:.75rem;
+    }
+
+    /* Lightbox (overlay global, pero lo abre solo la Galería) */
+    #yy-lightbox { background: rgba(0,0,0,.85); }
+    #yy-lightbox .yy-wrap { max-width:min(96vw,1100px); }
+    #yy-lightbox img { max-height:80vh; }
+    /* Botón de icono en las tarjetas */
+    .yy-icon-btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:34px;height:34px;border-radius:.6rem;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.04);
+      transition:transform .12s ease, background .12s ease, border-color .12s ease;
+    }
+    .yy-icon-btn:hover{ transform:translateY(-1px); background:rgba(158,140,237,.12); border-color:#9e8ced; }
+    .yy-icon{ width:18px;height:18px; display:block; }
+  </style>
+</head>
+<body class="min-h-screen bg-neutral-950 text-neutral-100">
+  <!-- Fondo -->
+  <div class="fixed inset-0 -z-10">
+    <img src="https://i.postimg.cc/KjMW2DQj/wpp.jpg" alt="" class="w-full h-full object-cover" loading="eager" decoding="async" fetchpriority="low">
+    <div class="absolute inset-0 bg-black/60"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="max-w-6xl mx-auto px-4 py-6">
+    <div class="flex flex-col sm:flex-row items-center gap-4">
+      <img src="img/logo.png" alt="Logo" class="w-20 h-20 object-contain drop-shadow" loading="lazy" decoding="async" />
+      <div class="flex items-center gap-3 flex-wrap">
+        <h1 class="text-3xl font-extrabold">Young Yakuza - Dovux Life RP</h1>
+        <button id="live-pill"
+          class="hidden sm:inline-flex items-center gap-2 text-sm px-3 py-1 rounded-full border border-yakuza bg-yakuza/20 hover:bg-yakuza/30 transition">
+          <span class="inline-block w-2 h-2 rounded-full bg-yakuza animate-pulse"></span>
+          <span>En vivo (0)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <nav class="max-w-6xl mx-auto px-4">
+    <div class="flex flex-wrap gap-2 pb-3">
+      <button class="tab px-3 py-2 rounded-xl border border-yakuza bg-yakuza/20 hover:bg-yakuza/30" data-view="personajes">Personajes</button>
+      <button class="tab px-3 py-2 rounded-xl border border-neutral-800 bg-neutral-900/70 hover:bg-neutral-800" data-view="galeria">Galería</button>
+      <button class="tab px-3 py-2 rounded-xl border border-neutral-800 bg-neutral-900/70 hover:bg-neutral-800" data-view="videos">Videos</button>
+      <button class="tab px-3 py-2 rounded-xl border border-neutral-800 bg-neutral-900/70 hover:bg-neutral-800" data-view="lore">Lore</button>
+      <button class="tab px-3 py-2 rounded-xl border border-neutral-800 bg-neutral-900/70 hover:bg-neutral-800" data-view="multikick">MultiKick</button>
+    </div>
+  </nav>
+
+  <!-- VIEW: Personajes -->
+  <div id="view-personajes">
+    <section class="max-w-6xl mx-auto px-4">
+      <div class="flex flex-col lg:flex-row lg:items-end gap-4">
+        <div class="flex-1 min-w-[280px]">
+          <label class="block text-sm text-neutral-300 mb-1">Buscar personaje</label>
+          <input id="q" type="search" placeholder="Ej: Mikaro, Yoshi, etc."
+                 class="w-full h-10 rounded-xl bg-neutral-900 border border-neutral-800 px-3 outline-none focus:ring-2 focus:ring-emerald-500" />
+        </div>
+        <div class="flex flex-wrap lg:flex-nowrap items-end gap-3 shrink-0">
+          <div class="w-56">
+            <label class="block text-sm text-neutral-300 mb-1">Ordenar</label>
+            <select id="sort" class="w-full h-10 rounded-xl bg-neutral-900 border border-neutral-800 px-3">
+              <option value="rango-desc">Ordenar por rango (↓)</option>
+              <option value="rango-asc">Ordenar por rango (↑)</option>
+              <option value="nombre-asc">Nombre (A→Z)</option>
+              <option value="nombre-desc">Nombre (Z→A)</option>
+              <option value="live-desc">Estado (en vivo primero)</option>
+            </select>
+          </div>
+          <div class="w-56">
+            <label class="block text-sm text-neutral-300 mb-1">Rango</label>
+            <select id="rango" class="w-full h-10 rounded-xl bg-neutral-900 border border-neutral-800 px-3">
+              <option value="">Todos</option>
+              <option value="1">1 — Jefe</option>
+              <option value="2">2 — Yakuza</option>
+              <option value="3">3 — Shatei</option>
+            </select>
+          </div>
+          <div class="w-44">
+            <label class="block text-sm text-neutral-300 mb-1 invisible">Acción</label>
+            <button id="clear"
+                    class="w-full h-10 inline-flex items-center justify-center rounded-xl
+                           bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 px-3 text-sm">
+              Limpiar filtros
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main class="max-w-6xl mx-auto px-4">
+      <div id="grid" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 py-8"></div>
+      <p id="empty" class="hidden text-neutral-300 text-center pb-16">No se encontraron personajes con esos filtros.</p>
+    </main>
+  </div>
+
+  <!-- VIEW: Galería -->
+  <section id="view-galeria" class="max-w-6xl mx-auto px-4 hidden">
+    <h2 class="text-xl font-semibold mb-3">Galería</h2>
+    <div id="galeria-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 pb-10"></div>
+  </section>
+
+  <!-- VIEW: Videos -->
+  <section id="view-videos" class="max-w-6xl mx-auto px-4 hidden">
+    <h2 class="text-xl font-semibold mb-3">Videos</h2>
+    <div id="videos-grid" class="grid md:grid-cols-2 gap-5 pb-10"></div>
+  </section>
+
+  <!-- VIEW: Lore -->
+  <section id="view-lore" class="max-w-6xl mx-auto px-4 hidden">
+    <h2 class="text-xl font-semibold mb-3">Lore</h2>
+    <article id="lore-body" class="pb-10 space-y-4 text-neutral-200"></article>
+  </section>
+
+  <!-- VIEW: MultiKick -->
+  <section id="view-multikick" class="max-w-6xl mx-auto px-4 hidden">
+    <h2 class="text-xl font-semibold mb-3">MultiKick</h2>
+
+    <div id="mk-live-list" class="flex flex-wrap gap-2 mb-3"></div>
+
+    <div class="flex items-center gap-2 mb-4">
+      <button id="mk-select-all"
+        class="px-3 py-2 rounded-xl text-sm border border-yakuza bg-yakuza/20 hover:bg-yakuza/30">
+        Mostrar todos
+      </button>
+      <button id="mk-clear"
+        class="px-3 py-2 rounded-xl text-sm border border-neutral-700 bg-neutral-800/70 hover:bg-neutral-700">
+        Limpiar selección
+      </button>
+      <button id="mk-full"
+        class="px-3 py-2 rounded-xl text-sm border border-neutral-700 bg-neutral-800/70 hover:bg-neutral-700">
+        Pantalla completa
+      </button>
+      <span id="mk-count" class="text-sm text-neutral-400 ml-2">0 seleccionados</span>
+    </div>
+
+    <div id="mk-grid" class="grid gap-4 pb-10"></div>
+  </section>
+
+  <!-- Rotador flotante -->
+  <div id="live-rotator" class="hidden fixed right-4 bottom-4 z-50 w-[min(92vw,360px)] rounded-2xl overflow-hidden border border-yakuza bg-neutral-900/85 backdrop-blur shadow-2xl">
+    <div class="flex items-center justify-between px-3 py-2">
+      <div class="flex items-center gap-2 text-sm font-semibold">
+        <span class="inline-block w-2 h-2 rounded-full bg-yakuza animate-pulse"></span>
+        <span>Streams en vivo</span>
+      </div>
+      <div class="flex items-center gap-1">
+        <button id="live-prev" class="px-2 py-1 rounded hover:bg-neutral-800" title="Anterior">◀</button>
+        <button id="live-next" class="px-2 py-1 rounded hover:bg-neutral-800" title="Siguiente">▶</button>
+        <button id="live-close" class="px-2 py-1 rounded hover:bg-neutral-800" title="Cerrar">✕</button>
+      </div>
+    </div>
+    <div class="w-full aspect-video bg-black">
+      <iframe id="live-iframe" src="" allow="autoplay; fullscreen" allowfullscreen frameborder="0" class="w-full h-full" loading="lazy"></iframe>
+    </div>
+    <a id="live-link" href="#" target="_blank" rel="noreferrer"
+       class="block px-3 py-2 text-xs underline text-neutral-300 hover:text-white">Abrir canal en Kick</a>
+  </div>
+
+<footer class="max-w-6xl mx-auto px-4 pb-10 text-center">
+  <a href="https://x.com/i/communities/1829991651260899419"
+     target="_blank" rel="noreferrer"
+     class="inline-block px-6 py-3 rounded-xl text-lg font-semibold text-white
+            bg-yakuza hover:bg-yakuza-light border border-yakuza
+            shadow-md hover:shadow-lg transition">
+    🚀 Unite a la Comunidad
+  </a>
+</footer>
+
+  <!-- Lightbox / Galería -->
+  <div id="yy-lightbox" class="hidden fixed inset-0 z-50 grid place-items-center">
+    <div class="yy-wrap relative w-full px-4">
+      <button id="yy-close" class="absolute -top-10 right-4 px-3 py-2 rounded-lg bg-neutral-800/80 border border-neutral-700 text-sm hover:bg-neutral-700">
+        Cerrar ✕
+      </button>
+      <div class="rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-800 p-2">
+        <img id="yy-img" src="" alt="" class="w-full h-auto object-contain rounded-xl" />
+        <div class="flex items-center justify-between gap-2 px-2 py-2 text-sm text-neutral-300">
+          <div id="yy-caption" class="truncate"></div>
+          <div class="flex items-center gap-2">
+            <button id="yy-prev" class="px-3 py-1 rounded border border-neutral-700 bg-neutral-800 hover:bg-neutral-700">◀</button>
+            <button id="yy-next" class="px-3 py-1 rounded border border-neutral-700 bg-neutral-800 hover:bg-neutral-700">▶</button>
+            <a id="yy-dl" download class="px-3 py-1 rounded border border-yakuza bg-yakuza/20 hover:bg-yakuza/30">Descargar</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============ APP SCRIPT ============ -->
+  <script>
+    // ===== Utilidades =====
+    const RANKS = { "1": "Jefe", "2": "Yakuza", "3": "Shatei" };
+    const rankLabel = v => RANKS[String(v)] ?? "-";
+    const norm = s => (s || "").toString().normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase();
+    const debounce = (fn, ms=200) => { let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; };
+
+    let DATA = [];
+    let liveRefreshTimer = null;
+    let rotateTimer = null;
+    let LIVE_QUEUE = [];
+    let LIVE_INDEX = 0;
+    let ROTATOR_OPEN = true;
+
+    // Videos
+    window.videosLoaded = false;
+    let videosTimer = null;
+    const VIDEOS_REFRESH_MS = 5 * 60_000;
+
+    // ===== Kick cache/proxy =====
+    const PROXY_URL = '/api/kick-status';
+    const CACHE_TTL_MS = 60_000;
+    const KICK_CACHE = new Map();
+    const cacheGet = (slug) => {
+      const key = String(slug).toLowerCase();
+      const e = KICK_CACHE.get(key);
+      if (e && (Date.now() - e.t) < CACHE_TTL_MS) return e.v;
+      KICK_CACHE.delete(key); return null;
+    };
+    const cacheSet = (slug, v) => { KICK_CACHE.set(String(slug).toLowerCase(), { v, t: Date.now() }); return v; };
+
+    async function fetchKickStatus(slug) {
+      if (!slug) return { live: null };
+      const cached = cacheGet(slug);
+      if (cached) return cached;
+      try {
+        const r = await fetch(`${PROXY_URL}?slug=${encodeURIComponent(String(slug).toLowerCase())}`);
+        const j = await r.json();
+        return cacheSet(slug, { live: j?.live ?? null, stream: j?.stream ?? null });
+      } catch {
+        return cacheSet(slug, { live: null });
+      }
+    }
+    function liveFromCache(slug) {
+      if (!slug) return null;
+      const e = KICK_CACHE.get(String(slug).toLowerCase());
+      if (!e) return null;
+      return e.v?.live ?? e.live ?? null;
+    }
+
+    // ===== MULTIKICK =====
+    const MK = (() => {
+      let selected = new Set();
+      let timer = null;
+
+      async function ensureStatuses() {
+        const slugs = [...new Set(DATA.map(p => p.kick).filter(Boolean))];
+        await Promise.all(slugs.map(fetchKickStatus));
+      }
+      function liveList() {
+        return DATA.filter(p => p.kick && liveFromCache(p.kick) === true);
+      }
+      function renderChips(live) {
+        const box = document.getElementById('mk-live-list');
+        const countEl = document.getElementById('mk-count');
+        if (!box || !countEl) return;
+
+        if (!live.length) {
+          box.innerHTML = '<p class="text-neutral-400">No hay streams en vivo.</p>';
+          countEl.textContent = '0 seleccionados';
+          document.getElementById('mk-grid').innerHTML = '';
+          return;
+        }
+
+        box.innerHTML = live.map(p => {
+          const sel = selected.has(p.kick);
+          const cls = sel
+            ? 'border-yakuza bg-yakuza/20'
+            : 'border-neutral-800 bg-neutral-900/70 hover:bg-neutral-800';
+          return `
+            <button class="mk-item inline-flex items-center gap-2 px-3 py-2 rounded-xl border ${cls}"
+                    data-slug="${p.kick}">
+              <img src="${p.foto || 'img/logo.png'}" class="w-8 h-8 rounded-full object-cover" alt="" loading="lazy" decoding="async">
+              <span class="text-sm">${p.nombre}</span>
+              ${sel ? '<span class="text-emerald-400 text-xs">●</span>' : ''}
+            </button>
+          `;
+        }).join('');
+
+        countEl.textContent = `${selected.size} seleccionados`;
+      }
+      function setGridCols(n) {
+        const grid = document.getElementById('mk-grid');
+        if (!grid) return;
+        let cols = 'md:grid-cols-1';
+        if (n === 2) cols = 'md:grid-cols-2';
+        else if (n === 3) cols = 'md:grid-cols-3';
+        else if (n === 4) cols = 'md:grid-cols-2 xl:grid-cols-2';
+        else if (n >= 5 && n <= 6) cols = 'md:grid-cols-3';
+        else if (n >= 7) cols = 'md:grid-cols-4';
+        grid.className = `grid gap-4 pb-10 ${cols}`;
+      }
+      function renderGrid() {
+        const grid = document.getElementById('mk-grid');
+        const countEl = document.getElementById('mk-count');
+        if (!grid || !countEl) return;
+
+        // mantener solo los que siguen en vivo
+        const liveSlugs = liveList().map(p => p.kick);
+        selected = new Set([...selected].filter(s => liveSlugs.includes(s)));
+
+        const sel = [...selected];
+        setGridCols(sel.length);
+        grid.innerHTML = sel.map(slug => `
+          <div class="rounded-2xl overflow-hidden bg-black border border-neutral-800">
+            <iframe class="w-full aspect-video" loading="lazy"
+                    src="" data-src="https://player.kick.com/${encodeURIComponent(slug)}?autoplay=true&muted=true"
+                    allow="autoplay; fullscreen" allowfullscreen frameborder="0"></iframe>
+          </div>
+        `).join('');
+
+        // activar src real después de insertar en DOM (lazy real)
+        grid.querySelectorAll('iframe[data-src]').forEach(fr => {
+          fr.src = fr.dataset.src;
+          fr.removeAttribute('data-src');
+        });
+
+        countEl.textContent = `${selected.size} seleccionados`;
+      }
+      async function refresh(first = false) {
+        await ensureStatuses();
+        const live = liveList();
+        if (first && selected.size === 0) live.forEach(p => selected.add(p.kick));
+        renderChips(live);
+        renderGrid();
+      }
+      async function open() {
+        if (!Array.isArray(DATA) || DATA.length === 0) {
+          const onReady = () => { refresh(true); };
+          document.addEventListener('yy:data-ready', onReady, { once: true });
+          return;
+        }
+        await refresh(true);
+        clearInterval(timer);
+        timer = setInterval(() => refresh(false), 60_000);
+      }
+      function stop() {
+        clearInterval(timer);
+        timer = null;
+      }
+
+      document.getElementById('view-multikick')?.addEventListener('click', (e) => {
+        const chip = e.target.closest('.mk-item');
+        if (chip) {
+          const slug = chip.dataset.slug;
+          if (selected.has(slug)) selected.delete(slug); else selected.add(slug);
+          renderChips(liveList()); renderGrid();
+        }
+        if (e.target.closest('#mk-clear')) { selected.clear(); renderChips(liveList()); renderGrid(); }
+        if (e.target.closest('#mk-select-all')) { selected = new Set(liveList().map(p => p.kick)); renderChips(liveList()); renderGrid(); }
+      });
+
+      return { open, stop, refresh };
+    })();
+
+    // ==== Fullscreen para MultiKick ====
+    (function () {
+      const btn = document.getElementById('mk-full');
+      if (!btn) return;
+
+      const root = document.getElementById('view-multikick');
+
+      const isFS = () =>
+        document.fullscreenElement === root ||
+        document.webkitFullscreenElement === root ||
+        document.msFullscreenElement === root;
+
+      const enterFS = () => {
+        const req = root.requestFullscreen || root.webkitRequestFullscreen || root.msRequestFullscreen;
+        if (req) req.call(root);
+      };
+
+      const exitFS = () => {
+        const ex = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+        if (ex) ex.call(document);
+      };
+
+      const updateLabel = () => {
+        btn.textContent = isFS() ? 'Salir de pantalla completa' : 'Pantalla completa';
+        try { if (window.MK && typeof MK.refresh === 'function') MK.refresh(false); } catch {}
+      };
+
+      btn.addEventListener('click', () => (isFS() ? exitFS() : enterFS()));
+      document.addEventListener('fullscreenchange', updateLabel);
+      document.addEventListener('webkitfullscreenchange', updateLabel);
+      updateLabel();
+    })();
+
+    // ===== Tabs =====
+    const VIEWS = ['personajes','galeria','videos','lore','multikick'];
+    const TAB_ACTIVE   = 'tab px-3 py-2 rounded-xl border border-yakuza bg-yakuza/20 hover:bg-yakuza/30';
+    const TAB_INACTIVE = 'tab px-3 py-2 rounded-xl border border-neutral-800 bg-neutral-900/70 hover:bg-neutral-800';
+
+    function styleTabs(activeId) {
+      document.querySelectorAll('.tab[data-view]').forEach(btn => {
+        const id = btn.dataset.view;
+        btn.className = (id === activeId) ? TAB_ACTIVE : TAB_INACTIVE;
+      });
+    }
+    function showView(v) {
+      VIEWS.forEach(id => {
+        const el = document.getElementById('view-'+id);
+        if (el) el.classList.toggle('hidden', id !== v);
+      });
+      styleTabs(v);
+      if (v === 'galeria' && !window.galleryLoaded) loadGallery();
+      if (v === 'videos'  && !window.videosLoaded)  loadVideos();
+      if (v === 'lore'    && !window.loreLoaded)    loadLore();
+
+      if (v === 'multikick') { window.MK?.open?.(); }
+      else { window.MK?.stop?.(); }
+    }
+    document.addEventListener('click', (e) => {
+      const tab = e.target.closest('.tab[data-view]');
+      if (tab) showView(tab.dataset.view);
+    });
+
+    // ===== Data & render Personajes =====
+    async function loadData() {
+      try {
+        const res = await fetch('data.json');
+        if (!res.ok) throw new Error(`No se pudieron cargar los datos (HTTP ${res.status})`);
+        const json = await res.json();
+        DATA = Array.isArray(json) ? json : [];
+        DATA = DATA.map(p => ({ ...p, kick: p.kick ? String(p.kick).trim().toLowerCase() : undefined }));
+        document.dispatchEvent(new CustomEvent('yy:data-ready'));
+        await render();
+      } catch (e) {
+        console.error('Error cargando data.json', e);
+        document.getElementById('grid').innerHTML =
+          '<div class="text-red-400">Error cargando datos. Asegúrate de subir <code>data.json</code> válido.</div>';
+      }
+    }
+
+    async function render() {
+      const q = norm(document.getElementById('q').value);
+      const rango = document.getElementById('rango').value;
+      const sort = document.getElementById('sort').value;
+
+      let list = DATA.filter(p => {
+        const matchQ =
+          !q ||
+          norm(p.nombre).includes(q) ||
+          norm(p.ooc).includes(q) ||
+          norm(p.alias || '').includes(q) ||
+          norm(rankLabel(p.rango)).includes(q);
+        const matchRango = !rango || String(p.rango) === String(rango);
+        return matchQ && matchRango;
+      });
+
+      const slugs = [...new Set(list.map(p => p.kick).filter(Boolean))];
+      await Promise.all(slugs.map(fetchKickStatus));
+
+      list.sort((a, b) => {
+        const liveA = liveFromCache(a.kick) === true ? 1 : 0;
+        const liveB = liveFromCache(b.kick) === true ? 1 : 0;
+        if (liveB !== liveA) return liveB - liveA;
+        switch (sort) {
+          case 'rango-asc':  return (b.rango ?? -999) - (a.rango ?? -999);
+          case 'rango-desc': return (a.rango ??  999) - (b.rango ??  999);
+          case 'nombre-desc': return norm(b.nombre).localeCompare(norm(a.nombre));
+          case 'live-desc':   return 0;
+          default:            return norm(a.nombre).localeCompare(norm(b.nombre));
+        }
+      });
+
+      const grid = document.getElementById('grid');
+      const empty = document.getElementById('empty');
+
+      if (!list.length) {
+        grid.innerHTML = '';
+        empty.classList.remove('hidden');
+        scheduleRender();
+        return;
+      }
+      empty.classList.add('hidden');
+
+      grid.innerHTML = list.map(p => `
+        <article class="card rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden fade-in">
+          <div class="relative">
+            <img src="${p.foto || 'img/logo.png'}" alt="${p.nombre}"
+                 class="w-full aspect-[4/3] object-cover" loading="lazy" decoding="async" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            <div class="absolute bottom-2 left-2 right-2 flex items-center justify-between">
+              <span class="px-2 py-1 rounded-lg text-xs bg-yakuza/20 border border-yakuza">${rankLabel(p.rango)}</span>
+              <span class="px-2 py-1 rounded-lg text-xs bg-neutral-800/70 border border-neutral-700">${p.alias || ''}</span>
+            </div>
+          </div>
+          <div class="p-4">
+            <h3 class="text-lg font-semibold">${p.nombre}</h3>
+            <p class="text-sm text-neutral-400"><span class="font-medium">${p.ooc || '-'}</span></p>
+
+            ${p.kick ? `
+              <div class="mt-3">
+                <a id="kick-${p.kick}"
+                   data-slug="${p.kick}"
+                   href="https://kick.com/${p.kick}"
+                   target="_blank" rel="noreferrer"
+                   class="kick-btn inline-flex items-center gap-2 px-2 py-1 rounded-lg text-xs border border-neutral-700 bg-neutral-800/70 hover:bg-neutral-700">
+                  <span class="kick-dot inline-block w-2 h-2 rounded-full bg-neutral-500"></span>
+                  <span class="kick-label">Comprobando…</span>
+                </a>
+              </div>
+            ` : ''}
+
+            ${p.links?.length ? `
+              <div class="mt-3 flex flex-wrap gap-2">
+                ${p.links.map(l => {
+                  const t = linkType(l);
+                  const title = l.label || t.charAt(0).toUpperCase() + t.slice(1);
+                  return `
+                    <a class="yy-icon-btn" href="${l.href}" target="_blank" rel="noreferrer" aria-label="${title}" title="${title}">
+                      ${iconSvg(t)}
+                    </a>
+                  `;
+                }).join('')}
+              </div>
+            ` : ''}
+          </div>
+        </article>
+      `).join('');
+
+      // hidratar estado Kick en tiempo ocioso
+      try {
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(() => hydrateKickBadges(list));
+        } else {
+          setTimeout(() => hydrateKickBadges(list), 0);
+        }
+      } catch {}
+
+      updateLiveUI(list);
+      scheduleRender();
+    }
+
+    function scheduleRender(){
+      clearTimeout(liveRefreshTimer);
+      const personajesVisible = !document.getElementById('view-personajes')?.classList.contains('hidden');
+      const pageVisible = !document.hidden;
+      if (personajesVisible && pageVisible) {
+        liveRefreshTimer = setTimeout(() => render(), 65_000);
+      }
+    }
+
+    // Eventos Personajes (debounced)
+    document.getElementById('q').addEventListener('input', debounce(render, 200));
+    document.getElementById('rango').addEventListener('change', render);
+    document.getElementById('sort').addEventListener('change', render);
+    document.getElementById('clear').addEventListener('click', () => {
+      document.getElementById('q').value = '';
+      document.getElementById('rango').value = '';
+      document.getElementById('sort').value = 'rango-desc';
+      render();
+    });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) render(); });
+
+    // Click en botón Kick: abrir canal
+    document.getElementById('grid').addEventListener('click', (e) => {
+      const btn = e.target.closest('.kick-btn');
+      if (!btn) return;
+      e.preventDefault();
+      const slug = (btn.getAttribute('data-slug') || '').trim().toLowerCase();
+      if (!slug) return;
+      window.open(`https://kick.com/${encodeURIComponent(slug)}`, '_blank', 'noopener,noreferrer');
+    });
+
+    // ==== Rotador / contador ====
+    function updateLiveUI(list) {
+      const liveNow = list.filter(p => p.kick && liveFromCache(p.kick) === true).map(p => String(p.kick).toLowerCase());
+      const pill = document.getElementById('live-pill');
+      const count = liveNow.length;
+      if (count > 0) {
+        pill.classList.remove('hidden');
+        pill.querySelector('span:last-child').textContent = `En vivo (${count})`;
+      } else { pill.classList.add('hidden'); }
+
+      const changed = JSON.stringify(liveNow) !== JSON.stringify(LIVE_QUEUE);
+      LIVE_QUEUE = liveNow;
+      if (changed) { LIVE_INDEX = 0; startRotation(); }
+
+      const panel = document.getElementById('live-rotator');
+      if (LIVE_QUEUE.length === 0) panel.classList.add('hidden');
+      else if (ROTATOR_OPEN) {
+        panel.classList.remove('hidden');
+        setIframeTo(LIVE_QUEUE[LIVE_INDEX % LIVE_QUEUE.length]);
+        if (!rotateTimer) startRotation();
+      }
+
+      try {
+        const mkVisible = !document.getElementById('view-multikick')?.classList.contains('hidden');
+        if (mkVisible && window.MK && typeof MK.refresh === 'function') MK.refresh(false);
+      } catch {}
+    }
+    function setIframeTo(slug) {
+      const iframe = document.getElementById('live-iframe');
+      const link = document.getElementById('live-link');
+      if (!slug) return;
+      iframe.src = `https://player.kick.com/${encodeURIComponent(slug)}?autoplay=true&muted=true`;
+      link.href = `https://kick.com/${encodeURIComponent(slug)}`;
+    }
+    function startRotation() {
+      clearInterval(rotateTimer);
+      if (LIVE_QUEUE.length === 0) return;
+      setIframeTo(LIVE_QUEUE[LIVE_INDEX % LIVE_QUEUE.length]);
+      rotateTimer = setInterval(() => {
+        LIVE_INDEX = (LIVE_INDEX + 1) % LIVE_QUEUE.length;
+        setIframeTo(LIVE_QUEUE[LIVE_INDEX]);
+      }, 20_000);
+    }
+    document.getElementById('live-pill').addEventListener('click', () => {
+      if (LIVE_QUEUE.length === 0) return;
+      ROTATOR_OPEN = !ROTATOR_OPEN;
+      document.getElementById('live-rotator').classList.toggle('hidden', !ROTATOR_OPEN);
+      if (ROTATOR_OPEN) startRotation();
+    });
+    document.getElementById('live-close').addEventListener('click', () => {
+      ROTATOR_OPEN = false;
+      document.getElementById('live-rotator').classList.add('hidden');
+    });
+    document.getElementById('live-prev').addEventListener('click', () => {
+      if (LIVE_QUEUE.length === 0) return;
+      LIVE_INDEX = (LIVE_INDEX - 1 + LIVE_QUEUE.length) % LIVE_QUEUE.length;
+      setIframeTo(LIVE_QUEUE[LIVE_INDEX]);
+    });
+    document.getElementById('live-next').addEventListener('click', () => {
+      if (LIVE_QUEUE.length === 0) return;
+      LIVE_INDEX = (LIVE_INDEX + 1) % LIVE_QUEUE.length;
+      setIframeTo(LIVE_QUEUE[LIVE_INDEX]);
+    });
+
+    // ===== Pintar estado botón Kick =====
+    function paintKickButton(slug, state) {
+      const esc = (s) => (window.CSS && CSS.escape) ? CSS.escape(s) : String(s).replace(/[^a-zA-Z0-9_-]/g, '\\$&');
+      const selector = `#kick-${esc(slug)}, a.kick-btn[data-slug="${esc(slug)}"]`;
+      document.querySelectorAll(selector).forEach(el => {
+        let dot = el.querySelector('.kick-dot');
+        let label = el.querySelector('.kick-label');
+        if (!dot) { dot = document.createElement('span'); dot.className='kick-dot inline-block w-2 h-2 rounded-full'; el.prepend(dot); }
+        if (!label) { label = document.createElement('span'); label.className='kick-label'; el.appendChild(label); }
+
+        if (state.live === true) {
+          el.className = 'kick-btn inline-flex items-center gap-2 px-2 py-1 rounded-lg text-xs border border-yakuza bg-yakuza/20 hover:bg-yakuza/30';
+          dot.className = 'kick-dot inline-block w-2 h-2 rounded-full bg-yakuza animate-pulse';
+          label.textContent = 'En vivo en Kick';
+        } else if (state.live === false) {
+          el.className = 'kick-btn inline-flex items-center gap-2 px-2 py-1 rounded-lg text-xs border border-neutral-700 bg-neutral-800/70 hover:bg-neutral-700';
+          dot.className = 'kick-dot inline-block w-2 h-2 rounded-full bg-neutral-500';
+          label.textContent = 'Kick (offline)';
+        } else {
+          el.className = 'kick-btn inline-flex items-center gap-2 px-2 py-1 rounded-lg text-xs border border-neutral-700 bg-neutral-800/70 hover:bg-neutral-700';
+          dot.className = 'kick-dot inline-block w-2 h-2 rounded-full bg-neutral-500';
+          label.textContent = 'Kick';
+        }
+      });
+    }
+    async function hydrateKickBadges(list) {
+      const slugs = [...new Set(list.map(p => p.kick).filter(Boolean))];
+      await Promise.all(slugs.map(async (slug) => {
+        const state = await fetchKickStatus(slug);
+        paintKickButton(slug, state);
+      }));
+    }
+
+    // ===== Galería =====
+    window.galleryLoaded = false;
+    let YY_GALLERY = [];    // [{src, alt}]
+    let YY_INDEX = 0;
+
+    async function loadGallery() {
+      try {
+        const r = await fetch('gallery.json');
+        if (!r.ok) throw new Error('gallery.json no encontrado');
+        YY_GALLERY = await r.json();
+
+        const html = YY_GALLERY.map((i, idx) => `
+          <figure class="relative rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-800 cursor-zoom-in">
+            <!-- botón descargar overlay -->
+            <a href="${i.src}" download class="yy-dl-btn text-neutral-200 hover:text-white" title="Descargar">⬇︎</a>
+            <!-- miniatura -->
+            <img src="${i.src}" alt="${i.alt || ''}"
+                class="yy-zoomable w-full aspect-[4/3] object-cover"
+                loading="lazy" decoding="async"
+                data-idx="${idx}">
+            ${i.alt ? `<figcaption class="px-3 py-2 text-sm text-neutral-300">${i.alt}</figcaption>` : ''}
+          </figure>
+        `).join('');
+
+        const grid = document.getElementById('galeria-grid');
+        grid.innerHTML = html || '<p class="text-neutral-400">Sin imágenes.</p>';
+        window.galleryLoaded = true;
+
+        // abrir lightbox al click SOLO dentro de la galería
+        grid.addEventListener('click', (e) => {
+          const img = e.target.closest('img[data-idx]');
+          if (!img) return;
+          e.preventDefault();
+          const i = Number(img.dataset.idx || 0);
+          yyOpen(i);
+        });
+
+      } catch (e) {
+        document.getElementById('galeria-grid').innerHTML =
+          '<div class="text-red-400">No se pudo cargar <code>gallery.json</code>.</div>';
+      }
+    }
+    function yyRender() {
+      const item = YY_GALLERY[YY_INDEX];
+      if (!item) return;
+      const img = document.getElementById('yy-img');
+      const cap = document.getElementById('yy-caption');
+      const dl  = document.getElementById('yy-dl');
+
+      img.src = item.src;
+      img.alt = item.alt || '';
+      cap.textContent = item.alt || '';
+      dl.href = item.src;                                   // descarga directa
+      dl.download = (item.alt || `imagen-${YY_INDEX+1}`).replace(/[^\w.-]+/g,'_');
+    }
+
+    function yyOpen(i=0) {
+      YY_INDEX = Math.max(0, Math.min(i, YY_GALLERY.length-1));
+      yyRender();
+      document.getElementById('yy-lightbox').classList.remove('hidden');
+      document.addEventListener('keydown', yyKeys);
+    }
+    function yyClose() {
+      document.getElementById('yy-lightbox').classList.add('hidden');
+      document.removeEventListener('keydown', yyKeys);
+    }
+    function yyPrev() { if (!YY_GALLERY.length) return; YY_INDEX = (YY_INDEX - 1 + YY_GALLERY.length) % YY_GALLERY.length; yyRender(); }
+    function yyNext() { if (!YY_GALLERY.length) return; YY_INDEX = (YY_INDEX + 1) % YY_GALLERY.length; yyRender(); }
+    function yyKeys(e) {
+      if (e.key === 'Escape') yyClose();
+      if (e.key === 'ArrowLeft') yyPrev();
+      if (e.key === 'ArrowRight') yyNext();
+    }
+    // Detecta tipo desde l.type o desde hostname
+    function linkType(l){
+      const t = (l.type || '').toLowerCase();
+      if (t) return t;
+      try {
+        const h = new URL(l.href).hostname.toLowerCase();
+        if (h.includes('instagram')) return 'instagram';
+        if (h.includes('twitter') || h.includes('x.com')) return 'twitter';
+        if (h.includes('tiktok')) return 'tiktok';
+        if (h.includes('youtube')) return 'youtube';
+        if (h.includes('twitch')) return 'twitch';
+        if (h.includes('kick.com')) return 'kick';
+        return 'link';
+      } catch { return 'link'; }
+    }
+    
+    // SVGs inline (simples y livianos)
+    function iconSvg(type){
+      switch(type){
+        case 'instagram': return `<svg class="yy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="5" stroke-width="1.5"/><circle cx="12" cy="12" r="3.5" stroke-width="1.5"/><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor"/></svg>`;
+        case 'twitter':   return `<svg class="yy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2H21L14.326 10.63 22 22h-6.31l-4.94-7.18L5.24 22H3l7.23-9.16L2 2h6.42l4.47 6.48L18.244 2Z"/></svg>`; // 'X'
+        case 'tiktok':    return `<svg class="yy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19 7.6a7.5 7.5 0 0 1-4.3-1.6v6.9a5.6 5.6 0 1 1-4.8-5.5v2.6a2.9 2.9 0 1 0 2.1 2.8V2h2.7A7.5 7.5 0 0 0 19 5.2v2.4z"/></svg>`;
+        case 'youtube':   return `<svg class="yy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M23 12s0-3.4-.44-5.06a3 3 0 0 0-2.1-2.12C18.68 4.25 12 4.25 12 4.25s-6.68 0-8.46.57A3 3 0 0 0 1.44 6.94C1 8.6 1 12 1 12s0 3.4.44 5.06a3 3 0 0 0 2.1 2.12c1.78.57 8.46.57 8.46.57s6.68 0 8.46-.57a3 3 0 0 0 2.1-2.12C23 15.4 23 12 23 12ZM10 15.5v-7l6 3.5-6 3.5Z"/></svg>`;
+        case 'twitch':    return `<svg class="yy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 3h16v10.5l-4 4h-3.5L9 20v-2.5H6V6h12v6.5l-3 3V17h-3l-2 2v-2H8V5H4v-2z"/><path d="M13 7h2v4h-2V7zm-4 0h2v4H9V7z"/></svg>`;
+        case 'kick':      return `<svg class="yy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 4h18v4h-6v3h6v9h-5v-5h-5v5H6V8H3V4zm8 4v3H9V8h2z"/></svg>`;
+        default:          return `<svg class="yy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.6 13.4a4 4 0 0 0 5.7 0l2.3-2.3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M13.4 10.6a4 4 0 0 0-5.7 0l-2.3 2.3a4 4 0 0 0 5.7 5.7l1-1" stroke-width="1.5"/></svg>`;
+      }
+    }
+
+
+    // botones del lightbox
+    document.getElementById('yy-close')?.addEventListener('click', yyClose);
+    document.getElementById('yy-prev')?.addEventListener('click', yyPrev);
+    document.getElementById('yy-next')?.addEventListener('click', yyNext);
+    // click en fondo oscuro cierra
+    document.getElementById('yy-lightbox')?.addEventListener('click', (e) => {
+      if (e.target.id === 'yy-lightbox') yyClose();
+    });
+
+
+
+    // ===== Videos =====
+    async function fetchChannelFeed(channelId, max = 6) {
+      const r = await fetch(`/api/youtube-feed?channel=${encodeURIComponent(channelId)}&max=${max}`);
+      const j = await r.json();
+      return j.items || [];
+    }
+    async function loadVideos() {
+      try {
+        const cfgRes = await fetch('channels.json');
+        if (!cfgRes.ok) throw new Error('channels.json no encontrado');
+        const cfg = await cfgRes.json();
+        const chs = Array.isArray(cfg.channels) ? cfg.channels : [];
+        const per = Number(cfg.max_per_channel || 4);
+
+        if (!chs.length) {
+          document.getElementById('videos-grid').innerHTML =
+            '<p class="text-neutral-400">Agregá canales en <code>channels.json</code>.</p>';
+          window.videosLoaded = true;
+          return;
+        }
+
+        const lists = await Promise.all(chs.map(c => fetchChannelFeed(c.id, per)));
+        let items = lists
+          .map((arr, i) => arr.map(x => ({ ...x, _channelName: chs[i].name || chs[i].id })))
+          .flat()
+          .filter(v => v.id);
+
+        const byId = new Map(); items.forEach(v => { if (!byId.has(v.id)) byId.set(v.id, v); });
+        items = [...byId.values()].sort((a, b) => new Date(b.published) - new Date(a.published));
+
+        const html = items.map(v => `
+          <div class="rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-800">
+            <iframe class="w-full aspect-video" loading="lazy" src="https://www.youtube-nocookie.com/embed/${v.id}"
+              title="${(v.title || 'Video').replace(/"/g,'&quot;')}" frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            <div class="px-3 py-2 text-sm text-neutral-300">
+              <div class="font-medium">${v.title || ''}</div>
+              <div class="text-neutral-400">${new Date(v.published).toLocaleString('es-UY',{dateStyle:'medium', timeStyle:'short'})}</div>
+              <div class="text-neutral-500">${v._channelName}</div>
+            </div>
+          </div>
+        `).join('');
+
+        document.getElementById('videos-grid').innerHTML = html || '<p class="text-neutral-400">Sin resultados.</p>';
+        window.videosLoaded = true;
+
+        clearInterval(videosTimer);
+        videosTimer = setInterval(() => {
+          const visible = !document.getElementById('view-videos')?.classList.contains('hidden');
+          if (visible) loadVideos();
+        }, VIDEOS_REFRESH_MS);
+
+      } catch (e) {
+        document.getElementById('videos-grid').innerHTML =
+          '<div class="text-red-400">No se pudo cargar la pestaña Videos. Revisa <code>channels.json</code>.</div>';
+      }
+    }
+
+    // ===== Lore =====
+    window.loreLoaded = false;
+    async function loadLore() {
+      try {
+        const r = await fetch('lore.html');
+        if (!r.ok) throw new Error('lore.html no encontrado');
+        const html = await r.text();
+        document.getElementById('lore-body').innerHTML = html;
+        window.loreLoaded = true;
+      } catch {
+        document.getElementById('lore-body').innerHTML =
+          '<p class="text-red-400">Subí <code>lore.html</code> con tu historia.</p>';
+      }
+    }
+
+    // ===== Go! =====
+    showView('personajes');
+    loadData();
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
