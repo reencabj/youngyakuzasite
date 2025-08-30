@@ -8,7 +8,7 @@
   <link rel="icon" href="img/logo.png" />
 
   <!-- CSS generado por Tailwind en modo build -->
-  <link rel="stylesheet" href="./tailwind.css">
+  
 
   <!-- Perf: conexiones anticipadas a orígenes externos usados por iframes/medios -->
   <link rel="preconnect" href="https://player.kick.com">
@@ -69,6 +69,22 @@
     .yy-icon-btn:hover{ transform:translateY(-1px); background:rgba(158,140,237,.12); border-color:#9e8ced; }
     .yy-icon{ width:18px;height:18px; display:block; }
   </style>
+
+  <!-- Tailwind desde CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            yakuza: '#9e8ced',
+            'yakuza-light': '#bfaeff'
+          }
+        }
+      }
+    }
+  </script>
+
 </head>
 <body class="min-h-screen bg-neutral-950 text-neutral-100">
   <!-- Fondo -->
