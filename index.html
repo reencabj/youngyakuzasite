@@ -313,28 +313,26 @@
     const MK = (() => {
       let selected = new Set();
       let timer = null;
-
+    
       async function ensureStatuses() {
         const slugs = [...new Set(DATA.map(p => p.kick).filter(Boolean))];
         await Promise.all(slugs.map(fetchKickStatus));
       }
-      async function liveListAsync() {
-        const LIVE_MAP = await getLiveMap();
-        return DATA.filter(p => p.kick && LIVE_MAP.get(p.kick)?.live === true);
+      function liveList() {
+        return DATA.filter(p => p.kick && liveFromCache(p.kick) === true);
       }
-
       function renderChips(live) {
         const box = document.getElementById('mk-live-list');
         const countEl = document.getElementById('mk-count');
         if (!box || !countEl) return;
-
+    
         if (!live.length) {
           box.innerHTML = '<p class="text-neutral-400">No hay streams en vivo.</p>';
           countEl.textContent = '0 seleccionados';
           document.getElementById('mk-grid').innerHTML = '';
           return;
         }
-
+    
         box.innerHTML = live.map(p => {
           const sel = selected.has(p.kick);
           const cls = sel
@@ -349,7 +347,7 @@
             </button>
           `;
         }).join('');
-
+    
         countEl.textContent = `${selected.size} seleccionados`;
       }
       function setGridCols(n) {
@@ -367,14 +365,11 @@
         const grid = document.getElementById('mk-grid');
         const countEl = document.getElementById('mk-count');
         if (!grid || !countEl) return;
-
+    
         // mantener solo los que siguen en vivo
-   // mantener solo los que siguen en vivo
-        // (nota: renderGrid no es async; asumimos que refresh() ya pasó por liveListAsync())
-        const liveSlugs = DATA.filter(p => p.kick).map(p => p.kick); // lista base
-
+        const liveSlugs = liveList().map(p => p.kick);
         selected = new Set([...selected].filter(s => liveSlugs.includes(s)));
-
+    
         const sel = [...selected];
         setGridCols(sel.length);
         grid.innerHTML = sel.map(slug => `
@@ -384,22 +379,22 @@
                     allow="autoplay; fullscreen" allowfullscreen frameborder="0"></iframe>
           </div>
         `).join('');
-
+    
         // activar src real después de insertar en DOM (lazy real)
         grid.querySelectorAll('iframe[data-src]').forEach(fr => {
           fr.src = fr.dataset.src;
           fr.removeAttribute('data-src');
         });
-
+    
         countEl.textContent = `${selected.size} seleccionados`;
       }
       async function refresh(first = false) {
-          const live = await liveListAsync();
-          if (first && selected.size === 0) live.forEach(p => selected.add(p.kick));
-          renderChips(live);
-          renderGrid();
-        }
-
+        await ensureStatuses();
+        const live = liveList();
+        if (first && selected.size === 0) live.forEach(p => selected.add(p.kick));
+        renderChips(live);
+        renderGrid();
+      }
       async function open() {
         if (!Array.isArray(DATA) || DATA.length === 0) {
           const onReady = () => { refresh(true); };
@@ -410,7 +405,11 @@
         clearInterval(timer);
         timer = setInterval(() => refresh(false), 60_000);
       }
-
+      function stop() {
+        clearInterval(timer);
+        timer = null;
+      }
+    
       document.getElementById('view-multikick')?.addEventListener('click', (e) => {
         const chip = e.target.closest('.mk-item');
         if (chip) {
@@ -421,9 +420,10 @@
         if (e.target.closest('#mk-clear')) { selected.clear(); renderChips(liveList()); renderGrid(); }
         if (e.target.closest('#mk-select-all')) { selected = new Set(liveList().map(p => p.kick)); renderChips(liveList()); renderGrid(); }
       });
-
+    
+      // <- ESTE return DEBE QUEDAR DENTRO DE LA IIFE
       return { open, stop, refresh };
-    })();
+    })(); // <- y estos paréntesis finales cierran/ejecutan la IIFE
 
     // ==== Fullscreen para MultiKick ====
     (function () {
@@ -1004,6 +1004,7 @@
   </script>
 </body>
 </html>
+
 
 
 
