@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * build-live.mjs
+ * build-live.mjss
  * Genera live.json a partir de los slugs "kick" en data.json
  * - Sin dependencias externas (Node 20+ trae fetch nativo).
  * - Concurrencia limitada y reintentos con backoff suave.
