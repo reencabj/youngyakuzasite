@@ -290,12 +290,16 @@
       if (now - LIVE_CACHE.t < LIVE_TTL) return LIVE_CACHE.map;
     
       const res = await fetch('live.json', { cache: 'no-cache' });
-      if (!res.ok) return LIVE_CACHE.map; // en error, usa lo último
-      const arr = await res.json();
-    
+      if (!res.ok) return LIVE_CACHE.map;
+      const raw = await res.json();
+      
+      // 🔧 Filtra entradas nulas o sin slug
+      const arr = (Array.isArray(raw) ? raw : []).filter(x => x && x.slug);
+      
       const map = new Map(arr.map(x => [String(x.slug).toLowerCase(), x]));
       LIVE_CACHE = { t: now, map };
       return map;
+
     }
 
     function liveFromCache(slug) {
@@ -928,6 +932,7 @@
   </script>
 </body>
 </html>
+
 
 
 
