@@ -282,44 +282,24 @@
     let videosTimer = null;
     const VIDEOS_REFRESH_MS = 5 * 60_000;
 
-    // ===== Kick cache/proxy =====
-    /* PROXY_URL eliminado: usamos API pública de Kick */
-    const CACHE_TTL_MS = 60_000;
-    const KICK_CACHE = new Map();
-    const cacheGet = (slug) => {
-      const key = String(slug).toLowerCase();
-      const e = KICK_CACHE.get(key);
-      if (e && (Date.now() - e.t) < CACHE_TTL_MS) return e.v;
-      KICK_CACHE.delete(key); return null;
-    };
-    const cacheSet = (slug, v) => { KICK_CACHE.set(String(slug).toLowerCase(), { v, t: Date.now() }); return v; };
-
-    async function fetchKickStatus(slug) {
-      if (!slug) return { live: null };
-
-      // 1) cache hit
-      const cached = cacheGet(slug);
-      if (cached) return cached;
-
-      try {
-        const r = await fetch(`https://kick.com/api/v2/channels/${encodeURIComponent(String(slug).toLowerCase())}`, {
-          headers: { 'accept': 'application/json' }
-        });
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        const data = await r.json();
-
-        // 2) guardar en caché y devolver eso
-        return cacheSet(slug, {
-          live: !!data?.livestream,
-          stream: data?.livestream || null
-        });
-      } catch (e) {
-        console.error('Kick error', slug, e);
-        // 3) cachear fallo como estado desconocido para evitar reintentos inmediatos
-        return cacheSet(slug, { live: null });
-      }
+    // ===== LIVE STATUS desde live.json (generado por GitHub Actions) =====
+    const LIVE_TTL = 60_000; // revalida cada 60s
+    let LIVE_CACHE = { t: 0, map: new Map() };
+    
+    async function getLiveMap() {
+      const now = Date.now();
+      if (now - LIVE_CACHE.t < LIVE_TTL) return LIVE_CACHE.map;
+    
+      const res = await fetch('live.json', { cache: 'no-cache' });
+      if (!res.ok) return LIVE_CACHE.map; // en error, usa lo último
+      const arr = await res.json();
+    
+      const map = new Map(arr.map(x => [String(x.slug).toLowerCase(), x]));
+      LIVE_CACHE = { t: now, map };
+      return map;
     }
 
+    
       
 
     function liveFromCache(slug) {
@@ -338,9 +318,11 @@
         const slugs = [...new Set(DATA.map(p => p.kick).filter(Boolean))];
         await Promise.all(slugs.map(fetchKickStatus));
       }
-      function liveList() {
-        return DATA.filter(p => p.kick && liveFromCache(p.kick) === true);
+      async function liveListAsync() {
+        const LIVE_MAP = await getLiveMap();
+        return DATA.filter(p => p.kick && LIVE_MAP.get(p.kick)?.live === true);
       }
+
       function renderChips(live) {
         const box = document.getElementById('mk-live-list');
         const countEl = document.getElementById('mk-count');
@@ -387,7 +369,10 @@
         if (!grid || !countEl) return;
 
         // mantener solo los que siguen en vivo
-        const liveSlugs = liveList().map(p => p.kick);
+   // mantener solo los que siguen en vivo
+        // (nota: renderGrid no es async; asumimos que refresh() ya pasó por liveListAsync())
+        const liveSlugs = DATA.filter(p => p.kick).map(p => p.kick); // lista base
+
         selected = new Set([...selected].filter(s => liveSlugs.includes(s)));
 
         const sel = [...selected];
@@ -409,12 +394,12 @@
         countEl.textContent = `${selected.size} seleccionados`;
       }
       async function refresh(first = false) {
-        await ensureStatuses();
-        const live = liveList();
-        if (first && selected.size === 0) live.forEach(p => selected.add(p.kick));
-        renderChips(live);
-        renderGrid();
-      }
+          const live = await liveListAsync();
+          if (first && selected.size === 0) live.forEach(p => selected.add(p.kick));
+          renderChips(live);
+          renderGrid();
+        }
+
       async function open() {
         if (!Array.isArray(DATA) || DATA.length === 0) {
           const onReady = () => { refresh(true); };
@@ -424,10 +409,6 @@
         await refresh(true);
         clearInterval(timer);
         timer = setInterval(() => refresh(false), 60_000);
-      }
-      function stop() {
-        clearInterval(timer);
-        timer = null;
       }
 
       document.getElementById('view-multikick')?.addEventListener('click', (e) => {
@@ -523,37 +504,111 @@
       }
     }
 
-    async function render() {
-      const q = norm(document.getElementById('q').value);
-      const rango = document.getElementById('rango').value;
-      const sort = document.getElementById('sort').value;
-
-      let list = DATA.filter(p => {
-        const matchQ =
-          !q ||
-          norm(p.nombre).includes(q) ||
-          norm(p.ooc).includes(q) ||
-          norm(p.alias || '').includes(q) ||
-          norm(rankLabel(p.rango)).includes(q);
-        const matchRango = !rango || String(p.rango) === String(rango);
-        return matchQ && matchRango;
-      });
-
-      const slugs = [...new Set(list.map(p => p.kick).filter(Boolean))];
-      await Promise.all(slugs.map(fetchKickStatus));
-
-      list.sort((a, b) => {
-        const liveA = liveFromCache(a.kick) === true ? 1 : 0;
-        const liveB = liveFromCache(b.kick) === true ? 1 : 0;
-        if (liveB !== liveA) return liveB - liveA;
-        switch (sort) {
-          case 'rango-asc':  return (b.rango ?? -999) - (a.rango ?? -999);
-          case 'rango-desc': return (a.rango ??  999) - (b.rango ??  999);
-          case 'nombre-desc': return norm(b.nombre).localeCompare(norm(a.nombre));
-          case 'live-desc':   return 0;
-          default:            return norm(a.nombre).localeCompare(norm(b.nombre));
+      async function render() {
+        const q = norm(document.getElementById('q').value);
+        const rango = document.getElementById('rango').value;
+        const sort = document.getElementById('sort').value;
+      
+        // 1) filtrar por búsqueda/rango
+        let list = DATA.filter(p => {
+          const matchQ =
+            !q ||
+            norm(p.nombre).includes(q) ||
+            norm(p.ooc).includes(q) ||
+            norm(p.alias || '').includes(q) ||
+            norm(rankLabel(p.rango)).includes(q);
+          const matchRango = !rango || String(p.rango) === String(rango);
+          return matchQ && matchRango;
+        });
+      
+        // 2) Cargar mapa de estados en vivo desde live.json (sin tocar la API de Kick)
+        const LIVE_MAP = await getLiveMap();
+      
+        // 3) ordenar: "en vivo" primero cuando corresponde
+        list.sort((a, b) => {
+          const liveA = LIVE_MAP.get(a.kick)?.live ? 1 : 0;
+          const liveB = LIVE_MAP.get(b.kick)?.live ? 1 : 0;
+          if (liveB !== liveA) return liveB - liveA;
+          switch (sort) {
+            case 'rango-asc':  return (b.rango ?? -999) - (a.rango ?? -999);
+            case 'rango-desc': return (a.rango ??  999) - (b.rango ??  999);
+            case 'nombre-desc': return norm(b.nombre).localeCompare(norm(a.nombre));
+            case 'live-desc':   return 0;
+            default:            return norm(a.nombre).localeCompare(norm(b.nombre));
+          }
+        });
+      
+        // 4) pintar grilla
+        const grid = document.getElementById('grid');
+        const empty = document.getElementById('empty');
+      
+        if (!list.length) {
+          grid.innerHTML = '';
+          empty.classList.remove('hidden');
+          scheduleRender();
+          return;
         }
-      });
+        empty.classList.add('hidden');
+      
+        grid.innerHTML = list.map(p => `
+          <article class="card rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden fade-in">
+            <div class="relative">
+              <img src="${p.foto || 'img/logo.png'}" alt="${p.nombre}"
+                   class="w-full aspect-[4/3] object-cover" loading="lazy" decoding="async" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+              <div class="absolute bottom-2 left-2 right-2 flex items-center justify-between">
+                <span class="px-2 py-1 rounded-lg text-xs bg-yakuza/20 border border-yakuza">${rankLabel(p.rango)}</span>
+                <span class="px-2 py-1 rounded-lg text-xs bg-neutral-800/70 border border-neutral-700">${p.alias || ''}</span>
+              </div>
+            </div>
+            <div class="p-4">
+              <h3 class="text-lg font-semibold">${p.nombre}</h3>
+              <p class="text-sm text-neutral-400"><span class="font-medium">${p.ooc || '-'}</span></p>
+      
+              ${p.kick ? `
+                <div class="mt-3">
+                  <a id="kick-${p.kick}"
+                     data-slug="${p.kick}"
+                     href="https://kick.com/${p.kick}"
+                     target="_blank" rel="noreferrer"
+                     class="kick-btn inline-flex items-center gap-2 px-2 py-1 rounded-lg text-xs border border-neutral-700 bg-neutral-800/70 hover:bg-neutral-700">
+                    <span class="kick-dot inline-block w-2 h-2 rounded-full bg-neutral-500"></span>
+                    <span class="kick-label">Kick</span>
+                  </a>
+                </div>
+              ` : ''}
+      
+              ${p.links?.length ? `
+                <div class="mt-3 flex flex-wrap gap-2">
+                  ${p.links.map(l => {
+                    const t = linkType(l);
+                    const title = l.label || t.charAt(0).toUpperCase() + t.slice(1);
+                    return `
+                      <a class="yy-icon-btn" href="${l.href}" target="_blank" rel="noreferrer" aria-label="${title}" title="${title}">
+                        ${iconSvg(t)}
+                      </a>
+                    `;
+                  }).join('')}
+                </div>
+              ` : ''}
+            </div>
+          </article>
+        `).join('');
+      
+        // 5) Actualizar el badge de Kick SIN fetch por card (usando LIVE_MAP)
+        list.forEach(p => {
+          if (!p.kick) return;
+          const live = LIVE_MAP.get(p.kick)?.live ?? false;
+          paintKickButton(p.kick, { live });
+        });
+      
+        // 6) UI del rotador y contador con el mismo mapa
+        await updateLiveUI_fromMap(LIVE_MAP, list);
+      
+        // 7) re-render suave
+        scheduleRender();
+      }
+
 
       const grid = document.getElementById('grid');
       const empty = document.getElementById('empty');
@@ -655,20 +710,22 @@
       window.open(`https://kick.com/${encodeURIComponent(slug)}`, '_blank', 'noopener,noreferrer');
     });
 
-    // ==== Rotador / contador ====
-    function updateLiveUI(list) {
-      const liveNow = list.filter(p => p.kick && liveFromCache(p.kick) === true).map(p => String(p.kick).toLowerCase());
+    async function updateLiveUI_fromMap(LIVE_MAP, list) {
+      const liveNow = list
+        .filter(p => p.kick && (LIVE_MAP.get(p.kick)?.live === true))
+        .map(p => String(p.kick).toLowerCase());
+    
       const pill = document.getElementById('live-pill');
       const count = liveNow.length;
       if (count > 0) {
         pill.classList.remove('hidden');
         pill.querySelector('span:last-child').textContent = `En vivo (${count})`;
       } else { pill.classList.add('hidden'); }
-
+    
       const changed = JSON.stringify(liveNow) !== JSON.stringify(LIVE_QUEUE);
       LIVE_QUEUE = liveNow;
       if (changed) { LIVE_INDEX = 0; startRotation(); }
-
+    
       const panel = document.getElementById('live-rotator');
       if (LIVE_QUEUE.length === 0) panel.classList.add('hidden');
       else if (ROTATOR_OPEN) {
@@ -676,12 +733,13 @@
         setIframeTo(LIVE_QUEUE[LIVE_INDEX % LIVE_QUEUE.length]);
         if (!rotateTimer) startRotation();
       }
-
+    
       try {
         const mkVisible = !document.getElementById('view-multikick')?.classList.contains('hidden');
         if (mkVisible && window.MK && typeof MK.refresh === 'function') MK.refresh(false);
       } catch {}
     }
+
     function setIframeTo(slug) {
       const iframe = document.getElementById('live-iframe');
       const link = document.getElementById('live-link');
@@ -946,6 +1004,7 @@
   </script>
 </body>
 </html>
+
 
 
 
