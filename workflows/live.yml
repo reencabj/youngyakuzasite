@@ -1,38 +1,32 @@
-name: Update Kick Live JSON
+name: build-live-json
+
 on:
   schedule:
-    - cron: "*/15 * * * *"  # cada 15 min (ajusta)
+    - cron: "*/5 * * * *"           # cada 5 min
   workflow_dispatch:
+  push:
+    paths-ignore:
+      - "live.json"                 # evita bucles al commitear live.json
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write               # necesario para git push
     steps:
       - uses: actions/checkout@v4
-      - name: Fetch live
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Generar live.json
+        run: node scripts/build-live.mjs
+
+      - name: Commit & push live.json
         run: |
-          python3 - << 'PY'
-import json, urllib.request, sys
-channels = ["reenz","otrocanal"]  # <-- tus slugs
-out = []
-for slug in channels:
-    try:
-        with urllib.request.urlopen(f"https://kick.com/api/v2/channels/{slug}") as r:
-            data = json.load(r)
-        out.append({
-            "slug": slug,
-            "live": bool(data.get("livestream")),
-            "title": data.get("livestream",{}).get("session_title"),
-            "thumbnail": data.get("livestream",{}).get("thumbnail",{}).get("url"),
-            "viewers": data.get("livestream",{}).get("viewers",0)
-        })
-    except Exception as e:
-        out.append({"slug": slug, "error": str(e)})
-open("channels_live.json","w").write(json.dumps(out, ensure_ascii=False, indent=2))
-PY
-      - name: Commit JSON
-        run: |
-          git config user.name "gh-actions"
-          git config user.email "actions@users.noreply.github.com"
-          git add channels_live.json
-          git commit -m "Update live JSON" || echo "No changes"
+          git config user.name  "pages-bot"
+          git config user.email "pages-bot@users.noreply.github.com"
+          git add live.json
+          git commit -m "chore: update live.json [skip ci]" || echo "sin cambios"
           git push
