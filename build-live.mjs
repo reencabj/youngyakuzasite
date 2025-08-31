@@ -12,7 +12,8 @@ import process from "node:process";
 
 const ROOT = process.cwd();
 const DATA_PATH = path.join(ROOT, "data.json");     // tu fuente de personajes
-const OUTPUT    = path.join(ROOT, "live.json");     // lo que consumirá index.html
+const OUTPUT = path.join(process.cwd(), "live.json");
+    // lo que consumirá index.html
 
 // ---------- Utils ----------
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
