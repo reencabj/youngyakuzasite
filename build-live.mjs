@@ -67,27 +67,31 @@ async function main() {
   )];
 
   console.log(`[info] ${slugs.length} slugs Kick encontrados.`);
+
   const CONCURRENCY = 5;
+  const results = [];
+  let i = 0;
 
-  // mapLimit simple
-  const out = new Array(slugs.length);
-  let i = 0; const running = new Set();
-  async function run() {
-    if (i >= slugs.length) return;
-    const idx = i++; const s = slugs[idx];
-    const p = fetchKick(s).then(v => out[idx] = v).finally(() => running.delete(p));
-    running.add(p);
-    if (running.size >= CONCURRENCY) await Promise.race(running);
-    return run();
+  async function worker() {
+    while (true) {
+      const idx = i++;
+      if (idx >= slugs.length) break;
+      const slug = slugs[idx];
+      const r = await fetchKick(slug);
+      results.push(r);             // <<<< push (array denso), no results[idx]
+    }
   }
-  await Promise.all(Array.from({ length: Math.min(CONCURRENCY, slugs.length) }, run));
+  // lanzar N workers en paralelo
+  await Promise.all(Array.from({ length: Math.min(CONCURRENCY, slugs.length) }, worker));
 
-  out.sort((a, b) => (Number(b.live) - Number(a.live)) || (b.viewers - a.viewers));
-  await fs.writeFile(OUTPUT, JSON.stringify(out, null, 2) + "\n", "utf8");
+  // ordenar: en vivo primero, luego viewers
+  results.sort((a, b) => (Number(b.live) - Number(a.live)) || (b.viewers - a.viewers));
 
-  const liveCount = out.filter(x => x.live).length;
-  console.log(`[done] live.json generado: ${out.length} canales, ${liveCount} en vivo.`);
+  await fs.writeFile(OUTPUT, JSON.stringify(results, null, 2) + "\n", "utf8");
+  const liveCount = results.filter(x => x.live).length;
+  console.log(`[done] live.json generado: ${results.length} canales, ${liveCount} en vivo.`);
 }
+
 
 main().catch(async (err) => {
   console.error(`[fatal] ${err?.stack || err}`);
