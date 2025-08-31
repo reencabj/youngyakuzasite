@@ -1,121 +1,96 @@
 #!/usr/bin/env node
 /**
- * build-live.mjss
- * Genera live.json a partir de los slugs "kick" en data.json
- * - Sin dependencias externas (Node 20+ trae fetch nativo).
- * - Concurrencia limitada y reintentos con backoff suave.
+ * build-live.mjs (robusto)
+ * Lee slugs Kick desde data.json y genera live.json en la raíz.
+ * Si algo falla, escribe [] para no romper el workflow.
  */
 
 import fs from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 
-const ROOT = process.cwd();
-const DATA_PATH = path.join(ROOT, "data.json");     // tu fuente de personajes
-const OUTPUT = path.join(process.cwd(), "live.json");
-    // lo que consumirá index.html
+const ROOT   = process.cwd();
+const INPUT  = path.join(ROOT, "data.json");
+const OUTPUT = path.join(ROOT, "live.json");
 
-// ---------- Utils ----------
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
-async function mapLimit(items, limit, worker) {
-  const out = new Array(items.length);
-  let i = 0;
-  const running = new Set();
-  async function run() {
-    if (i >= items.length) return;
-    const idx = i++;
-    const p = (async () => {
-      out[idx] = await worker(items[idx], idx);
-    })().finally(() => running.delete(p));
-    running.add(p);
-    if (running.size >= limit) await Promise.race(running);
-    return run();
-  }
-  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, run));
-  return out;
-}
-
-async function fetchJson(url, opts = {}, { retries = 3, backoffMs = 500 } = {}) {
-  for (let attempt = 0; attempt <= retries; attempt++) {
-    const res = await fetch(url, {
-      headers: { "accept": "application/json", ...(opts.headers || {}) },
-      ...opts
-    }).catch(() => null);
-
-    if (!res) {
-      if (attempt === retries) throw new Error("Network error");
-    } else if (res.ok) {
-      return res.json();
-    } else if (res.status === 429 || res.status >= 500) {
-      // rate limit o error temporal → backoff y reintento
-      const wait = backoffMs * Math.pow(2, attempt);
-      await sleep(wait);
-      continue;
-    } else {
-      // error duro
+async function fetchJson(url, { retries = 2, backoffMs = 600 } = {}) {
+  for (let a = 0; a <= retries; a++) {
+    try {
+      const res = await fetch(url, { headers: { accept: "application/json" } });
+      if (res.ok) return await res.json();
+      if (res.status === 429 || res.status >= 500) {
+        const wait = backoffMs * Math.pow(2, a);
+        console.log(`[kick] ${res.status} → retry in ${wait}ms`);
+        await sleep(wait);
+        continue;
+      }
       throw new Error(`HTTP ${res.status}`);
+    } catch (e) {
+      if (a === retries) throw e;
+      const wait = backoffMs * Math.pow(2, a);
+      console.log(`[net] ${e?.message || e} → retry in ${wait}ms`);
+      await sleep(wait);
     }
   }
-  throw new Error("Exhausted retries");
+  throw new Error("Unexpected");
 }
 
-// ---------- Kick ----------
-async function fetchKickStatus(slug) {
-  const url = `https://kick.com/api/v2/channels/${encodeURIComponent(String(slug).toLowerCase())}`;
+async function fetchKick(slug) {
+  const url = `https://kick.com/api/v2/channels/${encodeURIComponent(slug)}`;
   try {
-    const data = await fetchJson(url, {}, { retries: 2, backoffMs: 700 });
+    const data = await fetchJson(url);
     const live = Boolean(data?.livestream);
     const viewers = live ? (data?.livestream?.viewers ?? 0) : 0;
     const thumb = live ? (data?.livestream?.thumbnail?.url ?? null) : null;
-    return { live, viewers, thumb, error: null };
+    return { slug, platform: "kick", live, viewers, thumb, updatedAt: new Date().toISOString() };
   } catch (e) {
-    return { live: false, viewers: 0, thumb: null, error: String(e.message || e) };
+    console.log(`[kick] ${slug}: ${e?.message || e}`);
+    return { slug, platform: "kick", live: false, viewers: 0, thumb: null, updatedAt: new Date().toISOString(), error: String(e?.message || e) };
   }
 }
 
-// ---------- Main ----------
 async function main() {
-  // 1) leer data.json
-  const raw = await fs.readFile(DATA_PATH, "utf8").catch(() => "[]");
-  let data = [];
-  try { data = JSON.parse(raw); } catch { data = []; }
+  let data;
+  try {
+    data = JSON.parse(await fs.readFile(INPUT, "utf8"));
+  } catch (e) {
+    console.log(`[data.json] no encontrado o inválido (${e?.message || e}). Genero live.json vacío.`);
+    await fs.writeFile(OUTPUT, "[]\n", "utf8");
+    return;
+  }
   if (!Array.isArray(data)) data = [];
 
-  // 2) slugs únicos (solo kick)
   const slugs = [...new Set(
-    data
-      .map(p => (p?.kick ? String(p.kick).trim().toLowerCase() : ""))
-      .filter(Boolean)
+    data.map(x => x?.kick ? String(x.kick).trim().toLowerCase() : "").filter(Boolean)
   )];
 
-  // 3) consultar con concurrencia limitada
+  console.log(`[info] ${slugs.length} slugs Kick encontrados.`);
   const CONCURRENCY = 5;
-  const results = await mapLimit(slugs, CONCURRENCY, async (slug) => {
-    const s = await fetchKickStatus(slug);
-    return {
-      slug,
-      platform: "kick",
-      live: s.live,
-      viewers: s.viewers,
-      thumb: s.thumb,
-      updatedAt: new Date().toISOString(),
-      ...(s.error ? { error: s.error } : {})
-    };
-  });
 
-  // 4) ordenar: en vivo primero, luego por viewers desc
-  results.sort((a, b) => (b.live - a.live) || (b.viewers - a.viewers));
+  // mapLimit simple
+  const out = new Array(slugs.length);
+  let i = 0; const running = new Set();
+  async function run() {
+    if (i >= slugs.length) return;
+    const idx = i++; const s = slugs[idx];
+    const p = fetchKick(s).then(v => out[idx] = v).finally(() => running.delete(p));
+    running.add(p);
+    if (running.size >= CONCURRENCY) await Promise.race(running);
+    return run();
+  }
+  await Promise.all(Array.from({ length: Math.min(CONCURRENCY, slugs.length) }, run));
 
-  // 5) escribir live.json
-  await fs.writeFile(OUTPUT, JSON.stringify(results, null, 2) + "\n", "utf8");
+  out.sort((a, b) => (Number(b.live) - Number(a.live)) || (b.viewers - a.viewers));
+  await fs.writeFile(OUTPUT, JSON.stringify(out, null, 2) + "\n", "utf8");
 
-  // 6) logs útiles para depurar en Actions
-  const liveCount = results.filter(r => r.live).length;
-  console.log(`live.json generado: ${results.length} canales, ${liveCount} en vivo.`);
+  const liveCount = out.filter(x => x.live).length;
+  console.log(`[done] live.json generado: ${out.length} canales, ${liveCount} en vivo.`);
 }
 
-main().catch(err => {
-  console.error("Error generando live.json:", err);
-  process.exit(1);
+main().catch(async (err) => {
+  console.error(`[fatal] ${err?.stack || err}`);
+  try { await fs.writeFile(OUTPUT, "[]\n", "utf8"); } catch {}
+  // NO hacemos process.exit(1) para que el workflow no falle.
 });
