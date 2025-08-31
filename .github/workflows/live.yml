@@ -7,6 +7,7 @@ on:
   push:
     paths-ignore:
       - "live.json"
+      - "videos.json"
 
 jobs:
   build:
@@ -29,13 +30,20 @@ jobs:
         run: |
           set -e
           node build-live.mjs
-          echo "Preview:"
+          echo "Preview live.json:"
           head -n 50 live.json || true
 
-      - name: Commit & push live.json
+      - name: Generate videos.json
+        run: |
+          set -e
+          node build-videos.mjs
+          echo "Preview videos.json:"
+          head -n 50 videos.json || true
+
+      - name: Commit & push data files
         run: |
           git config user.name  "pages-bot"
           git config user.email "pages-bot@users.noreply.github.com"
-          git add live.json
-          git commit -m "chore: update live.json [skip ci]" || echo "sin cambios"
+          git add live.json videos.json
+          git commit -m "chore: update live & videos [skip ci]" || echo "sin cambios"
           git push || echo "push sin cambios"
