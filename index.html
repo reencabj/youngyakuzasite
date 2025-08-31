@@ -84,7 +84,6 @@
       }
     }
   </script>
-  <script src="app.js" type="module"></script>
 
 
 </head>
@@ -299,9 +298,6 @@
       return map;
     }
 
-    
-      
-
     function liveFromCache(slug) {
       if (!slug) return null;
       const e = KICK_CACHE.get(String(slug).toLowerCase());
@@ -309,35 +305,33 @@
       return e.v?.live ?? e.live ?? null;
     }
 
-    // ===== MULTIKICK =====
-    const MK = (() => {
+    // ===== MULTIKICK (sin "return" y leyendo live.json) =====
+    const MK = {};
+    (() => {
       let selected = new Set();
       let timer = null;
-    
-      async function ensureStatuses() {
-        const slugs = [...new Set(DATA.map(p => p.kick).filter(Boolean))];
-        await Promise.all(slugs.map(fetchKickStatus));
+
+      async function liveListAsync() {
+        const LIVE_MAP = await getLiveMap();
+        return DATA.filter(p => p.kick && LIVE_MAP.get(p.kick)?.live === true);
       }
-      function liveList() {
-        return DATA.filter(p => p.kick && liveFromCache(p.kick) === true);
-      }
+
       function renderChips(live) {
         const box = document.getElementById('mk-live-list');
         const countEl = document.getElementById('mk-count');
         if (!box || !countEl) return;
-    
+
         if (!live.length) {
           box.innerHTML = '<p class="text-neutral-400">No hay streams en vivo.</p>';
           countEl.textContent = '0 seleccionados';
           document.getElementById('mk-grid').innerHTML = '';
           return;
         }
-    
+
         box.innerHTML = live.map(p => {
           const sel = selected.has(p.kick);
-          const cls = sel
-            ? 'border-yakuza bg-yakuza/20'
-            : 'border-neutral-800 bg-neutral-900/70 hover:bg-neutral-800';
+          const cls = sel ? 'border-yakuza bg-yakuza/20'
+                          : 'border-neutral-800 bg-neutral-900/70 hover:bg-neutral-800';
           return `
             <button class="mk-item inline-flex items-center gap-2 px-3 py-2 rounded-xl border ${cls}"
                     data-slug="${p.kick}">
@@ -347,9 +341,10 @@
             </button>
           `;
         }).join('');
-    
+
         countEl.textContent = `${selected.size} seleccionados`;
       }
+
       function setGridCols(n) {
         const grid = document.getElementById('mk-grid');
         if (!grid) return;
@@ -361,15 +356,12 @@
         else if (n >= 7) cols = 'md:grid-cols-4';
         grid.className = `grid gap-4 pb-10 ${cols}`;
       }
+
       function renderGrid() {
         const grid = document.getElementById('mk-grid');
         const countEl = document.getElementById('mk-count');
         if (!grid || !countEl) return;
-    
-        // mantener solo los que siguen en vivo
-        const liveSlugs = liveList().map(p => p.kick);
-        selected = new Set([...selected].filter(s => liveSlugs.includes(s)));
-    
+
         const sel = [...selected];
         setGridCols(sel.length);
         grid.innerHTML = sel.map(slug => `
@@ -379,22 +371,24 @@
                     allow="autoplay; fullscreen" allowfullscreen frameborder="0"></iframe>
           </div>
         `).join('');
-    
-        // activar src real después de insertar en DOM (lazy real)
+
         grid.querySelectorAll('iframe[data-src]').forEach(fr => {
           fr.src = fr.dataset.src;
           fr.removeAttribute('data-src');
         });
-    
+
         countEl.textContent = `${selected.size} seleccionados`;
       }
+
       async function refresh(first = false) {
-        await ensureStatuses();
-        const live = liveList();
+        const live = await liveListAsync();
+        const liveSlugs = live.map(p => p.kick);
+        selected = new Set([...selected].filter(s => liveSlugs.includes(s)));
         if (first && selected.size === 0) live.forEach(p => selected.add(p.kick));
         renderChips(live);
         renderGrid();
       }
+
       async function open() {
         if (!Array.isArray(DATA) || DATA.length === 0) {
           const onReady = () => { refresh(true); };
@@ -405,25 +399,23 @@
         clearInterval(timer);
         timer = setInterval(() => refresh(false), 60_000);
       }
-      function stop() {
-        clearInterval(timer);
-        timer = null;
-      }
-    
+
+      function stop() { clearInterval(timer); timer = null; }
+
       document.getElementById('view-multikick')?.addEventListener('click', (e) => {
         const chip = e.target.closest('.mk-item');
         if (chip) {
           const slug = chip.dataset.slug;
           if (selected.has(slug)) selected.delete(slug); else selected.add(slug);
-          renderChips(liveList()); renderGrid();
+          refresh(false);
         }
-        if (e.target.closest('#mk-clear')) { selected.clear(); renderChips(liveList()); renderGrid(); }
-        if (e.target.closest('#mk-select-all')) { selected = new Set(liveList().map(p => p.kick)); renderChips(liveList()); renderGrid(); }
+        if (e.target.closest('#mk-clear'))      { selected.clear(); refresh(false); }
+        if (e.target.closest('#mk-select-all')) { liveListAsync().then(l => { selected = new Set(l.map(p => p.kick)); refresh(false); }); }
       });
-    
-      // <- ESTE return DEBE QUEDAR DENTRO DE LA IIFE
-      return { open, stop, refresh };
-    })(); // <- y estos paréntesis finales cierran/ejecutan la IIFE
+
+      // Exponer sin "return"
+      MK.open = open; MK.stop = stop; MK.refresh = refresh;
+    })();
 
     // ==== Fullscreen para MultiKick ====
     (function () {
@@ -609,76 +601,6 @@
         scheduleRender();
       }
 
-
-      const grid = document.getElementById('grid');
-      const empty = document.getElementById('empty');
-
-      if (!list.length) {
-        grid.innerHTML = '';
-        empty.classList.remove('hidden');
-        scheduleRender();
-        return;
-      }
-      empty.classList.add('hidden');
-
-      grid.innerHTML = list.map(p => `
-        <article class="card rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden fade-in">
-          <div class="relative">
-            <img src="${p.foto || 'img/logo.png'}" alt="${p.nombre}"
-                 class="w-full aspect-[4/3] object-cover" loading="lazy" decoding="async" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-            <div class="absolute bottom-2 left-2 right-2 flex items-center justify-between">
-              <span class="px-2 py-1 rounded-lg text-xs bg-yakuza/20 border border-yakuza">${rankLabel(p.rango)}</span>
-              <span class="px-2 py-1 rounded-lg text-xs bg-neutral-800/70 border border-neutral-700">${p.alias || ''}</span>
-            </div>
-          </div>
-          <div class="p-4">
-            <h3 class="text-lg font-semibold">${p.nombre}</h3>
-            <p class="text-sm text-neutral-400"><span class="font-medium">${p.ooc || '-'}</span></p>
-
-            ${p.kick ? `
-              <div class="mt-3">
-                <a id="kick-${p.kick}"
-                   data-slug="${p.kick}"
-                   href="https://kick.com/${p.kick}"
-                   target="_blank" rel="noreferrer"
-                   class="kick-btn inline-flex items-center gap-2 px-2 py-1 rounded-lg text-xs border border-neutral-700 bg-neutral-800/70 hover:bg-neutral-700">
-                  <span class="kick-dot inline-block w-2 h-2 rounded-full bg-neutral-500"></span>
-                  <span class="kick-label">Comprobando…</span>
-                </a>
-              </div>
-            ` : ''}
-
-            ${p.links?.length ? `
-              <div class="mt-3 flex flex-wrap gap-2">
-                ${p.links.map(l => {
-                  const t = linkType(l);
-                  const title = l.label || t.charAt(0).toUpperCase() + t.slice(1);
-                  return `
-                    <a class="yy-icon-btn" href="${l.href}" target="_blank" rel="noreferrer" aria-label="${title}" title="${title}">
-                      ${iconSvg(t)}
-                    </a>
-                  `;
-                }).join('')}
-              </div>
-            ` : ''}
-          </div>
-        </article>
-      `).join('');
-
-      // hidratar estado Kick en tiempo ocioso
-      try {
-        if ('requestIdleCallback' in window) {
-          requestIdleCallback(() => hydrateKickBadges(list));
-        } else {
-          setTimeout(() => hydrateKickBadges(list), 0);
-        }
-      } catch {}
-
-      updateLiveUI(list);
-      scheduleRender();
-    }
-
     function scheduleRender(){
       clearTimeout(liveRefreshTimer);
       const personajesVisible = !document.getElementById('view-personajes')?.classList.contains('hidden');
@@ -803,12 +725,14 @@
       });
     }
     async function hydrateKickBadges(list) {
-      const slugs = [...new Set(list.map(p => p.kick).filter(Boolean))];
-      await Promise.all(slugs.map(async (slug) => {
-        const state = await fetchKickStatus(slug);
-        paintKickButton(slug, state);
-      }));
+      const LIVE_MAP = await getLiveMap();
+      list.forEach(p => {
+        if (!p.kick) return;
+        const live = LIVE_MAP.get(p.kick)?.live ?? false;
+        paintKickButton(p.kick, { live });
+      });
     }
+
 
     // ===== Galería =====
     window.galleryLoaded = false;
@@ -1004,6 +928,7 @@
   </script>
 </body>
 </html>
+
 
 
 
