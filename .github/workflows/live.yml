@@ -2,8 +2,8 @@ name: build-live-json
 
 on:
   schedule:
-    - cron: "*/5 * * * *"   # cada 5 minutos
-  workflow_dispatch:
+    - cron: "*/5 * * * *"        # cada 5 min
+  workflow_dispatch:              # ejecutarlo a mano
   push:
     paths-ignore:
       - "live.json"
@@ -14,14 +14,23 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      - name: Generar live.json
-        run: node scripts/build-live.mjs
+      - name: Print Node version
+        run: node -v
+
+      - name: Generate live.json
+        run: |
+          set -e
+          node build-live.mjs
+          echo "Preview:"
+          head -n 50 live.json || true
 
       - name: Commit & push live.json
         run: |
@@ -29,4 +38,4 @@ jobs:
           git config user.email "pages-bot@users.noreply.github.com"
           git add live.json
           git commit -m "chore: update live.json [skip ci]" || echo "sin cambios"
-          git push
+          git push || echo "push sin cambios"
