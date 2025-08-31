@@ -853,9 +853,6 @@
 
 
   // ===== Videos (estático desde videos.json) =====
-    window.videosLoaded = false;
-    const VIDEOS_REFRESH_MS = 5 * 60_000;
-    
     async function loadVideos() {
       try {
         const r = await fetch('videos.json', { cache: 'no-cache' });
@@ -892,6 +889,7 @@
     }
 
 
+
     // ===== Lore =====
     window.loreLoaded = false;
     async function loadLore() {
@@ -913,6 +911,7 @@
   </script>
 </body>
 </html>
+
 
 
 
