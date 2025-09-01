@@ -31,7 +31,9 @@ if (!r.ok) {
 const { files = [] } = await r.json();
 
 // URL directa para <img>: uc?export=view devuelve la imagen inline
-const toSrc = (id) => `https://drive.google.com/uc?export=view&id=${id}`;
+// Reemplazá la función toSrc:
+const toSrc = (id) => `https://lh3.googleusercontent.com/d/${id}=w1600`;
+
 
 const gallery = files.map(f => ({
   src: toSrc(f.id),
