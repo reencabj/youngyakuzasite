@@ -783,7 +783,12 @@
                    loading="lazy" decoding="async"
                    data-idx="${idx}" data-id="${id || ""}">
     
-              ${alt ? `<figcaption class="px-3 py-2 text-sm text-neutral-300">${alt}</figcaption>` : ''}
+              ${alt ? `
+                <figcaption class="absolute bottom-2 left-2 px-2 py-1 text-xs font-medium text-white bg-black/60 rounded-lg">
+                  ${alt}
+                </figcaption>
+              ` : ''}
+
             </figure>
           `;
         }).join('');
@@ -958,6 +963,7 @@
   </script>
 </body>
 </html>
+
 
 
 
