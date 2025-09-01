@@ -271,6 +271,21 @@
     const norm = s => (s || "").toString().normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase();
     const debounce = (fn, ms=200) => { let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; };
 
+    function driveIdFrom(url){
+      try{
+        const u = new URL(url);
+        if (u.hostname.includes('googleusercontent.com')) {
+          const part = u.pathname.split('/d/')[1] || "";
+          return (part.split('=')[0] || "").trim();
+        }
+        return (u.searchParams.get('id') || "").trim();
+      }catch{ return ""; }
+    }
+    const driveThumb = id => `https://lh3.googleusercontent.com/d/${id}=w800`;   // grilla
+    const driveFull  = id => `https://lh3.googleusercontent.com/d/${id}=w2400`;  // lightbox
+    const driveDL    = id => `https://drive.google.com/uc?export=download&id=${id}`;
+
+
     let DATA = [];
     let liveRefreshTimer = null;
     let rotateTimer = null;
@@ -752,16 +767,27 @@
         if (!r.ok) throw new Error('gallery.json no encontrado');
         YY_GALLERY = await r.json();
     
-        const html = YY_GALLERY.map((i, idx) => `
-          <figure class="relative rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-800 cursor-zoom-in">
-            <a href="${i.src}" download class="yy-dl-btn text-neutral-200 hover:text-white" title="Descargar">⬇︎</a>
-            <img src="${i.src}" alt="${i.alt || ''}"
-                 class="yy-zoomable w-full aspect-[4/3] object-cover"
-                 loading="lazy" decoding="async"
-                 data-idx="${idx}">
-            ${i.alt ? `<figcaption class="px-3 py-2 text-sm text-neutral-300">${i.alt}</figcaption>` : ''}
-          </figure>
-        `).join('');
+        const html = YY_GALLERY.map((i, idx) => {
+          const id = driveIdFrom(i.src) || i.id; // por si en el futuro guardás id
+          const thumb = id ? driveThumb(id) : (i.src || "");
+          const alt = i.alt || "";
+          return `
+            <figure class="relative rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-800 cursor-zoom-in">
+              <!-- Botón de descarga (usa export=download) -->
+              <a href="${id ? driveDL(id) : i.src}" download
+                 class="yy-dl-btn text-neutral-200 hover:text-white" title="Descargar">⬇︎</a>
+        
+              <!-- Miniatura clickeable (abre lightbox) -->
+              <img src="${thumb}" alt="${alt}"
+                   class="yy-zoomable w-full aspect-[4/3] object-cover"
+                   loading="lazy" decoding="async"
+                   data-idx="${idx}" data-id="${id || ""}">
+        
+              ${alt ? `<figcaption class="px-3 py-2 text-sm text-neutral-300">${alt}</figcaption>` : ''}
+            </figure>
+          `;
+        }).join('');
+
     
         const grid = document.getElementById('galeria-grid');
         grid.innerHTML = html || '<p class="text-neutral-400">Sin imágenes.</p>';
@@ -788,16 +814,25 @@
     function yyRender() {
       const item = YY_GALLERY[YY_INDEX];
       if (!item) return;
+    
+      // Intentamos obtener el id desde el DOM (data-id) o desde la URL original
+      const imgDom = document.querySelector(`#galeria-grid img[data-idx="${YY_INDEX}"]`);
+      const id = imgDom?.dataset?.id || driveIdFrom(item.src);
+    
       const img = document.getElementById('yy-img');
       const cap = document.getElementById('yy-caption');
       const dl  = document.getElementById('yy-dl');
-
-      img.src = item.src;
+    
+      const bigSrc = id ? driveFull(id) : (item.src || "");
+      const dlHref = id ? driveDL(id)   : (item.src || "");
+    
+      img.src = bigSrc;                 // versión grande para zoom
       img.alt = item.alt || '';
       cap.textContent = item.alt || '';
-      dl.href = item.src;                                   // descarga directa
+      dl.href = dlHref;                 // fuerza descarga
       dl.download = (item.alt || `imagen-${YY_INDEX+1}`).replace(/[^\w.-]+/g,'_');
     }
+
 
     function yyOpen(i=0) {
       YY_INDEX = Math.max(0, Math.min(i, YY_GALLERY.length-1));
@@ -916,6 +951,7 @@
   </script>
 </body>
 </html>
+
 
 
 
