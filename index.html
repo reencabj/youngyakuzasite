@@ -761,14 +761,14 @@
     let YY_GALLERY = [];    // [{src, alt}]
     let YY_INDEX = 0;
 
-    async function loadGallery() {
+   async function loadGallery() {
       try {
         const r = await fetch('gallery.json', { cache: 'no-cache' });
         if (!r.ok) throw new Error('gallery.json no encontrado');
         YY_GALLERY = await r.json();
     
         const html = YY_GALLERY.map((i, idx) => {
-          const id = driveIdFrom(i.src) || i.id; // por si en el futuro guardás id
+          const id = driveIdFrom(i.src) || i.id;
           const thumb = id ? driveThumb(id) : (i.src || "");
           const alt = i.alt || "";
           return `
@@ -776,24 +776,23 @@
               <!-- Botón de descarga (usa export=download) -->
               <a href="${id ? driveDL(id) : i.src}" download
                  class="yy-dl-btn text-neutral-200 hover:text-white" title="Descargar">⬇︎</a>
-        
+    
               <!-- Miniatura clickeable (abre lightbox) -->
               <img src="${thumb}" alt="${alt}"
                    class="yy-zoomable w-full aspect-[4/3] object-cover"
                    loading="lazy" decoding="async"
                    data-idx="${idx}" data-id="${id || ""}">
-        
+    
               ${alt ? `<figcaption class="px-3 py-2 text-sm text-neutral-300">${alt}</figcaption>` : ''}
             </figure>
           `;
         }).join('');
-
     
         const grid = document.getElementById('galeria-grid');
         grid.innerHTML = html || '<p class="text-neutral-400">Sin imágenes.</p>';
         window.galleryLoaded = true;
     
-        // 🔽 Aquí va el fix de fallback
+        // 🔽 Fallback si alguna miniatura no carga
         document.querySelectorAll('#galeria-grid img').forEach(img => {
           img.addEventListener('error', () => {
             try {
@@ -803,6 +802,22 @@
             } catch {}
           });
         });
+    
+        // 🔽 Listener para abrir el lightbox al click
+        grid.addEventListener('click', (e) => {
+          const img = e.target.closest('img[data-idx]');
+          if (!img) return;
+          e.preventDefault();
+          const i = Number(img.dataset.idx || 0);
+          yyOpen(i);   // 👉 llama a la función que muestra el overlay
+        });
+    
+      } catch (e) {
+        document.getElementById('galeria-grid').innerHTML =
+          '<div class="text-red-400">No se pudo cargar <code>gallery.json</code>.</div>';
+      }
+    }
+
     
         // ... resto del código (lightbox, eventos, etc.)
       } catch (e) {
@@ -815,7 +830,7 @@
       const item = YY_GALLERY[YY_INDEX];
       if (!item) return;
     
-      // Intentamos obtener el id desde el DOM (data-id) o desde la URL original
+      // intentamos ID desde el DOM (data-id) o URL original
       const imgDom = document.querySelector(`#galeria-grid img[data-idx="${YY_INDEX}"]`);
       const id = imgDom?.dataset?.id || driveIdFrom(item.src);
     
@@ -826,20 +841,20 @@
       const bigSrc = id ? driveFull(id) : (item.src || "");
       const dlHref = id ? driveDL(id)   : (item.src || "");
     
-      img.src = bigSrc;                 // versión grande para zoom
+      img.src = bigSrc;                 // versión grande
       img.alt = item.alt || '';
       cap.textContent = item.alt || '';
-      dl.href = dlHref;                 // fuerza descarga
+      dl.href = dlHref;                 // descarga forzada
       dl.download = (item.alt || `imagen-${YY_INDEX+1}`).replace(/[^\w.-]+/g,'_');
     }
-
-
+    
     function yyOpen(i=0) {
       YY_INDEX = Math.max(0, Math.min(i, YY_GALLERY.length-1));
       yyRender();
-      document.getElementById('yy-lightbox').classList.remove('hidden');
+      document.getElementById('yy-lightbox').classList.remove('hidden'); // mostrar overlay
       document.addEventListener('keydown', yyKeys);
     }
+
     function yyClose() {
       document.getElementById('yy-lightbox').classList.add('hidden');
       document.removeEventListener('keydown', yyKeys);
@@ -951,6 +966,7 @@
   </script>
 </body>
 </html>
+
 
 
 
