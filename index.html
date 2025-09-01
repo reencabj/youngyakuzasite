@@ -751,37 +751,39 @@
         const r = await fetch('gallery.json', { cache: 'no-cache' });
         if (!r.ok) throw new Error('gallery.json no encontrado');
         YY_GALLERY = await r.json();
-
+    
         const html = YY_GALLERY.map((i, idx) => `
           <figure class="relative rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-800 cursor-zoom-in">
-            <!-- botón descargar overlay -->
             <a href="${i.src}" download class="yy-dl-btn text-neutral-200 hover:text-white" title="Descargar">⬇︎</a>
-            <!-- miniatura -->
             <img src="${i.src}" alt="${i.alt || ''}"
-                class="yy-zoomable w-full aspect-[4/3] object-cover"
-                loading="lazy" decoding="async"
-                data-idx="${idx}">
+                 class="yy-zoomable w-full aspect-[4/3] object-cover"
+                 loading="lazy" decoding="async"
+                 data-idx="${idx}">
             ${i.alt ? `<figcaption class="px-3 py-2 text-sm text-neutral-300">${i.alt}</figcaption>` : ''}
           </figure>
         `).join('');
-
+    
         const grid = document.getElementById('galeria-grid');
         grid.innerHTML = html || '<p class="text-neutral-400">Sin imágenes.</p>';
         window.galleryLoaded = true;
-
-        // abrir lightbox al click SOLO dentro de la galería
-        grid.addEventListener('click', (e) => {
-          const img = e.target.closest('img[data-idx]');
-          if (!img) return;
-          e.preventDefault();
-          const i = Number(img.dataset.idx || 0);
-          yyOpen(i);
+    
+        // 🔽 Aquí va el fix de fallback
+        document.querySelectorAll('#galeria-grid img').forEach(img => {
+          img.addEventListener('error', () => {
+            try {
+              const id = new URL(img.src).pathname.split('/d/')[1]?.split('=')[0] 
+                         || new URL(img.src).searchParams.get('id');
+              if (id) img.src = `https://lh3.googleusercontent.com/d/${id}=w1600`;
+            } catch {}
+          });
         });
-
+    
+        // ... resto del código (lightbox, eventos, etc.)
       } catch (e) {
         document.getElementById('galeria-grid').innerHTML =
           '<div class="text-red-400">No se pudo cargar <code>gallery.json</code>.</div>';
       }
+    }
     }
     function yyRender() {
       const item = YY_GALLERY[YY_INDEX];
@@ -914,6 +916,7 @@
   </script>
 </body>
 </html>
+
 
 
 
