@@ -473,10 +473,11 @@
         if (el) el.classList.toggle('hidden', id !== v);
       });
       styleTabs(v);
-      if (v === 'galeria' && !window.galleryLoaded) loadGallery();
+      // 🔽 cambia esta parte:
+      if (v === 'galeria') { loadGallery(); }     // siempre reintenta
       if (v === 'videos'  && !window.videosLoaded)  loadVideos();
       if (v === 'lore'    && !window.loreLoaded)    loadLore();
-
+    
       if (v === 'multikick') { window.MK?.open?.(); }
       else { window.MK?.stop?.(); }
     }
@@ -747,7 +748,7 @@
 
     async function loadGallery() {
       try {
-        const r = await fetch('gallery.json');
+        const r = await fetch('gallery.json', { cache: 'no-cache' });
         if (!r.ok) throw new Error('gallery.json no encontrado');
         YY_GALLERY = await r.json();
 
@@ -913,6 +914,7 @@
   </script>
 </body>
 </html>
+
 
 
 
