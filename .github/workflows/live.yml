@@ -2,7 +2,7 @@ name: build-live-json
 
 on:
   schedule:
-    - cron: "*/5 * * * *"        # cada 5 min
+    - cron: "*/4 * * * *"        # cada 5 min
   workflow_dispatch:              # ejecutarlo a mano
   push:
     paths-ignore:
