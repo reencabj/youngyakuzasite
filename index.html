@@ -260,9 +260,11 @@
   <!-- Lightbox / Galería -->
   <div id="yy-lightbox" class="hidden fixed inset-0 z-50 grid place-items-center">
     <div class="yy-wrap relative w-full px-4">
-      <button id="yy-close" class="absolute -top-10 right-4 px-3 py-2 rounded-lg bg-neutral-800/80 border border-neutral-700 text-sm hover:bg-neutral-700">
-        Cerrar ✕
-      </button>
+        <button id="yy-close" type="button"
+          class="absolute -top-10 right-4 px-3 py-2 rounded-lg bg-neutral-800/80 border border-neutral-700 text-sm hover:bg-neutral-700">
+          Cerrar ✕
+        </button>
+
       <div class="rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-800 p-2">
         <img id="yy-img" src="" alt="" class="w-full h-auto object-contain rounded-xl" />
         <div class="flex items-center justify-between gap-2 px-2 py-2 text-sm text-neutral-300">
@@ -881,6 +883,25 @@
       if (e.key === 'Escape') yyClose();
       if (e.key === 'ArrowLeft') yyPrev();
       if (e.key === 'ArrowRight') yyNext();
+
+    // --- Controles del lightbox (robustos) ---
+    document.addEventListener('click', (e) => {
+      // Botón "Cerrar ✕"
+      if (e.target.closest('#yy-close')) {
+        e.preventDefault();
+        yyClose();
+      }
+    });
+    
+    // Prev/Next
+    document.getElementById('yy-prev')?.addEventListener('click', () => yyPrev());
+    document.getElementById('yy-next')?.addEventListener('click', () => yyNext());
+    
+    // Click en el fondo oscuro también cierra
+    const yyOverlay = document.getElementById('yy-lightbox');
+    yyOverlay?.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) yyClose();
+    });
     }
 
     // ===== Videos (estático desde videos.json) =====
@@ -942,4 +963,5 @@
   </script>
 </body>
 </html>
+
 
