@@ -7,6 +7,9 @@
   <meta name="description" content="Listado de personajes, rangos y contenido de Young Yakuza." />
   <link rel="icon" href="img/logo.png" />
 
+  <!-- CSS generado por Tailwind en modo build -->
+  
+
   <!-- Perf: conexiones anticipadas a orígenes externos usados por iframes/medios -->
   <link rel="preconnect" href="https://player.kick.com">
   <link rel="preconnect" href="https://kick.com">
@@ -14,36 +17,14 @@
   <link rel="preconnect" href="https://i.ytimg.com">
   <link rel="preconnect" href="https://i.postimg.cc">
   <link rel="dns-prefetch" href="https://player.kick.com">
-  <link rel="preconnect" href="https://lh3.googleusercontent.com">
-
 
   <!-- Perf: precarga del fondo grande -->
   <link rel="preload" as="image" href="https://i.postimg.cc/KjMW2DQj/wpp.jpg">
 
   <style>
-    /* ====== CLS hardening ====== */
-    html{ overflow-y: scroll; }
-    :root{ --sbw: 0px; }
-
-    /* Header/Nav/Footer: reservas de altura */
-    header{ min-height:92px; }
-    nav{ min-height:56px; }
-    @media (max-width:480px){ nav{ min-height:96px; } }
-    footer{ min-height:88px; }
-
-    /* Contenido principal visible al iniciar (evita saltos mientras pinta) */
-    #view-personajes{ min-height: 70vh; }
-
-    /* Pill En vivo: no colapsa el ancho cuando está apagado */
-    #live-pill{ min-width:100px; transition:opacity .18s ease; }
-    #live-pill.is-off{ opacity:0; visibility:hidden; }
-
-    /* Fila de filtros: alturas fijas para evitar cambios al hidratar */
-    #view-personajes section label{ display:block; min-height:20px; }
-    #view-personajes select,
-    #view-personajes input[type=search],
-    #view-personajes button{ min-height:40px; }
-    #view-personajes .flex-wrap > *{ min-height:40px; }
+    .card:hover { transform: translateY(-2px); }
+    .fade-in { animation: fade .35s ease-in-out; }
+    @keyframes fade { from {opacity:0} to {opacity:1} }
 
     /* MultiKick en fullscreen */
     #view-multikick:fullscreen,
@@ -59,10 +40,9 @@
     #view-multikick:fullscreen #mk-grid,
     #view-multikick:-webkit-full-screen #mk-grid { gap: 12px; }
 
-    /* Lazy paint de grillas fuera del viewport */
+    /* No pintar/construir layout de grandes contenedores fuera del viewport */
     #grid, #galeria-grid, #videos-grid { content-visibility:auto; contain-intrinsic-size: 1px 600px; }
-
-    /* Galería */
+    /* Solo afecta a la Galería */
     #view-galeria .yy-zoomable { transition: transform .2s ease, box-shadow .2s ease; }
     #view-galeria .yy-zoomable:hover { transform: scale(1.03); }
 
@@ -74,39 +54,41 @@
       padding:.35rem .5rem; font-size:.75rem;
     }
 
-    /* Lightbox */
+    /* Lightbox (overlay global, pero lo abre solo la Galería) */
     #yy-lightbox { background: rgba(0,0,0,.85); }
     #yy-lightbox .yy-wrap { max-width:min(96vw,1100px); }
     #yy-lightbox img { max-height:80vh; }
-    #yy-close { z-index: 10; pointer-events: auto; }
-
-    /* Icon buttons */
-    .yy-icon-btn{ display:inline-flex;align-items:center;justify-content:center; width:34px;height:34px;border-radius:.6rem; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.04); transition:transform .12s ease, background .12s ease, border-color .12s ease; }
+    /* Botón de icono en las tarjetas */
+    .yy-icon-btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:34px;height:34px;border-radius:.6rem;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.04);
+      transition:transform .12s ease, background .12s ease, border-color .12s ease;
+    }
     .yy-icon-btn:hover{ transform:translateY(-1px); background:rgba(158,140,237,.12); border-color:#9e8ced; }
     .yy-icon{ width:18px;height:18px; display:block; }
-
-    /* Iframes: caja estable */
-    #mk-grid iframe{ display:block; width:100%; aspect-ratio:16/9; }
-
-    /* Micro interacción */
-    .card:hover { transform: translateY(-2px); }
-    .fade-in { animation: fade .35s ease-in-out; }
-    @keyframes fade { from {opacity:0} to {opacity:1} }
-
-    /* Body sin salto al abrir modal */
-    body.modal-open{ overflow:hidden; padding-right: var(--sbw, 0px); }
   </style>
 
   <!-- Tailwind desde CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config = { theme: { extend: { colors: { yakuza: '#9e8ced', 'yakuza-light': '#bfaeff' } } } }
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            yakuza: '#9e8ced',
+            'yakuza-light': '#bfaeff'
+          }
+        }
+      }
+    }
   </script>
-  <!-- Cloudflare Web Analytics -->
-  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "adb803349cc244de91d7e4bcc6261efc"}'></script>
-  <!-- End Cloudflare Web Analytics -->
-</head>
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "adb803349cc244de91d7e4bcc6261efc"}'></script> 
+<!-- End Cloudflare Web Analytics -->
 
+</head>
 <body class="min-h-screen bg-neutral-950 text-neutral-100">
   <!-- Fondo -->
   <div class="fixed inset-0 -z-10">
@@ -117,7 +99,7 @@
   <!-- Header -->
   <header class="max-w-6xl mx-auto px-4 py-6">
     <div class="flex flex-col sm:flex-row items-center gap-4">
-      <img src="img/logo.png" alt="Logo" class="w-20 h-20 object-contain drop-shadow" width="80" height="80" loading="lazy" decoding="async" />
+      <img src="img/logo.png" alt="Logo" class="w-20 h-20 object-contain drop-shadow" loading="lazy" decoding="async" />
       <div class="flex items-center gap-3 flex-wrap">
         <h1 class="text-3xl font-extrabold">Young Yakuza - Dovux Life RP</h1>
         <button id="live-pill"
@@ -244,32 +226,30 @@
       </div>
     </div>
     <div class="w-full aspect-video bg-black">
-      <iframe id="live-iframe" src="" allow="autoplay; fullscreen" allowfullscreen frameborder="0" class="w-full h-full" width="1280" height="720" loading="lazy"></iframe>
+      <iframe id="live-iframe" src="" allow="autoplay; fullscreen" allowfullscreen frameborder="0" class="w-full h-full" loading="lazy"></iframe>
     </div>
     <a id="live-link" href="#" target="_blank" rel="noreferrer"
        class="block px-3 py-2 text-xs underline text-neutral-300 hover:text-white">Abrir canal en Kick</a>
   </div>
 
-  <footer class="max-w-6xl mx-auto px-4 pb-10 text-center">
-    <a href="https://x.com/i/communities/1829991651260899419"
-       target="_blank" rel="noreferrer"
-       class="inline-block px-6 py-3 rounded-xl text-lg font-semibold text-white
-              bg-yakuza hover:bg-yakuza-light border border-yakuza
-              shadow-md hover:shadow-lg transition">
-      🚀 Unite a la Comunidad
-    </a>
-  </footer>
+<footer class="max-w-6xl mx-auto px-4 pb-10 text-center">
+  <a href="https://x.com/i/communities/1829991651260899419"
+     target="_blank" rel="noreferrer"
+     class="inline-block px-6 py-3 rounded-xl text-lg font-semibold text-white
+            bg-yakuza hover:bg-yakuza-light border border-yakuza
+            shadow-md hover:shadow-lg transition">
+    🚀 Unite a la Comunidad
+  </a>
+</footer>
 
   <!-- Lightbox / Galería -->
   <div id="yy-lightbox" class="hidden fixed inset-0 z-50 grid place-items-center">
     <div class="yy-wrap relative w-full px-4">
-        <button id="yy-close" type="button"
-          class="absolute -top-10 right-4 px-3 py-2 rounded-lg bg-neutral-800/80 border border-neutral-700 text-sm hover:bg-neutral-700">
-          Cerrar ✕
-        </button>
-
+      <button id="yy-close" class="absolute -top-10 right-4 px-3 py-2 rounded-lg bg-neutral-800/80 border border-neutral-700 text-sm hover:bg-neutral-700">
+        Cerrar ✕
+      </button>
       <div class="rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-800 p-2">
-        <img id="yy-img" src="" alt="" class="w-full h-auto object-contain rounded-xl" decoding="async" loading="eager" fetchpriority="high" />
+        <img id="yy-img" src="" alt="" class="w-full h-auto object-contain rounded-xl" />
         <div class="flex items-center justify-between gap-2 px-2 py-2 text-sm text-neutral-300">
           <div id="yy-caption" class="truncate"></div>
           <div class="flex items-center gap-2">
@@ -285,11 +265,6 @@
 
   <!-- ============ APP SCRIPT ============ -->
   <script>
-    // ===== Scrollbar width var (para evitar salto al abrir modal) =====
-    try {
-      document.documentElement.style.setProperty('--sbw', (window.innerWidth - document.documentElement.clientWidth) + 'px');
-    } catch {}
-
     // ===== Utilidades =====
     const RANKS = { "1": "Jefe", "2": "Yakuza", "3": "Shatei" };
     const rankLabel = v => RANKS[String(v)] ?? "-";
@@ -335,13 +310,23 @@
       if (!res.ok) return LIVE_CACHE.map;
       const raw = await res.json();
       
+      // 🔧 Filtra entradas nulas o sin slug
       const arr = (Array.isArray(raw) ? raw : []).filter(x => x && x.slug);
+      
       const map = new Map(arr.map(x => [String(x.slug).toLowerCase(), x]));
       LIVE_CACHE = { t: now, map };
       return map;
+
     }
 
-    // ===== MULTIKICK =====
+    function liveFromCache(slug) {
+      if (!slug) return null;
+      const e = KICK_CACHE.get(String(slug).toLowerCase());
+      if (!e) return null;
+      return e.v?.live ?? e.live ?? null;
+    }
+
+    // ===== MULTIKICK (sin "return" y leyendo live.json) =====
     const MK = {};
     (() => {
       let selected = new Set();
@@ -404,7 +389,6 @@
           <div class="rounded-2xl overflow-hidden bg-black border border-neutral-800">
             <iframe class="w-full aspect-video" loading="lazy"
                     src="" data-src="https://player.kick.com/${encodeURIComponent(slug)}?autoplay=true&muted=true"
-                    width="1280" height="720"
                     allow="autoplay; fullscreen" allowfullscreen frameborder="0"></iframe>
           </div>
         `).join('');
@@ -450,6 +434,7 @@
         if (e.target.closest('#mk-select-all')) { liveListAsync().then(l => { selected = new Set(l.map(p => p.kick)); refresh(false); }); }
       });
 
+      // Exponer sin "return"
       MK.open = open; MK.stop = stop; MK.refresh = refresh;
     })();
 
@@ -503,9 +488,11 @@
         if (el) el.classList.toggle('hidden', id !== v);
       });
       styleTabs(v);
-      if (v === 'galeria') { loadGallery(); }
+      // 🔽 cambia esta parte:
+      if (v === 'galeria') { loadGallery(); }     // siempre reintenta
       if (v === 'videos'  && !window.videosLoaded)  loadVideos();
       if (v === 'lore'    && !window.loreLoaded)    loadLore();
+    
       if (v === 'multikick') { window.MK?.open?.(); }
       else { window.MK?.stop?.(); }
     }
@@ -531,110 +518,110 @@
       }
     }
 
-    async function render() {
-      const q = norm(document.getElementById('q').value);
-      const rango = document.getElementById('rango').value;
-      const sort = document.getElementById('sort').value;
-    
-      // 1) filtrar por búsqueda/rango
-      let list = DATA.filter(p => {
-        const matchQ =
-          !q ||
-          norm(p.nombre).includes(q) ||
-          norm(p.ooc).includes(q) ||
-          norm(p.alias || '').includes(q) ||
-          norm(rankLabel(p.rango)).includes(q);
-        const matchRango = !rango || String(p.rango) === String(rango);
-        return matchQ && matchRango;
-      });
-    
-      // 2) Cargar mapa de estados en vivo desde live.json
-      const LIVE_MAP = await getLiveMap();
-    
-      // 3) ordenar: "en vivo" primero cuando corresponde
-      list.sort((a, b) => {
-        const liveA = LIVE_MAP.get(a.kick)?.live ? 1 : 0;
-        const liveB = LIVE_MAP.get(b.kick)?.live ? 1 : 0;
-        if (liveB !== liveA) return liveB - liveA;
-        switch (sort) {
-          case 'rango-asc':  return (b.rango ?? -999) - (a.rango ?? -999);
-          case 'rango-desc': return (a.rango ??  999) - (b.rango ??  999);
-          case 'nombre-desc': return norm(b.nombre).localeCompare(norm(a.nombre));
-          case 'live-desc':   return 0;
-          default:            return norm(a.nombre).localeCompare(norm(b.nombre));
+      async function render() {
+        const q = norm(document.getElementById('q').value);
+        const rango = document.getElementById('rango').value;
+        const sort = document.getElementById('sort').value;
+      
+        // 1) filtrar por búsqueda/rango
+        let list = DATA.filter(p => {
+          const matchQ =
+            !q ||
+            norm(p.nombre).includes(q) ||
+            norm(p.ooc).includes(q) ||
+            norm(p.alias || '').includes(q) ||
+            norm(rankLabel(p.rango)).includes(q);
+          const matchRango = !rango || String(p.rango) === String(rango);
+          return matchQ && matchRango;
+        });
+      
+        // 2) Cargar mapa de estados en vivo desde live.json (sin tocar la API de Kick)
+        const LIVE_MAP = await getLiveMap();
+      
+        // 3) ordenar: "en vivo" primero cuando corresponde
+        list.sort((a, b) => {
+          const liveA = LIVE_MAP.get(a.kick)?.live ? 1 : 0;
+          const liveB = LIVE_MAP.get(b.kick)?.live ? 1 : 0;
+          if (liveB !== liveA) return liveB - liveA;
+          switch (sort) {
+            case 'rango-asc':  return (b.rango ?? -999) - (a.rango ?? -999);
+            case 'rango-desc': return (a.rango ??  999) - (b.rango ??  999);
+            case 'nombre-desc': return norm(b.nombre).localeCompare(norm(a.nombre));
+            case 'live-desc':   return 0;
+            default:            return norm(a.nombre).localeCompare(norm(b.nombre));
+          }
+        });
+      
+        // 4) pintar grilla
+        const grid = document.getElementById('grid');
+        const empty = document.getElementById('empty');
+      
+        if (!list.length) {
+          grid.innerHTML = '';
+          empty.classList.remove('hidden');
+          scheduleRender();
+          return;
         }
-      });
-    
-      // 4) pintar grilla
-      const grid = document.getElementById('grid');
-      const empty = document.getElementById('empty');
-    
-      if (!list.length) {
-        grid.innerHTML = '';
-        empty.classList.remove('hidden');
-        scheduleRender();
-        return;
-      }
-      empty.classList.add('hidden');
-
-      grid.innerHTML = list.map(p => `
-        <article class="card rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden fade-in">
-          <div class="relative">
-            <img src="${p.foto || 'img/logo.png'}" alt="${p.nombre}"
-                 class="w-full aspect-[4/3] object-cover" width="1200" height="900" loading="lazy" decoding="async" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-            <div class="absolute bottom-2 left-2 right-2 flex items-center justify-between">
-              <span class="px-2 py-1 rounded-lg text-xs bg-yakuza/20 border border-yakuza">${rankLabel(p.rango)}</span>
-              <span class="px-2 py-1 rounded-lg text-xs bg-neutral-800/70 border border-neutral-700">${p.alias || ''}</span>
+        empty.classList.add('hidden');
+      
+        grid.innerHTML = list.map(p => `
+          <article class="card rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden fade-in">
+            <div class="relative">
+              <img src="${p.foto || 'img/logo.png'}" alt="${p.nombre}"
+                   class="w-full aspect-[4/3] object-cover" loading="lazy" decoding="async" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+              <div class="absolute bottom-2 left-2 right-2 flex items-center justify-between">
+                <span class="px-2 py-1 rounded-lg text-xs bg-yakuza/20 border border-yakuza">${rankLabel(p.rango)}</span>
+                <span class="px-2 py-1 rounded-lg text-xs bg-neutral-800/70 border border-neutral-700">${p.alias || ''}</span>
+              </div>
             </div>
-          </div>
-          <div class="p-4">
-            <h3 class="text-lg font-semibold">${p.nombre}</h3>
-            <p class="text-sm text-neutral-400"><span class="font-medium">${p.ooc || '-'}</span></p>
-    
-            ${p.kick ? `
-              <div class="mt-3">
-                <a id="kick-${p.kick}"
-                   data-slug="${p.kick}"
-                   href="https://kick.com/${p.kick}"
-                   target="_blank" rel="noreferrer"
-                   class="kick-btn inline-flex items-center gap-2 px-2 py-1 rounded-lg text-xs border border-neutral-700 bg-neutral-800/70 hover:bg-neutral-700">
-                  <span class="kick-dot inline-block w-2 h-2 rounded-full bg-neutral-500"></span>
-                  <span class="kick-label">Kick</span>
-                </a>
-              </div>
-            ` : ''}
-    
-            ${p.links?.length ? `
-              <div class="mt-3 flex flex-wrap gap-2">
-                ${p.links.map(l => {
-                  const t = linkType(l);
-                  const title = l.label || t.charAt(0).toUpperCase() + t.slice(1);
-                  return `
-                    <a class="yy-icon-btn" href="${l.href}" target="_blank" rel="noreferrer" aria-label="${title}" title="${title}">
-                      ${iconSvg(t)}
-                    </a>
-                  `;
-                }).join('')}
-              </div>
-            ` : ''}
-          </div>
-        </article>
-      `).join('');
-    
-      // 5) Actualizar el badge de Kick usando LIVE_MAP
-      list.forEach(p => {
-        if (!p.kick) return;
-        const live = LIVE_MAP.get(p.kick)?.live ?? false;
-        paintKickButton(p.kick, { live });
-      });
-    
-      // 6) UI del rotador y contador con el mismo mapa
-      await updateLiveUI_fromMap(LIVE_MAP, list);
-    
-      // 7) re-render suave
-      scheduleRender();
-    }
+            <div class="p-4">
+              <h3 class="text-lg font-semibold">${p.nombre}</h3>
+              <p class="text-sm text-neutral-400"><span class="font-medium">${p.ooc || '-'}</span></p>
+      
+              ${p.kick ? `
+                <div class="mt-3">
+                  <a id="kick-${p.kick}"
+                     data-slug="${p.kick}"
+                     href="https://kick.com/${p.kick}"
+                     target="_blank" rel="noreferrer"
+                     class="kick-btn inline-flex items-center gap-2 px-2 py-1 rounded-lg text-xs border border-neutral-700 bg-neutral-800/70 hover:bg-neutral-700">
+                    <span class="kick-dot inline-block w-2 h-2 rounded-full bg-neutral-500"></span>
+                    <span class="kick-label">Kick</span>
+                  </a>
+                </div>
+              ` : ''}
+      
+              ${p.links?.length ? `
+                <div class="mt-3 flex flex-wrap gap-2">
+                  ${p.links.map(l => {
+                    const t = linkType(l);
+                    const title = l.label || t.charAt(0).toUpperCase() + t.slice(1);
+                    return `
+                      <a class="yy-icon-btn" href="${l.href}" target="_blank" rel="noreferrer" aria-label="${title}" title="${title}">
+                        ${iconSvg(t)}
+                      </a>
+                    `;
+                  }).join('')}
+                </div>
+              ` : ''}
+            </div>
+          </article>
+        `).join('');
+      
+        // 5) Actualizar el badge de Kick SIN fetch por card (usando LIVE_MAP)
+        list.forEach(p => {
+          if (!p.kick) return;
+          const live = LIVE_MAP.get(p.kick)?.live ?? false;
+          paintKickButton(p.kick, { live });
+        });
+      
+        // 6) UI del rotador y contador con el mismo mapa
+        await updateLiveUI_fromMap(LIVE_MAP, list);
+      
+        // 7) re-render suave
+        scheduleRender();
+      }
 
     function scheduleRender(){
       clearTimeout(liveRefreshTimer);
@@ -674,9 +661,10 @@
     
       const pill = document.getElementById('live-pill');
       const count = liveNow.length;
-      pill.classList.remove('hidden'); // revelar de una vez para conservar caja
-      pill.querySelector('span:last-child').textContent = `En vivo (${count})`;
-      pill.classList.toggle('is-off', count === 0); // no colapsa ancho
+      if (count > 0) {
+        pill.classList.remove('hidden');
+        pill.querySelector('span:last-child').textContent = `En vivo (${count})`;
+      } else { pill.classList.add('hidden'); }
     
       const changed = JSON.stringify(liveNow) !== JSON.stringify(LIVE_QUEUE);
       LIVE_QUEUE = liveNow;
@@ -733,34 +721,7 @@
       setIframeTo(LIVE_QUEUE[LIVE_INDEX]);
     });
 
-    // ===== Helpers de links/iconos =====
-    function linkType(l){
-      const t = (l.type || '').toLowerCase();
-      if (t) return t;
-      try {
-        const h = new URL(l.href).hostname.toLowerCase();
-        if (h.includes('instagram')) return 'instagram';
-        if (h.includes('twitter') || h.includes('x.com')) return 'twitter';
-        if (h.includes('tiktok')) return 'tiktok';
-        if (h.includes('youtube')) return 'youtube';
-        if (h.includes('twitch')) return 'twitch';
-        if (h.includes('kick.com')) return 'kick';
-        return 'link';
-      } catch { return 'link'; }
-    }
-
-    function iconSvg(type){
-      switch(type){
-        case 'instagram': return `<svg class="yy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="5" stroke-width="1.5"/><circle cx="12" cy="12" r="3.5" stroke-width="1.5"/><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor"/></svg>`;
-        case 'twitter':   return `<svg class="yy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2H21L14.326 10.63 22 22h-6.31l-4.94-7.18L5.24 22H3l7.23-9.16L2 2h6.42l4.47 6.48L18.244 2Z"/></svg>`;
-        case 'tiktok':    return `<svg class="yy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19 7.6a7.5 7.5 0 0 1-4.3-1.6v6.9a5.6 5.6 0 1 1-4.8-5.5v2.6a2.9 2.9 0 1 0 2.1 2.8V2h2.7A7.5 7.5 0 0 0 19 5.2v2.4z"/></svg>`;
-        case 'youtube':   return `<svg class="yy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M23 12s0-3.4-.44-5.06a3 3 0 0 0-2.1-2.12C18.68 4.25 12 4.25 12 4.25s-6.68 0-8.46.57A3 3 0 0 0 1.44 6.94C1 8.6 1 12 1 12s0 3.4.44 5.06a3 3 0 0 0 2.1 2.12c1.78.57 8.46.57 8.46.57s6.68 0 8.46-.57a3 3 0 0 0 2.1-2.12C23 15.4 23 12 23 12ZM10 15.5v-7l6 3.5-6 3.5Z"/></svg>`;
-        case 'twitch':    return `<svg class="yy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 3h16v10.5l-4 4h-3.5L9 20v-2.5H6V6h12v6.5l-3 3V17h-3l-2 2v-2H8V5H4v-2z"/><path d="M13 7h2v4h-2V7zm-4 0h2v4H9V7z"/></svg>`;
-        case 'kick':      return `<svg class="yy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 4h18v4h-6v3h6v9h-5v-5h-5v5H6V8H3V4zm8 4v3H9V8h2z"/></svg>`;
-        default:          return `<svg class="yy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.6 13.4a4 4 0 0 0 5.7 0l2.3-2.3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M13.4 10.6a4 4 0 0 0-5.7 0l-2.3 2.3a4 4 0 0 0 5.7 5.7l1-1" stroke-width="1.5"/></svg>`;
-      }
-    }
-
+    // ===== Pintar estado botón Kick =====
     function paintKickButton(slug, state) {
       const esc = (s) => (window.CSS && CSS.escape) ? CSS.escape(s) : String(s).replace(/[^a-zA-Z0-9_-]/g, '\\$&');
       const selector = `#kick-${esc(slug)}, a.kick-btn[data-slug="${esc(slug)}"]`;
@@ -785,13 +746,22 @@
         }
       });
     }
+    async function hydrateKickBadges(list) {
+      const LIVE_MAP = await getLiveMap();
+      list.forEach(p => {
+        if (!p.kick) return;
+        const live = LIVE_MAP.get(p.kick)?.live ?? false;
+        paintKickButton(p.kick, { live });
+      });
+    }
+
 
     // ===== Galería =====
     window.galleryLoaded = false;
     let YY_GALLERY = [];    // [{src, alt}]
     let YY_INDEX = 0;
 
-    async function loadGallery() {
+   async function loadGallery() {
       try {
         const r = await fetch('gallery.json', { cache: 'no-cache' });
         if (!r.ok) throw new Error('gallery.json no encontrado');
@@ -803,17 +773,22 @@
           const alt = i.alt || "";
           return `
             <figure class="relative rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-800 cursor-zoom-in">
+              <!-- Botón de descarga (usa export=download) -->
               <a href="${id ? driveDL(id) : i.src}" download
                  class="yy-dl-btn text-neutral-200 hover:text-white" title="Descargar">⬇︎</a>
+    
+              <!-- Miniatura clickeable (abre lightbox) -->
               <img src="${thumb}" alt="${alt}"
                    class="yy-zoomable w-full aspect-[4/3] object-cover"
-                   width="1200" height="900" loading="lazy" decoding="async"
+                   loading="lazy" decoding="async"
                    data-idx="${idx}" data-id="${id || ""}">
+    
               ${alt ? `
                 <figcaption class="absolute bottom-2 left-2 px-2 py-1 text-xs font-medium text-white bg-black/60 rounded-lg">
                   ${alt}
                 </figcaption>
               ` : ''}
+
             </figure>
           `;
         }).join('');
@@ -822,6 +797,7 @@
         grid.innerHTML = html || '<p class="text-neutral-400">Sin imágenes.</p>';
         window.galleryLoaded = true;
     
+        // 🔽 Fallback si alguna miniatura no carga
         document.querySelectorAll('#galeria-grid img').forEach(img => {
           img.addEventListener('error', () => {
             try {
@@ -832,12 +808,13 @@
           });
         });
     
+        // 🔽 Listener para abrir el lightbox al click
         grid.addEventListener('click', (e) => {
           const img = e.target.closest('img[data-idx]');
           if (!img) return;
           e.preventDefault();
           const i = Number(img.dataset.idx || 0);
-          yyOpen(i);
+          yyOpen(i);   // 👉 llama a la función que muestra el overlay
         });
     
       } catch (e) {
@@ -850,6 +827,7 @@
       const item = YY_GALLERY[YY_INDEX];
       if (!item) return;
     
+      // intentamos ID desde el DOM (data-id) o URL original
       const imgDom = document.querySelector(`#galeria-grid img[data-idx="${YY_INDEX}"]`);
       const id = imgDom?.dataset?.id || driveIdFrom(item.src);
     
@@ -860,24 +838,22 @@
       const bigSrc = id ? driveFull(id) : (item.src || "");
       const dlHref = id ? driveDL(id)   : (item.src || "");
     
-      img.src = bigSrc;
+      img.src = bigSrc;                 // versión grande
       img.alt = item.alt || '';
       cap.textContent = item.alt || '';
-      dl.href = dlHref;
+      dl.href = dlHref;                 // descarga forzada
       dl.download = (item.alt || `imagen-${YY_INDEX+1}`).replace(/[^\w.-]+/g,'_');
     }
     
     function yyOpen(i=0) {
       YY_INDEX = Math.max(0, Math.min(i, YY_GALLERY.length-1));
       yyRender();
-      document.body.classList.add('modal-open');
-      document.getElementById('yy-lightbox').classList.remove('hidden');
+      document.getElementById('yy-lightbox').classList.remove('hidden'); // mostrar overlay
       document.addEventListener('keydown', yyKeys);
     }
 
     function yyClose() {
       document.getElementById('yy-lightbox').classList.add('hidden');
-      document.body.classList.remove('modal-open');
       document.removeEventListener('keydown', yyKeys);
     }
     function yyPrev() { if (!YY_GALLERY.length) return; YY_INDEX = (YY_INDEX - 1 + YY_GALLERY.length) % YY_GALLERY.length; yyRender(); }
@@ -886,28 +862,49 @@
       if (e.key === 'Escape') yyClose();
       if (e.key === 'ArrowLeft') yyPrev();
       if (e.key === 'ArrowRight') yyNext();
-
-    // --- Controles del lightbox (robustos) ---
-    document.addEventListener('click', (e) => {
-      // Botón "Cerrar ✕"
-      if (e.target.closest('#yy-close')) {
-        e.preventDefault();
-        yyClose();
+    }
+    // Detecta tipo desde l.type o desde hostname
+    function linkType(l){
+      const t = (l.type || '').toLowerCase();
+      if (t) return t;
+      try {
+        const h = new URL(l.href).hostname.toLowerCase();
+        if (h.includes('instagram')) return 'instagram';
+        if (h.includes('twitter') || h.includes('x.com')) return 'twitter';
+        if (h.includes('tiktok')) return 'tiktok';
+        if (h.includes('youtube')) return 'youtube';
+        if (h.includes('twitch')) return 'twitch';
+        if (h.includes('kick.com')) return 'kick';
+        return 'link';
+      } catch { return 'link'; }
+    }
+    
+    // SVGs inline (simples y livianos)
+    function iconSvg(type){
+      switch(type){
+        case 'instagram': return `<svg class="yy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="5" stroke-width="1.5"/><circle cx="12" cy="12" r="3.5" stroke-width="1.5"/><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor"/></svg>`;
+        case 'twitter':   return `<svg class="yy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2H21L14.326 10.63 22 22h-6.31l-4.94-7.18L5.24 22H3l7.23-9.16L2 2h6.42l4.47 6.48L18.244 2Z"/></svg>`; // 'X'
+        case 'tiktok':    return `<svg class="yy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19 7.6a7.5 7.5 0 0 1-4.3-1.6v6.9a5.6 5.6 0 1 1-4.8-5.5v2.6a2.9 2.9 0 1 0 2.1 2.8V2h2.7A7.5 7.5 0 0 0 19 5.2v2.4z"/></svg>`;
+        case 'youtube':   return `<svg class="yy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M23 12s0-3.4-.44-5.06a3 3 0 0 0-2.1-2.12C18.68 4.25 12 4.25 12 4.25s-6.68 0-8.46.57A3 3 0 0 0 1.44 6.94C1 8.6 1 12 1 12s0 3.4.44 5.06a3 3 0 0 0 2.1 2.12c1.78.57 8.46.57 8.46.57s6.68 0 8.46-.57a3 3 0 0 0 2.1-2.12C23 15.4 23 12 23 12ZM10 15.5v-7l6 3.5-6 3.5Z"/></svg>`;
+        case 'twitch':    return `<svg class="yy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 3h16v10.5l-4 4h-3.5L9 20v-2.5H6V6h12v6.5l-3 3V17h-3l-2 2v-2H8V5H4v-2z"/><path d="M13 7h2v4h-2V7zm-4 0h2v4H9V7z"/></svg>`;
+        case 'kick':      return `<svg class="yy-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 4h18v4h-6v3h6v9h-5v-5h-5v5H6V8H3V4zm8 4v3H9V8h2z"/></svg>`;
+        default:          return `<svg class="yy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.6 13.4a4 4 0 0 0 5.7 0l2.3-2.3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M13.4 10.6a4 4 0 0 0-5.7 0l-2.3 2.3a4 4 0 0 0 5.7 5.7l1-1" stroke-width="1.5"/></svg>`;
       }
-    });
-    
-    // Prev/Next
-    document.getElementById('yy-prev')?.addEventListener('click', () => yyPrev());
-    document.getElementById('yy-next')?.addEventListener('click', () => yyNext());
-    
-    // Click en el fondo oscuro también cierra
-    const yyOverlay = document.getElementById('yy-lightbox');
-    yyOverlay?.addEventListener('click', (e) => {
-      if (e.target === e.currentTarget) yyClose();
-    });
     }
 
-    // ===== Videos (estático desde videos.json) =====
+
+    // botones del lightbox
+    document.getElementById('yy-close')?.addEventListener('click', yyClose);
+    document.getElementById('yy-prev')?.addEventListener('click', yyPrev);
+    document.getElementById('yy-next')?.addEventListener('click', yyNext);
+    // click en fondo oscuro cierra
+    document.getElementById('yy-lightbox')?.addEventListener('click', (e) => {
+      if (e.target.id === 'yy-lightbox') yyClose();
+    });
+
+
+
+  // ===== Videos (estático desde videos.json) =====
     async function loadVideos() {
       try {
         const r = await fetch('videos.json', { cache: 'no-cache' });
@@ -916,10 +913,8 @@
     
         const html = (Array.isArray(items) ? items : []).map(v => `
           <div class="rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-800">
-            <iframe class="w-full aspect-video" loading="lazy"
-              src="https://www.youtube-nocookie.com/embed/${v.id}"
+            <iframe class="w-full aspect-video" loading="lazy" src="https://www.youtube-nocookie.com/embed/${v.id}"
               title="${(v.title || 'Video').replace(/"/g,'&quot;')}" frameborder="0"
-              width="1280" height="720"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             <div class="px-3 py-2 text-sm text-neutral-300">
@@ -945,6 +940,8 @@
       }
     }
 
+
+
     // ===== Lore =====
     window.loreLoaded = false;
     async function loadLore() {
@@ -966,6 +963,27 @@
   </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
