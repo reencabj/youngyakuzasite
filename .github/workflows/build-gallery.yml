@@ -2,7 +2,7 @@ name: build-gallery-json
 
 on:
   schedule:
-    - cron: "1 0 * * *"   # todos los días a las 06:00 UTC (cambiálo si querés)
+    - cron: "5 10 * * *"   # todos los días a las 06:00 UTC (cambiálo si querés)
   workflow_dispatch:        # te deja correrlo a mano desde la pestaña Actions
 
 jobs:
