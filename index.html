@@ -26,6 +26,9 @@
     .fade-in { animation: fade .35s ease-in-out; }
     @keyframes fade { from {opacity:0} to {opacity:1} }
 
+    body::-webkit-scrollbar { display: none; } /* Chrome/Safari/Edge */
+    body { scrollbar-width: none; }           /* Firefox */
+
     /* MultiKick en fullscreen */
     #view-multikick:fullscreen,
     #view-multikick:-webkit-full-screen {
@@ -963,6 +966,7 @@
   </script>
 </body>
 </html>
+
 
 
 
