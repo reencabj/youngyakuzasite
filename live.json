@@ -5,15 +5,7 @@
     "live": true,
     "viewers": 0,
     "thumb": "https://stream.kick.com/thumbnails/livestream/73475291/thumb0/video_thumbnail/thumb0.jpg",
-    "updatedAt": "2025-09-09T23:43:31.233Z"
-  },
-  {
-    "slug": "9kemo",
-    "platform": "kick",
-    "live": true,
-    "viewers": 0,
-    "thumb": "https://stream.kick.com/thumbnails/livestream/73488390/thumb0/video_thumbnail/thumb0.jpg",
-    "updatedAt": "2025-09-09T23:43:32.262Z"
+    "updatedAt": "2025-09-09T23:49:46.928Z"
   },
   {
     "slug": "kzeco",
@@ -21,15 +13,7 @@
     "live": true,
     "viewers": 0,
     "thumb": "https://stream.kick.com/thumbnails/livestream/73484748/thumb0/video_thumbnail/thumb0.jpg",
-    "updatedAt": "2025-09-09T23:43:32.362Z"
-  },
-  {
-    "slug": "iemmanuel",
-    "platform": "kick",
-    "live": true,
-    "viewers": 0,
-    "thumb": "https://stream.kick.com/thumbnails/livestream/73500332/thumb0/video_thumbnail/thumb0.jpg",
-    "updatedAt": "2025-09-09T23:43:32.515Z"
+    "updatedAt": "2025-09-09T23:49:47.724Z"
   },
   {
     "slug": "agusss04",
@@ -37,7 +21,23 @@
     "live": true,
     "viewers": 0,
     "thumb": "https://stream.kick.com/thumbnails/livestream/73488948/thumb0/video_thumbnail/thumb0.jpg",
-    "updatedAt": "2025-09-09T23:43:32.566Z"
+    "updatedAt": "2025-09-09T23:49:47.740Z"
+  },
+  {
+    "slug": "9kemo",
+    "platform": "kick",
+    "live": true,
+    "viewers": 0,
+    "thumb": "https://stream.kick.com/thumbnails/livestream/73488390/thumb0/video_thumbnail/thumb0.jpg",
+    "updatedAt": "2025-09-09T23:49:47.801Z"
+  },
+  {
+    "slug": "iemmanuel",
+    "platform": "kick",
+    "live": true,
+    "viewers": 0,
+    "thumb": "https://stream.kick.com/thumbnails/livestream/73500332/thumb0/video_thumbnail/thumb0.jpg",
+    "updatedAt": "2025-09-09T23:49:48.002Z"
   },
   {
     "slug": "g4spl",
@@ -45,15 +45,7 @@
     "live": true,
     "viewers": 0,
     "thumb": "https://stream.kick.com/thumbnails/livestream/73496772/thumb0/video_thumbnail/thumb0.jpg",
-    "updatedAt": "2025-09-09T23:43:33.913Z"
-  },
-  {
-    "slug": "chali",
-    "platform": "kick",
-    "live": false,
-    "viewers": 0,
-    "thumb": null,
-    "updatedAt": "2025-09-09T23:43:31.346Z"
+    "updatedAt": "2025-09-09T23:49:48.999Z"
   },
   {
     "slug": "litkillah",
@@ -61,7 +53,15 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2025-09-09T23:43:31.394Z"
+    "updatedAt": "2025-09-09T23:49:46.749Z"
+  },
+  {
+    "slug": "chali",
+    "platform": "kick",
+    "live": false,
+    "viewers": 0,
+    "thumb": null,
+    "updatedAt": "2025-09-09T23:49:46.830Z"
   },
   {
     "slug": "ifatality",
@@ -69,39 +69,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2025-09-09T23:43:31.478Z"
-  },
-  {
-    "slug": "reenz",
-    "platform": "kick",
-    "live": false,
-    "viewers": 0,
-    "thumb": null,
-    "updatedAt": "2025-09-09T23:43:31.613Z"
-  },
-  {
-    "slug": "eldaka",
-    "platform": "kick",
-    "live": false,
-    "viewers": 0,
-    "thumb": null,
-    "updatedAt": "2025-09-09T23:43:31.730Z"
-  },
-  {
-    "slug": "nohands",
-    "platform": "kick",
-    "live": false,
-    "viewers": 0,
-    "thumb": null,
-    "updatedAt": "2025-09-09T23:43:31.853Z"
-  },
-  {
-    "slug": "notbriancito",
-    "platform": "kick",
-    "live": false,
-    "viewers": 0,
-    "thumb": null,
-    "updatedAt": "2025-09-09T23:43:31.917Z"
+    "updatedAt": "2025-09-09T23:49:46.920Z"
   },
   {
     "slug": "kabetotv",
@@ -109,7 +77,31 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2025-09-09T23:43:31.921Z"
+    "updatedAt": "2025-09-09T23:49:47.149Z"
+  },
+  {
+    "slug": "reenz",
+    "platform": "kick",
+    "live": false,
+    "viewers": 0,
+    "thumb": null,
+    "updatedAt": "2025-09-09T23:49:47.150Z"
+  },
+  {
+    "slug": "notbriancito",
+    "platform": "kick",
+    "live": false,
+    "viewers": 0,
+    "thumb": null,
+    "updatedAt": "2025-09-09T23:49:47.232Z"
+  },
+  {
+    "slug": "eldaka",
+    "platform": "kick",
+    "live": false,
+    "viewers": 0,
+    "thumb": null,
+    "updatedAt": "2025-09-09T23:49:47.297Z"
   },
   {
     "slug": "narcovich",
@@ -117,7 +109,15 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2025-09-09T23:43:31.961Z"
+    "updatedAt": "2025-09-09T23:49:47.464Z"
+  },
+  {
+    "slug": "nohands",
+    "platform": "kick",
+    "live": false,
+    "viewers": 0,
+    "thumb": null,
+    "updatedAt": "2025-09-09T23:49:47.527Z"
   },
   {
     "slug": "ferchucabj",
@@ -125,7 +125,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2025-09-09T23:43:32.163Z"
+    "updatedAt": "2025-09-09T23:49:47.628Z"
   },
   {
     "slug": "kattu9",
@@ -133,23 +133,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2025-09-09T23:43:32.676Z"
-  },
-  {
-    "slug": "nxbraian",
-    "platform": "kick",
-    "live": false,
-    "viewers": 0,
-    "thumb": null,
-    "updatedAt": "2025-09-09T23:43:32.752Z"
-  },
-  {
-    "slug": "cricobellako",
-    "platform": "kick",
-    "live": false,
-    "viewers": 0,
-    "thumb": null,
-    "updatedAt": "2025-09-09T23:43:32.754Z"
+    "updatedAt": "2025-09-09T23:49:48.078Z"
   },
   {
     "slug": "klarent",
@@ -157,7 +141,23 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2025-09-09T23:43:32.838Z"
+    "updatedAt": "2025-09-09T23:49:48.194Z"
+  },
+  {
+    "slug": "nxbraian",
+    "platform": "kick",
+    "live": false,
+    "viewers": 0,
+    "thumb": null,
+    "updatedAt": "2025-09-09T23:49:48.200Z"
+  },
+  {
+    "slug": "cricobellako",
+    "platform": "kick",
+    "live": false,
+    "viewers": 0,
+    "thumb": null,
+    "updatedAt": "2025-09-09T23:49:48.325Z"
   },
   {
     "slug": "nosoygomy",
@@ -165,7 +165,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2025-09-09T23:43:32.944Z"
+    "updatedAt": "2025-09-09T23:49:48.329Z"
   },
   {
     "slug": "feleen",
@@ -173,7 +173,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2025-09-09T23:43:32.974Z"
+    "updatedAt": "2025-09-09T23:49:48.426Z"
   },
   {
     "slug": "vainillitta",
@@ -181,31 +181,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2025-09-09T23:43:32.993Z"
-  },
-  {
-    "slug": "jjuanma",
-    "platform": "kick",
-    "live": false,
-    "viewers": 0,
-    "thumb": null,
-    "updatedAt": "2025-09-09T23:43:33.229Z"
-  },
-  {
-    "slug": "qaruk",
-    "platform": "kick",
-    "live": false,
-    "viewers": 0,
-    "thumb": null,
-    "updatedAt": "2025-09-09T23:43:33.236Z"
-  },
-  {
-    "slug": "daytetona",
-    "platform": "kick",
-    "live": false,
-    "viewers": 0,
-    "thumb": null,
-    "updatedAt": "2025-09-09T23:43:33.249Z"
+    "updatedAt": "2025-09-09T23:49:48.449Z"
   },
   {
     "slug": "gigidv",
@@ -213,7 +189,15 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2025-09-09T23:43:33.295Z"
+    "updatedAt": "2025-09-09T23:49:48.571Z"
+  },
+  {
+    "slug": "jjuanma",
+    "platform": "kick",
+    "live": false,
+    "viewers": 0,
+    "thumb": null,
+    "updatedAt": "2025-09-09T23:49:48.717Z"
   },
   {
     "slug": "jossueelsv",
@@ -221,7 +205,23 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2025-09-09T23:43:33.350Z"
+    "updatedAt": "2025-09-09T23:49:48.759Z"
+  },
+  {
+    "slug": "qaruk",
+    "platform": "kick",
+    "live": false,
+    "viewers": 0,
+    "thumb": null,
+    "updatedAt": "2025-09-09T23:49:48.796Z"
+  },
+  {
+    "slug": "daytetona",
+    "platform": "kick",
+    "live": false,
+    "viewers": 0,
+    "thumb": null,
+    "updatedAt": "2025-09-09T23:49:48.849Z"
   },
   {
     "slug": "chinoxzzz",
@@ -229,7 +229,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2025-09-09T23:43:33.508Z"
+    "updatedAt": "2025-09-09T23:49:49.042Z"
   },
   {
     "slug": "flakitomj",
@@ -237,15 +237,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2025-09-09T23:43:33.550Z"
-  },
-  {
-    "slug": "ikenzoo",
-    "platform": "kick",
-    "live": false,
-    "viewers": 0,
-    "thumb": null,
-    "updatedAt": "2025-09-09T23:43:33.584Z"
+    "updatedAt": "2025-09-09T23:49:49.049Z"
   },
   {
     "slug": "pioxy",
@@ -253,6 +245,14 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2025-09-09T23:43:33.636Z"
+    "updatedAt": "2025-09-09T23:49:49.125Z"
+  },
+  {
+    "slug": "ikenzoo",
+    "platform": "kick",
+    "live": false,
+    "viewers": 0,
+    "thumb": null,
+    "updatedAt": "2025-09-09T23:49:49.245Z"
   }
 ]
