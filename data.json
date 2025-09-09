@@ -363,8 +363,31 @@
       { "label": "YouTube", "href": "https://www.youtube.com/@ikenzoop/videos" },
       { "label": "Twitter", "href": "https://x.com/Joaqu1nGuzman" }
     ]
+  },
+  {
+    "nombre": "Lucas Owend",
+    "ooc": "Flakito",
+    "alias": "Flakito",
+    "rango": 3,
+    "kick": "flakitomj",
+    "foto": "",
+    "links": [
+      ]
+  },
+  {
+    "nombre": "Alonso Vidal",
+    "ooc": "Pioxy",
+    "alias": "Alonso",
+    "rango": 3,
+    "kick": "pioxy",
+    "foto": "",
+    "links": [
+      { "label": "Instagram", "href": "https://www.instagram.com/_pioxy" },
+      { "label": "Discord", "href": "https://discord.com/invite/PioArmy" }
+    ]
   }
 ]
+
 
 
 
