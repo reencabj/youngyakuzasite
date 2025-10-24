@@ -188,18 +188,6 @@
     ]
   },
   {
-    "nombre": "Keku Lote",
-    "ooc": "CricoBellako",
-    "alias": "Keku",
-    "rango": 2,
-    "kick": "cricobellako",
-    "foto": "img/keku.jpg",
-    "links": [
-      { "label": "Instagram", "href": "https://instagram.com/angel_vazquuez" },
-      { "label": "Twitter", "href": "https://twitter.com/cricobellako" }
-    ]
-  },
-  {
     "nombre": "Allen Lewis",
     "ooc": "NxBraian",
     "alias": "Negro",
@@ -221,29 +209,6 @@
     "links": [
       { "label": "Instagram", "href": "https://instagram.com/Kattucabeza" },
       { "label": "Twitter", "href": "https://twitter.com/Kattucabeza" }
-    ]
-  },
-  {
-    "nombre": "Miku Lotariko",
-    "ooc": "Kareen",
-    "alias": "Miku",
-    "rango": 2,
-    "kick": "klarent",
-    "foto": "img/miku.jpg",
-    "links": [
-      { "label": "Twitter", "href": "https://twitter.com/kaaren_s" }
-    ]
-  },
-  {
-    "nombre": "Po Yamamada",
-    "ooc": "Gomy",
-    "alias": "Po",
-    "rango": 2,
-    "kick": "nosoygomy",
-    "foto": "img/po.jpg",
-    "links": [
-      { "label": "Instagram", "href": "https://instagram.com/nosoygomy" },
-      { "label": "Twitter", "href": "https://twitter.com/@SoyGOMY" }
     ]
   },
   {
@@ -387,6 +352,7 @@
     ]
   }
 ]
+
 
 
 
