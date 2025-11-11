@@ -350,8 +350,7 @@
       { "label": "Instagram", "href": "https://www.instagram.com/_pioxy" },
       { "label": "Discord", "href": "https://discord.com/invite/PioArmy" }
     ]
-  }
-  ,
+  },
   {
     "nombre": "Tyce Lewis",
     "ooc": "JuniorDeus",
@@ -362,8 +361,20 @@
     "links": [
       { "label": "TikTok", "href": "https://www.tiktok.com/@juniordeus_" }
     ]
+  },
+  {
+    "nombre": "Syntax Error",
+    "ooc": "$%#%#$&/$#",
+    "alias": "その過去",
+    "rango": 3,
+    "kick": "reenz",
+    "foto": "img/incognito.jpg",
+    "links": [
+      { "label": "????", "href": "https://youtu.be/QPNhhFLRip4" }
+    ]
   }
 ]
+
 
 
 
