@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+
+  body {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@layer components {
+  .card:hover {
+    transform: translateY(-2px);
+  }
+
+  .fade-in {
+    animation: fade 0.35s ease-in-out;
+  }
+
+  #view-multikick:fullscreen,
+  #view-multikick:-webkit-full-screen {
+    max-width: none !important;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 16px;
+    overflow: auto;
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  #view-multikick:fullscreen #mk-grid,
+  #view-multikick:-webkit-full-screen #mk-grid {
+    gap: 12px;
+  }
+
+  #grid,
+  #galeria-grid,
+  #videos-grid {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 600px;
+  }
+
+  #view-galeria .yy-zoomable {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  #view-galeria .yy-zoomable:hover {
+    transform: scale(1.03);
+  }
+
+  #view-galeria .yy-dl-btn {
+    position: absolute;
+    right: 0.5rem;
+    top: 0.5rem;
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid #262626;
+    backdrop-filter: blur(4px);
+    border-radius: 0.5rem;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  #yy-lightbox {
+    background: rgba(0, 0, 0, 0.85);
+  }
+
+  #yy-lightbox .yy-wrap {
+    max-width: min(96vw, 1100px);
+  }
+
+  #yy-lightbox img {
+    max-height: 80vh;
+  }
+
+  .yy-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 0.6rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+  }
+
+  .yy-icon-btn:hover {
+    transform: translateY(-1px);
+    background: rgba(158, 140, 237, 0.12);
+    border-color: #9e8ced;
+  }
+
+  .yy-icon {
+    width: 18px;
+    height: 18px;
+    display: block;
+  }
+}
