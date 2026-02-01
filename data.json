@@ -363,17 +363,29 @@
     ]
   },
   {
-    "nombre": "タロウ・クロ",
-    "ooc": "$%#%#$&/$#",
-    "alias": "タロウ",
+    "nombre": "Taro Kuro",
+    "ooc": "Duxon",
+    "alias": "Tarro",
     "rango": 3,
     "kick": "duxontv",
     "foto": "img/incognito.jpg",
     "links": [
       { "label": "YouTube", "href": "https://youtu.be/QPNhhFLRip4" }
     ]
+  },
+  {
+    "nombre": "Butter Nuggets",
+    "ooc": "ShotByWolf",
+    "alias": "Manteca",
+    "rango": 3,
+    "kick": "shotbywolf",
+    "foto": "img/incognito.jpg",
+    "links": [
+      { "label": "X", "href": "https://x.com/_ShotByWolf_" },{ "label": "X", "href": "https://x.com/_ShotByWolf_" },{ "label": "YouTube", "href": "https://www.youtube.com/channel/UC3oZ-CYTZg0xRtESM9b-ZIg" }
+    ]
   }
 ]
+
 
 
 
