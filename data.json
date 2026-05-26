@@ -383,6 +383,28 @@
     "links": [
       { "label": "X", "href": "https://x.com/_ShotByWolf_" },{ "label": "X", "href": "https://x.com/_ShotByWolf_" },{ "label": "YouTube", "href": "https://www.youtube.com/channel/UC3oZ-CYTZg0xRtESM9b-ZIg" }
     ]
+  },
+  {
+    "nombre": "Dante Rojas",
+    "ooc": "LuciferGHJ",
+    "alias": "D4NT",
+    "rango": 3,
+    "kick": "camiboo",
+    "foto": "img/luciboo.png",
+    "links": [
+      { "label": "Instagram", "href": "https://www.instagram.com/sbstiian420/?hl=es" }
+    ]
+  },
+  {
+    "nombre": "Antonella Benedetti",
+    "ooc": "CamiBoo",
+    "alias": "Boo",
+    "rango": 3,
+    "kick": "camiboo",
+    "foto": "img/luciboo.png",
+    "links": [
+      { "label": "Instagram", "href": "https://www.instagram.com/camila_coo_/" }
+    ]
   }
 ]
 
