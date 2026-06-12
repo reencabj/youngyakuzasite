@@ -1,21 +1,43 @@
 [
   {
+    "slug": "agusss04",
+    "platform": "kick",
+    "live": true,
+    "viewers": 0,
+    "thumb": "https://stream.kick.com/thumbnails/livestream/112562558/thumb0/video_thumbnail/thumb0.jpg",
+    "updatedAt": "2026-06-12T05:12:50.896Z"
+  },
+  {
+    "slug": "iemmanuel",
+    "platform": "kick",
+    "live": true,
+    "viewers": 0,
+    "thumb": "https://stream.kick.com/thumbnails/livestream/112558207/thumb0/video_thumbnail/thumb0.jpg",
+    "updatedAt": "2026-06-12T05:12:51.242Z"
+  },
+  {
+    "slug": "kzeco",
+    "platform": "kick",
+    "live": true,
+    "viewers": 0,
+    "thumb": null,
+    "updatedAt": "2026-06-12T05:12:50.596Z"
+  },
+  {
+    "slug": "reen",
+    "platform": "kick",
+    "live": true,
+    "viewers": 0,
+    "thumb": "https://stream.kick.com/thumbnails/livestream/112601025/thumb0/video_thumbnail/thumb0.jpg",
+    "updatedAt": "2026-06-12T05:12:50.015Z"
+  },
+  {
     "slug": "9kemo",
     "platform": "kick",
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:36.236Z",
-    "error": "HTTP 403"
-  },
-  {
-    "slug": "agusss04",
-    "platform": "kick",
-    "live": false,
-    "viewers": 0,
-    "thumb": null,
-    "updatedAt": "2026-06-12T00:22:36.222Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:50.859Z"
   },
   {
     "slug": "camiboo",
@@ -23,8 +45,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:43.645Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:53.039Z"
   },
   {
     "slug": "chali",
@@ -32,8 +53,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:32.524Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:49.940Z"
   },
   {
     "slug": "chinoxzzz",
@@ -41,8 +61,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:41.769Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:52.090Z"
   },
   {
     "slug": "daytetona",
@@ -50,8 +69,8 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:39.923Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:53.298Z",
+    "error": "HTTP 404"
   },
   {
     "slug": "duxontv",
@@ -59,8 +78,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:43.615Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:52.714Z"
   },
   {
     "slug": "eldaka",
@@ -68,8 +86,8 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:34.375Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:51.743Z",
+    "error": "HTTP 404"
   },
   {
     "slug": "feleen",
@@ -77,8 +95,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:38.085Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:51.251Z"
   },
   {
     "slug": "ferchucabj",
@@ -86,8 +103,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:36.224Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:50.532Z"
   },
   {
     "slug": "flakitomj",
@@ -95,8 +111,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:41.786Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:52.247Z"
   },
   {
     "slug": "g4spl",
@@ -104,8 +119,8 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:39.951Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:53.873Z",
+    "error": "HTTP 404"
   },
   {
     "slug": "gigidv",
@@ -113,17 +128,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:38.083Z",
-    "error": "HTTP 403"
-  },
-  {
-    "slug": "iemmanuel",
-    "platform": "kick",
-    "live": false,
-    "viewers": 0,
-    "thumb": null,
-    "updatedAt": "2026-06-12T00:22:36.244Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:51.359Z"
   },
   {
     "slug": "ikenzoo",
@@ -131,8 +136,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:41.783Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:52.150Z"
   },
   {
     "slug": "jjuanma",
@@ -140,8 +144,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:39.949Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:51.977Z"
   },
   {
     "slug": "jossueelsv",
@@ -149,8 +152,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:39.940Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:51.726Z"
   },
   {
     "slug": "juniordeus",
@@ -158,8 +160,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:41.801Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:52.489Z"
   },
   {
     "slug": "kabetotv",
@@ -167,8 +168,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:34.382Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:50.111Z"
   },
   {
     "slug": "kattu9",
@@ -176,8 +176,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:38.072Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:51.207Z"
   },
   {
     "slug": "kenai",
@@ -185,17 +184,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:32.528Z",
-    "error": "HTTP 403"
-  },
-  {
-    "slug": "kzeco",
-    "platform": "kick",
-    "live": false,
-    "viewers": 0,
-    "thumb": null,
-    "updatedAt": "2026-06-12T00:22:36.234Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:49.741Z"
   },
   {
     "slug": "litkillah",
@@ -203,8 +192,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:32.521Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:49.752Z"
   },
   {
     "slug": "luciferghj",
@@ -212,8 +200,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:43.629Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:52.813Z"
   },
   {
     "slug": "narcovich",
@@ -221,8 +208,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:34.377Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:50.300Z"
   },
   {
     "slug": "nohands",
@@ -230,8 +216,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:34.385Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:50.236Z"
   },
   {
     "slug": "notbriancito",
@@ -239,8 +224,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:34.379Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:50.012Z"
   },
   {
     "slug": "nxbraian",
@@ -248,8 +232,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:38.074Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:51.042Z"
   },
   {
     "slug": "pioxy",
@@ -257,8 +240,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:41.810Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:52.446Z"
   },
   {
     "slug": "qaruk",
@@ -266,17 +248,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:39.926Z",
-    "error": "HTTP 403"
-  },
-  {
-    "slug": "reen",
-    "platform": "kick",
-    "live": false,
-    "viewers": 0,
-    "thumb": null,
-    "updatedAt": "2026-06-12T00:22:32.518Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:51.810Z"
   },
   {
     "slug": "shotbywolf",
@@ -284,8 +256,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:43.628Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:52.939Z"
   },
   {
     "slug": "vainillitta",
@@ -293,8 +264,7 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:38.090Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:51.385Z"
   },
   {
     "slug": "xxxxxxx",
@@ -302,7 +272,6 @@
     "live": false,
     "viewers": 0,
     "thumb": null,
-    "updatedAt": "2026-06-12T00:22:32.516Z",
-    "error": "HTTP 403"
+    "updatedAt": "2026-06-12T05:12:49.745Z"
   }
 ]
