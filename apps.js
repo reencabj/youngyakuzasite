@@ -422,6 +422,22 @@
       document.querySelectorAll('.home-picker-btn').forEach((btn, i) => {
         btn.classList.toggle('home-picker-btn-active', i === HOME_LIVE_INDEX);
       });
+
+      updateHomeNav();
+    }
+
+    function updateHomeNav() {
+      const total = HOME_LIVE_LIST.length;
+      const multiple = total > 1;
+      const prev = document.getElementById('home-prev');
+      const next = document.getElementById('home-next');
+      const pos = document.getElementById('home-live-pos');
+      prev?.classList.toggle('hidden', !multiple);
+      next?.classList.toggle('hidden', !multiple);
+      if (pos) {
+        pos.classList.toggle('hidden', !multiple);
+        pos.textContent = `${HOME_LIVE_INDEX + 1} / ${total}`;
+      }
     }
 
     function renderHomePicker(liveList) {
@@ -438,9 +454,9 @@
       picker.innerHTML = liveList.map((p, i) => `
         <button type="button" class="home-picker-btn ${i === HOME_LIVE_INDEX ? 'home-picker-btn-active' : ''}"
                 data-home-index="${i}">
-          <img src="${p.foto || FALLBACK_AVATAR}" alt="" class="w-8 h-8 rounded-full object-cover ring-1 ring-white/10" loading="lazy" decoding="async" />
-          <span class="text-sm font-medium text-neutral-200 max-w-[120px] truncate">${p.nombre}</span>
-          <span class="w-1.5 h-1.5 rounded-full bg-yakuza animate-pulse shrink-0"></span>
+          <img src="${p.foto || FALLBACK_AVATAR}" alt="" loading="lazy" decoding="async" />
+          <span class="home-picker-btn-name">${p.nombre}</span>
+          <span class="home-picker-btn-dot"></span>
         </button>
       `).join('');
     }
@@ -619,6 +635,12 @@
       const btn = e.target.closest('[data-home-index]');
       if (!btn) return;
       setHomeStream(Number(btn.dataset.homeIndex || 0));
+    });
+    document.getElementById('home-prev')?.addEventListener('click', () => {
+      if (HOME_LIVE_LIST.length > 1) setHomeStream(HOME_LIVE_INDEX - 1);
+    });
+    document.getElementById('home-next')?.addEventListener('click', () => {
+      if (HOME_LIVE_LIST.length > 1) setHomeStream(HOME_LIVE_INDEX + 1);
     });
 
     async function updateLiveUI_fromMap(LIVE_MAP) {
