@@ -102,9 +102,9 @@
                     <span id="home-live-pos" class="home-live-pos hidden">1 / 1</span>
                   </div>
 
-                  <div id="home-stream-info" class="p-4 sm:p-5 border-t border-white/5 bg-neutral-900/50">
-                    <div class="flex flex-col sm:flex-row sm:items-start gap-4">
-                      <img id="home-info-avatar" src="" alt="" class="w-16 h-16 rounded-full object-cover ring-2 ring-yakuza/40 shrink-0" />
+                  <div id="home-stream-info" class="p-3 sm:p-4 border-t border-white/5 bg-neutral-900/50">
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                      <img id="home-info-avatar" src="" alt="" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover ring-2 ring-yakuza/40 shrink-0" />
                       <div class="flex-1 min-w-0">
                         <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
                           <h3 id="home-info-name" class="text-xl font-display font-bold text-neutral-100"></h3>
@@ -112,12 +112,14 @@
                         </div>
                         <p id="home-info-ooc" class="text-sm text-neutral-400 mt-0.5"></p>
                         <p id="home-info-rank" class="text-xs text-neutral-500 mt-1"></p>
-                        <div id="home-info-links" class="flex flex-wrap gap-1.5 mt-3"></div>
                       </div>
-                      <a id="home-info-kick" href="#" target="_blank" rel="noreferrer"
-                         class="shrink-0 inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-semibold bg-yakuza hover:bg-yakuza-light text-white transition">
-                        Ver en Kick
-                      </a>
+                      <div class="home-info-actions">
+                        <div id="home-info-links" class="flex flex-wrap gap-1.5"></div>
+                        <a id="home-info-kick" href="#" target="_blank" rel="noreferrer"
+                           class="inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-semibold bg-yakuza hover:bg-yakuza-light text-white transition shrink-0">
+                          Ver en Kick
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>

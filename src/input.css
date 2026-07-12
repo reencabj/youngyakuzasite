@@ -315,6 +315,16 @@
     grid-template-columns: 1fr;
   }
 
+  .home-info-actions {
+    @apply flex flex-wrap items-center gap-2 shrink-0;
+  }
+
+  @media (min-width: 640px) {
+    .home-info-actions {
+      justify-content: flex-end;
+    }
+  }
+
   @media (min-width: 1024px) {
     .live-theater-grid {
       grid-template-columns: 1fr 360px;

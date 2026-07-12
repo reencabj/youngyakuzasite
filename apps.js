@@ -572,7 +572,7 @@
       }
       if (oocEl) oocEl.textContent = p.ooc || '';
       if (rankEl) rankEl.textContent = rankLabel(p.rango);
-      if (linksEl) linksEl.innerHTML = renderCharacterLinks(p).replace('mt-3', 'mt-0') || '';
+      if (linksEl) linksEl.innerHTML = renderLinkButtons(p) || '';
       const kickUrl = `https://kick.com/${encodeURIComponent(slug)}`;
       if (kickLink) kickLink.href = kickUrl;
       if (chatLink) chatLink.href = `https://kick.com/popout/${encodeURIComponent(slug)}/chat`;
