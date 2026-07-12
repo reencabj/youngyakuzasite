@@ -11,7 +11,11 @@ module.exports = {
       colors: {
         yakuza: '#9e8ced',
         'yakuza-light': '#bfaeff'
-      }
+      },
+      fontFamily: {
+        sans: ['"DM Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['Outfit', '"DM Sans"', 'sans-serif'],
+      },
     },
   },
   plugins: [require('@tailwindcss/typography')],

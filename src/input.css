@@ -12,6 +12,7 @@
   body {
     scrollbar-width: none;
     -ms-overflow-style: none;
+    @apply font-sans;
   }
 }
 
@@ -38,8 +39,8 @@
     @apply text-yakuza border-yakuza;
   }
 
-  .card:hover {
-    transform: translateY(-2px);
+  .roster-row {
+    @apply transition-colors;
   }
 
   .fade-in {
@@ -69,24 +70,31 @@
     contain-intrinsic-size: 1px 600px;
   }
 
-  #view-galeria .yy-zoomable {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  #view-galeria .gallery-item .yy-zoomable {
+    @apply transition-transform duration-300;
   }
 
-  #view-galeria .yy-zoomable:hover {
-    transform: scale(1.03);
+  #view-galeria .gallery-item:hover .yy-zoomable {
+    transform: scale(1.05);
   }
 
   #view-galeria .yy-dl-btn {
     position: absolute;
     right: 0.5rem;
     top: 0.5rem;
-    background: rgba(0, 0, 0, 0.55);
-    border: 1px solid #262626;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(4px);
-    border-radius: 0.5rem;
+    border-radius: 0.375rem;
     padding: 0.35rem 0.5rem;
     font-size: 0.75rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  #view-galeria .gallery-item:hover .yy-dl-btn {
+    opacity: 1;
   }
 
   #yy-lightbox {

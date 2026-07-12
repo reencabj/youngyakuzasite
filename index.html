@@ -7,6 +7,11 @@
   <meta name="description" content="Listado de personajes, rangos y contenido de Young Yakuza." />
   <link rel="icon" href="img/logo.png" />
 
+  <!-- Tipografía -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
   <!-- CSS generado por Tailwind en modo build -->
   <link rel="stylesheet" href="styles.css" />
 
@@ -25,7 +30,7 @@
 <!-- End Cloudflare Web Analytics -->
 
 </head>
-<body class="min-h-screen bg-neutral-950 text-neutral-100">
+<body class="min-h-screen bg-neutral-950 text-neutral-100 font-sans antialiased">
   <!-- Fondo -->
   <div class="fixed inset-0 -z-10">
     <img src="img/wallpaper.png" alt="" class="w-full h-full object-cover" loading="eager" decoding="async" fetchpriority="high">
@@ -39,7 +44,7 @@
         <div class="flex items-center gap-4">
           <img src="img/logo.png" alt="Logo Young Yakuza" class="w-16 h-16 sm:w-20 sm:h-20 object-contain drop-shadow" loading="eager" decoding="async" />
           <div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Young Yakuza</h1>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight font-display">Young Yakuza</h1>
             <p class="text-sm text-neutral-400">Dovux Life RP</p>
           </div>
         </div>
@@ -101,21 +106,19 @@
     </section>
 
     <main class="max-w-6xl mx-auto px-4">
-      <div id="grid" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 py-8"></div>
+      <div id="grid" class="space-y-8 py-8"></div>
       <p id="empty" class="hidden text-neutral-300 text-center pb-16">No se encontraron personajes con esos filtros.</p>
     </main>
   </div>
 
   <!-- VIEW: Galería -->
-  <section id="view-galeria" class="max-w-6xl mx-auto px-4 hidden">
-    <h2 class="text-xl font-semibold mb-3">Galería</h2>
-    <div id="galeria-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 pb-10"></div>
+  <section id="view-galeria" class="max-w-6xl mx-auto px-4 hidden py-6">
+    <div id="galeria-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1.5 pb-10"></div>
   </section>
 
   <!-- VIEW: Videos -->
-  <section id="view-videos" class="max-w-6xl mx-auto px-4 hidden">
-    <h2 class="text-xl font-semibold mb-3">Videos</h2>
-    <div id="videos-grid" class="grid md:grid-cols-2 gap-5 pb-10"></div>
+  <section id="view-videos" class="max-w-6xl mx-auto px-4 hidden py-6">
+    <div id="videos-grid" class="grid md:grid-cols-2 gap-x-6 gap-y-10 pb-10"></div>
   </section>
 
   <!-- VIEW: Lore -->
@@ -504,6 +507,89 @@
       }
     }
 
+    function renderCharacterRow(p) {
+      const linksHtml = p.links?.length ? `
+        <div class="flex items-center gap-1.5">
+          ${p.links.map(l => {
+            const t = linkType(l);
+            const title = l.label || t.charAt(0).toUpperCase() + t.slice(1);
+            return `
+              <a class="yy-icon-btn" href="${l.href}" target="_blank" rel="noreferrer" aria-label="${title}" title="${title}">
+                ${iconSvg(t)}
+              </a>
+            `;
+          }).join('')}
+        </div>
+      ` : '';
+
+      const kickHtml = p.kick ? `
+        <a id="kick-${p.kick}"
+           data-slug="${p.kick}"
+           href="https://kick.com/${p.kick}"
+           target="_blank" rel="noreferrer"
+           class="kick-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border border-neutral-700/50 bg-neutral-800/50 hover:bg-neutral-700/50">
+          <span class="kick-dot inline-block w-2 h-2 rounded-full bg-neutral-500"></span>
+          <span class="kick-label">Kick</span>
+        </a>
+      ` : '';
+
+      return `
+        <article class="roster-row flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 px-4 py-3.5 border-b border-white/5 last:border-b-0 hover:bg-white/[0.03]">
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <img src="${p.foto || FALLBACK_AVATAR}" alt="${p.nombre}"
+                 class="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover ring-2 ring-white/10 shrink-0" loading="lazy" decoding="async" />
+            <div class="min-w-0">
+              <div class="flex items-baseline gap-2 flex-wrap">
+                <h3 class="font-semibold text-neutral-100">${p.nombre}</h3>
+                ${p.alias ? `<span class="text-yakuza/70 text-xs font-medium">${p.alias}</span>` : ''}
+              </div>
+              <p class="text-sm text-neutral-500 truncate">${p.ooc || '—'}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 pl-14 sm:pl-0 shrink-0">
+            ${kickHtml}
+            ${linksHtml}
+          </div>
+        </article>
+      `;
+    }
+
+    function buildRosterHTML(list, sort) {
+      const rangoFilter = document.getElementById('rango').value;
+      const rankOrder = sort === 'rango-asc' ? [3, 2, 1] : [1, 2, 3];
+      const groups = new Map();
+
+      list.forEach(p => {
+        const r = p.rango ?? 99;
+        if (!groups.has(r)) groups.set(r, []);
+        groups.get(r).push(p);
+      });
+
+      const ranks = rangoFilter
+        ? [Number(rangoFilter)]
+        : [
+            ...rankOrder.filter(r => groups.has(r)),
+            ...[...groups.keys()].filter(r => !rankOrder.includes(r)).sort((a, b) => a - b),
+          ];
+
+      return ranks.map(r => {
+        const items = groups.get(r) || [];
+        if (!items.length) return '';
+        return `
+          <section class="roster-section fade-in">
+            <h2 class="flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-yakuza/80 mb-2 font-display">
+              <span>${rankLabel(r)}</span>
+              <span class="flex-1 h-px bg-gradient-to-r from-yakuza/30 to-transparent"></span>
+              <span class="text-neutral-500 font-normal tabular-nums">${items.length}</span>
+            </h2>
+            <div class="rounded-xl overflow-hidden bg-neutral-900/40 border border-white/5 backdrop-blur-sm">
+              ${items.map(renderCharacterRow).join('')}
+            </div>
+          </section>
+        `;
+      }).join('');
+    }
+
       async function render() {
         const q = norm(document.getElementById('q').value);
         const rango = document.getElementById('rango').value;
@@ -549,51 +635,8 @@
           return;
         }
         empty.classList.add('hidden');
-      
-        grid.innerHTML = list.map(p => `
-          <article class="card rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden fade-in">
-            <div class="relative">
-              <img src="${p.foto || FALLBACK_AVATAR}" alt="${p.nombre}"
-                   class="w-full aspect-[4/3] object-cover" loading="lazy" decoding="async" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-              <div class="absolute bottom-2 left-2 right-2 flex items-center justify-between">
-                <span class="px-2 py-1 rounded-lg text-xs bg-yakuza/20 border border-yakuza">${rankLabel(p.rango)}</span>
-                <span class="px-2 py-1 rounded-lg text-xs bg-neutral-800/70 border border-neutral-700">${p.alias || ''}</span>
-              </div>
-            </div>
-            <div class="p-4">
-              <h3 class="text-lg font-semibold">${p.nombre}</h3>
-              <p class="text-sm text-neutral-400"><span class="font-medium">${p.ooc || '-'}</span></p>
-      
-              ${p.kick ? `
-                <div class="mt-3">
-                  <a id="kick-${p.kick}"
-                     data-slug="${p.kick}"
-                     href="https://kick.com/${p.kick}"
-                     target="_blank" rel="noreferrer"
-                     class="kick-btn inline-flex items-center gap-2 px-2 py-1 rounded-lg text-xs border border-neutral-700 bg-neutral-800/70 hover:bg-neutral-700">
-                    <span class="kick-dot inline-block w-2 h-2 rounded-full bg-neutral-500"></span>
-                    <span class="kick-label">Kick</span>
-                  </a>
-                </div>
-              ` : ''}
-      
-              ${p.links?.length ? `
-                <div class="mt-3 flex flex-wrap gap-2">
-                  ${p.links.map(l => {
-                    const t = linkType(l);
-                    const title = l.label || t.charAt(0).toUpperCase() + t.slice(1);
-                    return `
-                      <a class="yy-icon-btn" href="${l.href}" target="_blank" rel="noreferrer" aria-label="${title}" title="${title}">
-                        ${iconSvg(t)}
-                      </a>
-                    `;
-                  }).join('')}
-                </div>
-              ` : ''}
-            </div>
-          </article>
-        `).join('');
+
+        grid.innerHTML = buildRosterHTML(list, sort);
       
         // 5) Actualizar el badge de Kick SIN fetch por card (usando LIVE_MAP)
         list.forEach(p => {
@@ -721,15 +764,15 @@
         if (!label) { label = document.createElement('span'); label.className='kick-label'; el.appendChild(label); }
 
         if (state.live === true) {
-          el.className = 'kick-btn inline-flex items-center gap-2 px-2 py-1 rounded-lg text-xs border border-yakuza bg-yakuza/20 hover:bg-yakuza/30';
+          el.className = 'kick-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border border-yakuza/50 bg-yakuza/10 hover:bg-yakuza/20';
           dot.className = 'kick-dot inline-block w-2 h-2 rounded-full bg-yakuza animate-pulse';
-          label.textContent = 'En vivo en Kick';
+          label.textContent = 'En vivo';
         } else if (state.live === false) {
-          el.className = 'kick-btn inline-flex items-center gap-2 px-2 py-1 rounded-lg text-xs border border-neutral-700 bg-neutral-800/70 hover:bg-neutral-700';
+          el.className = 'kick-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border border-neutral-700/50 bg-neutral-800/50 hover:bg-neutral-700/50';
           dot.className = 'kick-dot inline-block w-2 h-2 rounded-full bg-neutral-500';
-          label.textContent = 'Kick (offline)';
+          label.textContent = 'Offline';
         } else {
-          el.className = 'kick-btn inline-flex items-center gap-2 px-2 py-1 rounded-lg text-xs border border-neutral-700 bg-neutral-800/70 hover:bg-neutral-700';
+          el.className = 'kick-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border border-neutral-700/50 bg-neutral-800/50 hover:bg-neutral-700/50';
           dot.className = 'kick-dot inline-block w-2 h-2 rounded-full bg-neutral-500';
           label.textContent = 'Kick';
         }
@@ -761,23 +804,18 @@
           const thumb = id ? driveThumb(id) : (i.src || "");
           const alt = i.alt || "";
           return `
-            <figure class="relative rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-800 cursor-zoom-in">
-              <!-- Botón de descarga (usa export=download) -->
+            <figure class="gallery-item relative group overflow-hidden cursor-zoom-in aspect-square bg-neutral-900/50">
               <a href="${id ? driveDL(id) : i.src}" download
                  class="yy-dl-btn text-neutral-200 hover:text-white" title="Descargar">⬇︎</a>
-    
-              <!-- Miniatura clickeable (abre lightbox) -->
               <img src="${thumb}" alt="${alt}"
-                   class="yy-zoomable w-full aspect-[4/3] object-cover"
+                   class="yy-zoomable w-full h-full object-cover"
                    loading="lazy" decoding="async"
                    data-idx="${idx}" data-id="${id || ""}">
-    
               ${alt ? `
-                <figcaption class="absolute bottom-2 left-2 px-2 py-1 text-xs font-medium text-white bg-black/60 rounded-lg">
+                <figcaption class="absolute inset-x-0 bottom-0 px-3 py-2.5 text-xs text-white bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
                   ${alt}
                 </figcaption>
               ` : ''}
-
             </figure>
           `;
         }).join('');
@@ -904,19 +942,26 @@
         if (!r.ok) throw new Error('videos.json no encontrado');
         const items = await r.json();
     
-        const html = (Array.isArray(items) ? items : []).map(v => `
-          <div class="rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-800">
-            <iframe class="w-full aspect-video" loading="lazy" src="https://www.youtube-nocookie.com/embed/${v.id}"
-              title="${(v.title || 'Video').replace(/"/g,'&quot;')}" frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-            <div class="px-3 py-2 text-sm text-neutral-300">
-              <div class="font-medium">${v.title || ''}</div>
-              <div class="text-neutral-400">${new Date(v.published).toLocaleString('es-UY',{dateStyle:'medium', timeStyle:'short'})}</div>
-              <div class="text-neutral-500">${v._channelName || ''}</div>
+        const html = (Array.isArray(items) ? items : []).map((v, i) => {
+          const featured = i === 0 ? 'md:col-span-2' : '';
+          const title = (v.title || 'Video').replace(/"/g, '&quot;');
+          const date = new Date(v.published).toLocaleString('es-UY', { dateStyle: 'medium', timeStyle: 'short' });
+          const channel = v._channelName || '';
+          return `
+          <article class="video-item ${featured}">
+            <div class="rounded-lg overflow-hidden bg-black ring-1 ring-white/10 shadow-xl shadow-black/30">
+              <iframe class="w-full aspect-video" loading="lazy" src="https://www.youtube-nocookie.com/embed/${v.id}"
+                title="${title}" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             </div>
-          </div>
-        `).join('');
+            <div class="mt-3 px-0.5">
+              <h3 class="font-medium text-neutral-100 leading-snug line-clamp-2">${v.title || ''}</h3>
+              <p class="text-sm text-neutral-500 mt-1">${date}${channel ? ` · ${channel}` : ''}</p>
+            </div>
+          </article>
+        `;
+        }).join('');
     
         document.getElementById('videos-grid').innerHTML = html || '<p class="text-neutral-400">Sin resultados.</p>';
         videosLoaded = true;
