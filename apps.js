@@ -5,6 +5,21 @@
     const norm = s => (s || "").toString().normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase();
     const debounce = (fn, ms=200) => { let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; };
 
+    function escapeHtml(s) {
+      return String(s ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function isValidKickSlug(kick) {
+      if (!kick) return false;
+      const s = String(kick).trim().toLowerCase();
+      return s.length > 0 && !/^x+$/i.test(s);
+    }
+
     function sanitizeCharacters(list = []) {
       const seen = new Set();
       const sanitized = [];
@@ -25,7 +40,8 @@
       const alias = (raw.alias || '').trim();
       const ooc = (raw.ooc || '').trim();
       const rango = Number(raw.rango ?? raw.rank);
-      const kick = raw.kick ? String(raw.kick).trim().toLowerCase() : undefined;
+      const kickRaw = raw.kick ? String(raw.kick).trim().toLowerCase() : undefined;
+      const kick = isValidKickSlug(kickRaw) ? kickRaw : undefined;
       const foto = (raw.foto || '').trim() || FALLBACK_AVATAR;
       const links = normalizeLinks(raw.links);
 
@@ -199,7 +215,6 @@
         const iframe = document.createElement('iframe');
         iframe.src = playerSrc(slug);
         iframe.allow = 'autoplay; fullscreen';
-        iframe.allowFullscreen = true;
         iframe.loading = 'lazy';
         iframe.title = `Stream ${slug}`;
         wrap.appendChild(iframe);
@@ -430,15 +445,47 @@
       if (!e.target.closest('.header-end')) closeHeaderMenu();
     });
 
-    function showView(v) {
+    function viewFromHash() {
+      const id = (location.hash || '').replace(/^#/, '').toLowerCase();
+      return VIEWS.includes(id) ? id : 'inicio';
+    }
+
+    function pauseHomePlayers() {
+      ['home-player', 'home-chat'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (el.src) el.dataset.yySrc = el.src;
+        el.removeAttribute('src');
+      });
+    }
+
+    function pauseRotator() {
+      const iframe = document.getElementById('live-iframe');
+      if (iframe?.src) iframe.dataset.yySrc = iframe.src;
+      iframe?.removeAttribute('src');
+      clearInterval(rotateTimer);
+      rotateTimer = null;
+    }
+
+    function showView(v, { updateHash = true } = {}) {
+      if (!VIEWS.includes(v)) v = 'inicio';
+
       VIEWS.forEach(id => {
         const el = document.getElementById('view-'+id);
         if (el) el.classList.toggle('hidden', id !== v);
       });
       styleTabs(v);
       closeHeaderMenu();
+
+      if (updateHash && location.hash !== `#${v}`) {
+        location.hash = v;
+      }
+
       if (v === 'inicio') { renderHome(); }
-      else { stopHomeRotation(); }
+      else {
+        stopHomeRotation();
+        pauseHomePlayers();
+      }
       if (v === 'personajes' && DATA.length) { render(); }
       if (v === 'galeria') { loadGallery(); }
       if (v === 'videos'  && !videosLoaded)  loadVideos();
@@ -450,13 +497,17 @@
       const rotator = document.getElementById('live-rotator');
       if (shouldHideRotator(v)) {
         rotator?.classList.add('hidden');
-        clearInterval(rotateTimer);
-        rotateTimer = null;
+        pauseRotator();
       } else if (ROTATOR_OPEN && LIVE_QUEUE.length > 0) {
         rotator?.classList.remove('hidden');
         if (!rotateTimer) startRotation();
+        else setIframeTo(LIVE_QUEUE[LIVE_INDEX % LIVE_QUEUE.length]);
       }
     }
+
+    window.addEventListener('hashchange', () => {
+      showView(viewFromHash(), { updateHash: false });
+    });
     document.addEventListener('click', (e) => {
       const goto = e.target.closest('[data-goto]');
       if (goto) { showView(goto.dataset.goto); return; }
@@ -473,6 +524,7 @@
         DATA = sanitizeCharacters(Array.isArray(json) ? json : []);
         document.dispatchEvent(new CustomEvent('yy:data-ready'));
         await renderHome();
+        if (viewFromHash() === 'personajes') await render();
       } catch (e) {
         console.error('Error cargando data.json', e);
         document.getElementById('grid').innerHTML =
@@ -484,7 +536,7 @@
       if (!p.links?.length) return '';
       return p.links.map(l => {
         const t = linkType(l);
-        const title = l.label || t.charAt(0).toUpperCase() + t.slice(1);
+        const title = escapeHtml(l.label || t.charAt(0).toUpperCase() + t.slice(1));
         return `
           <a class="yy-icon-btn" href="${l.href}" target="_blank" rel="noreferrer" aria-label="${title}" title="${title}">
             ${iconSvg(t)}
@@ -495,9 +547,9 @@
 
     function renderCharacterCard(p) {
       const kickHtml = p.kick ? `
-        <a id="kick-${p.kick}"
-           data-slug="${p.kick}"
-           href="https://kick.com/${p.kick}"
+        <a id="kick-${escapeHtml(p.kick)}"
+           data-slug="${escapeHtml(p.kick)}"
+           href="https://kick.com/${encodeURIComponent(p.kick)}"
            target="_blank" rel="noreferrer"
            class="kick-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border border-neutral-700/50 bg-neutral-800/50 hover:bg-neutral-700/50">
           <span class="kick-dot inline-block w-2 h-2 rounded-full bg-neutral-500"></span>
@@ -520,16 +572,16 @@
                  class="char-photo w-full h-full object-cover object-top" loading="lazy" decoding="async" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent"></div>
             <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wide bg-black/55 text-yakuza border border-yakuza/35 backdrop-blur-sm">
-              ${rankLabel(p.rango)}
+              ${escapeHtml(rankLabel(p.rango))}
             </span>
             ${p.alias ? `
               <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md text-[10px] bg-black/55 text-neutral-200 border border-white/10 backdrop-blur-sm max-w-[48%] truncate">
-                ${p.alias}
+                ${escapeHtml(p.alias)}
               </span>
             ` : ''}
             <div class="absolute bottom-0 inset-x-0 p-3">
-              <h3 class="char-name">${p.nombre}</h3>
-              <p class="text-xs text-neutral-400 truncate mt-0.5">${p.ooc || '—'}</p>
+              <h3 class="char-name">${escapeHtml(p.nombre)}</h3>
+              <p class="text-xs text-neutral-400 truncate mt-0.5">${escapeHtml(p.ooc || '—')}</p>
             </div>
           </div>
           ${actionsHtml ? `<div class="p-3">${actionsHtml}</div>` : ''}
@@ -632,7 +684,7 @@
       picker.classList.remove('hidden');
       picker.innerHTML = liveList.map((p, i) => `
         <button type="button" class="home-picker-btn ${i === HOME_LIVE_INDEX ? 'home-picker-btn-active' : ''}"
-                data-home-index="${i}" aria-label="${p.nombre}">
+                data-home-index="${i}" aria-label="${escapeHtml(p.nombre)}">
           <img src="${p.foto || FALLBACK_AVATAR}" alt="" loading="lazy" decoding="async" />
         </button>
       `).join('');
@@ -852,10 +904,7 @@
       );
       if (LIVE_QUEUE.length === 0 || hideRotator) {
         panel.classList.add('hidden');
-        if (hideRotator) {
-          clearInterval(rotateTimer);
-          rotateTimer = null;
-        }
+        pauseRotator();
       } else if (ROTATOR_OPEN) {
         panel.classList.remove('hidden');
         setIframeTo(LIVE_QUEUE[LIVE_INDEX % LIVE_QUEUE.length]);
@@ -903,6 +952,7 @@
     document.getElementById('live-close').addEventListener('click', () => {
       ROTATOR_OPEN = false;
       document.getElementById('live-rotator').classList.add('hidden');
+      pauseRotator();
     });
     document.getElementById('live-prev').addEventListener('click', () => {
       if (LIVE_QUEUE.length === 0) return;
@@ -968,9 +1018,10 @@
           const id = driveIdFrom(i.src) || i.id;
           const thumb = id ? driveThumb(id) : (i.src || "");
           const alt = i.alt || "";
+          const altEsc = escapeHtml(alt);
           return `
-            <figure class="gallery-item relative group overflow-hidden cursor-zoom-in aspect-square bg-neutral-900/50">
-              <a href="${id ? driveDL(id) : i.src}" download
+            <figure class="gallery-item relative group overflow-hidden cursor-zoom-in aspect-square bg-neutral-900/50" tabindex="0">
+              <a href="${id ? driveDL(id) : (safeUrl(i.src) || '#')}" download
                  class="yy-dl-btn text-neutral-200 hover:text-white" title="Descargar" aria-label="Descargar">
                 <svg class="yy-dl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M12 3v12"/>
@@ -978,11 +1029,11 @@
                   <path d="M5 21h14"/>
                 </svg>
               </a>
-              <img src="${thumb}" alt="${alt}"
+              <img src="${thumb}" alt="${altEsc}"
                    class="yy-zoomable w-full h-full object-cover"
                    loading="lazy" decoding="async"
                    data-idx="${idx}" data-id="${id || ""}">
-              ${alt ? `<figcaption class="gallery-caption">${alt}</figcaption>` : ''}
+              ${alt ? `<figcaption class="gallery-caption">${altEsc}</figcaption>` : ''}
             </figure>
           `;
         }).join('');
@@ -1104,6 +1155,26 @@
 
 
   // ===== Videos (estático desde videos.json) =====
+    let videosListenersBound = false;
+
+    function mountVideoPlayer(facade) {
+      const id = facade.dataset.ytId;
+      if (!id || facade.dataset.loaded === '1') return;
+      const title = facade.dataset.ytTitle || 'Video';
+      const wrap = document.createElement('div');
+      wrap.className = 'rounded-lg overflow-hidden bg-black ring-1 ring-white/10 shadow-xl shadow-black/30';
+      const iframe = document.createElement('iframe');
+      iframe.className = 'w-full aspect-video';
+      iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1`;
+      iframe.title = title;
+      iframe.loading = 'lazy';
+      iframe.setAttribute('frameborder', '0');
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+      wrap.appendChild(iframe);
+      facade.replaceWith(wrap);
+    }
+
     async function loadVideos() {
       try {
         const r = await fetch('videos.json', { cache: 'no-cache' });
@@ -1112,19 +1183,23 @@
     
         const html = (Array.isArray(items) ? items : []).map((v, i) => {
           const featured = i === 0 ? 'md:col-span-2' : '';
-          const title = (v.title || 'Video').replace(/"/g, '&quot;');
+          const title = escapeHtml(v.title || 'Video');
           const date = new Date(v.published).toLocaleString('es-UY', { dateStyle: 'medium', timeStyle: 'short' });
-          const channel = v._channelName || '';
+          const channel = escapeHtml(v._channelName || '');
+          const id = escapeHtml(v.id || '');
           return `
           <article class="video-item ${featured}">
-            <div class="rounded-lg overflow-hidden bg-black ring-1 ring-white/10 shadow-xl shadow-black/30">
-              <iframe class="w-full aspect-video" loading="lazy" src="https://www.youtube-nocookie.com/embed/${v.id}"
-                title="${title}" frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-            </div>
+            <button type="button" class="video-facade w-full text-left rounded-lg overflow-hidden bg-black ring-1 ring-white/10 shadow-xl shadow-black/30"
+                    data-yt-id="${id}" data-yt-title="${title}" aria-label="Reproducir: ${title}">
+              <span class="video-facade-media relative block aspect-video">
+                <img src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" alt="" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
+                <span class="video-facade-play" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                </span>
+              </span>
+            </button>
             <div class="mt-3 px-0.5">
-              <h3 class="font-medium text-neutral-100 leading-snug line-clamp-2">${v.title || ''}</h3>
+              <h3 class="font-medium text-neutral-100 leading-snug line-clamp-2">${title}</h3>
               <p class="text-sm text-neutral-500 mt-1">${date}${channel ? ` · ${channel}` : ''}</p>
             </div>
           </article>
@@ -1133,6 +1208,14 @@
     
         document.getElementById('videos-grid').innerHTML = html || '<p class="text-neutral-400">Sin resultados.</p>';
         videosLoaded = true;
+
+        if (!videosListenersBound) {
+          document.getElementById('videos-grid')?.addEventListener('click', (e) => {
+            const facade = e.target.closest('.video-facade');
+            if (facade) mountVideoPlayer(facade);
+          });
+          videosListenersBound = true;
+        }
     
         clearInterval(videosTimer);
         videosTimer = setInterval(() => {
@@ -1194,5 +1277,5 @@
     }
 
     // ===== Go! =====
-    showView('inicio');
+    showView(viewFromHash(), { updateHash: false });
     loadData();
