@@ -66,9 +66,13 @@
   }
 
   .filter-btn-clear {
-    @apply w-full h-10 inline-flex items-center justify-center gap-1.5 rounded-lg text-sm
+    @apply w-full lg:w-auto lg:min-w-[6.75rem] h-10 inline-flex items-center justify-center gap-2 px-4 rounded-lg text-sm
            text-neutral-400 border border-white/5 bg-white/[0.02]
            hover:text-yakuza hover:border-yakuza/30 hover:bg-yakuza/5 transition;
+  }
+
+  .filter-field-clear {
+    @apply w-full lg:w-auto lg:shrink-0;
   }
 
   .roster-row {

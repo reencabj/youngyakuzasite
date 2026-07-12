@@ -176,8 +176,8 @@
   <div id="view-personajes" class="py-6 hidden">
     <section class="max-w-6xl mx-auto px-4">
       <div class="filters-bar rounded-xl border border-white/10 bg-neutral-950/55 backdrop-blur-md p-3 sm:p-4 shadow-lg shadow-black/20">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_160px_160px_auto] gap-3 lg:gap-4 lg:items-end">
-          <div class="filter-field sm:col-span-2 lg:col-span-1">
+        <div class="flex flex-col lg:flex-row lg:items-end gap-3 lg:gap-4">
+          <div class="filter-field flex-1 min-w-0">
             <label for="q" class="filter-label">Buscar</label>
             <div class="relative">
               <svg class="filter-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -187,7 +187,7 @@
                      class="filter-input filter-input-search" />
             </div>
           </div>
-          <div class="filter-field">
+          <div class="filter-field w-full lg:w-40 lg:shrink-0">
             <label for="sort" class="filter-label">Ordenar</label>
             <select id="sort" class="filter-input filter-select">
               <option value="rango-desc">Rango (↓)</option>
@@ -197,7 +197,7 @@
               <option value="live-desc">En vivo primero</option>
             </select>
           </div>
-          <div class="filter-field">
+          <div class="filter-field w-full lg:w-40 lg:shrink-0">
             <label for="rango" class="filter-label">Rango</label>
             <select id="rango" class="filter-input filter-select">
               <option value="">Todos</option>
@@ -206,8 +206,7 @@
               <option value="3">Shatei</option>
             </select>
           </div>
-          <div class="filter-field sm:col-span-2 lg:col-span-1">
-            <span class="filter-label hidden lg:block invisible" aria-hidden="true">&nbsp;</span>
+          <div class="filter-field-clear">
             <button id="clear" type="button" class="filter-btn-clear">
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path d="M18 6 6 18M6 6l12 12"/>
