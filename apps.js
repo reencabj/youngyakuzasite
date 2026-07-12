@@ -592,7 +592,7 @@
           <div class="relative aspect-[3/4] overflow-hidden bg-neutral-950">
             <img src="${p.foto || FALLBACK_AVATAR}" alt="${p.nombre}"
                  class="char-photo w-full h-full object-cover object-top" loading="lazy" decoding="async" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent"></div>
+            <div class="char-card-overlay absolute inset-0"></div>
             <span class="char-rank-badge absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wide bg-black/55 text-yakuza border border-yakuza/35 backdrop-blur-sm">
               ${escapeHtml(rankLabel(p.rango))}
             </span>

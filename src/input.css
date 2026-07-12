@@ -372,6 +372,16 @@
     @apply transition-transform duration-300;
   }
 
+  .char-card-overlay {
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.96) 0%,
+      rgba(0, 0, 0, 0.72) 28%,
+      rgba(0, 0, 0, 0.28) 52%,
+      transparent 78%
+    );
+  }
+
   .char-card:hover .char-photo {
     transform: scale(1.04);
   }
