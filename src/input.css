@@ -666,14 +666,22 @@
     right: 0.5rem;
     top: 0.5rem;
     z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     background: rgba(0, 0, 0, 0.6);
     border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(4px);
     border-radius: 0.375rem;
-    padding: 0.35rem 0.5rem;
-    font-size: 0.75rem;
+    padding: 0.35rem;
     opacity: 0;
     transition: opacity 0.2s ease;
+  }
+
+  #view-galeria .yy-dl-icon {
+    width: 14px;
+    height: 14px;
+    display: block;
   }
 
   #view-galeria .gallery-item:hover .yy-dl-btn {

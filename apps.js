@@ -950,7 +950,13 @@
           return `
             <figure class="gallery-item relative group overflow-hidden cursor-zoom-in aspect-square bg-neutral-900/50">
               <a href="${id ? driveDL(id) : i.src}" download
-                 class="yy-dl-btn text-neutral-200 hover:text-white" title="Descargar">â¬‡ï¸Ž</a>
+                 class="yy-dl-btn text-neutral-200 hover:text-white" title="Descargar" aria-label="Descargar">
+                <svg class="yy-dl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 3v12"/>
+                  <path d="m7 11 5 5 5-5"/>
+                  <path d="M5 21h14"/>
+                </svg>
+              </a>
               <img src="${thumb}" alt="${alt}"
                    class="yy-zoomable w-full h-full object-cover"
                    loading="lazy" decoding="async"
