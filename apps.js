@@ -291,7 +291,9 @@
       };
 
       const updateLabel = () => {
-        btn.textContent = isFS() ? 'Salir' : 'Pantalla completa';
+        const active = isFS();
+        root.classList.toggle('mk-is-fullscreen', active);
+        btn.textContent = active ? 'Salir' : 'Pantalla completa';
       };
 
       btn.addEventListener('click', () => (isFS() ? exitFS() : enterFS()));
