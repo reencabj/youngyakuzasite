@@ -403,6 +403,67 @@
            text-neutral-100 bg-black/55 border border-white/10 backdrop-blur-sm tabular-nums;
   }
 
+  .explore-grid {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 640px) {
+    .explore-grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    .explore-card {
+      grid-column: span 2;
+    }
+
+    .explore-card:nth-child(4) {
+      grid-column: 2 / span 2;
+    }
+
+    .explore-card:nth-child(5) {
+      grid-column: 4 / span 2;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .explore-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .explore-card,
+    .explore-card:nth-child(4),
+    .explore-card:nth-child(5) {
+      grid-column: span 1;
+    }
+  }
+
+  .explore-card {
+    @apply flex flex-col items-start text-left p-4 rounded-xl border border-white/10
+           bg-neutral-950/45 backdrop-blur-sm transition
+           hover:border-yakuza/35 hover:bg-neutral-900/55 hover:-translate-y-0.5;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  }
+
+  .explore-card-icon {
+    @apply w-10 h-10 mb-3 inline-flex items-center justify-center rounded-lg
+           bg-yakuza/10 border border-yakuza/20 text-yakuza
+           group-hover:bg-yakuza/15 group-hover:border-yakuza/35 transition;
+  }
+
+  .explore-card-icon svg {
+    @apply w-5 h-5;
+  }
+
+  .explore-card-title {
+    @apply block font-display font-semibold text-neutral-100 group-hover:text-yakuza transition-colors;
+  }
+
+  .explore-card-desc {
+    @apply block text-sm text-neutral-500 mt-1 leading-snug;
+  }
+
   .fade-in {
     animation: fade 0.35s ease-in-out;
   }

@@ -160,26 +160,41 @@
 
       <div class="fade-in">
         <h2 class="text-lg font-display font-semibold text-neutral-100 mb-4">Explorar</h2>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          <button type="button" data-goto="personajes" class="summary-card group text-left p-4 rounded-xl bg-neutral-900/40 border border-white/5 hover:border-yakuza/30 hover:bg-neutral-900/60 transition">
-            <span class="block font-semibold text-neutral-100 group-hover:text-yakuza transition-colors">Personajes</span>
-            <span class="block text-sm text-neutral-500 mt-1">Roster completo por rango</span>
+        <div class="explore-grid">
+          <button type="button" data-goto="personajes" class="explore-card group">
+            <span class="explore-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </span>
+            <span class="explore-card-title">Personajes</span>
+            <span class="explore-card-desc">Roster completo por rango</span>
           </button>
-          <button type="button" data-goto="galeria" class="summary-card group text-left p-4 rounded-xl bg-neutral-900/40 border border-white/5 hover:border-yakuza/30 hover:bg-neutral-900/60 transition">
-            <span class="block font-semibold text-neutral-100 group-hover:text-yakuza transition-colors">Galería</span>
-            <span class="block text-sm text-neutral-500 mt-1">Fotos y capturas del clan</span>
+          <button type="button" data-goto="galeria" class="explore-card group">
+            <span class="explore-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            </span>
+            <span class="explore-card-title">Galería</span>
+            <span class="explore-card-desc">Fotos y capturas del clan</span>
           </button>
-          <button type="button" data-goto="videos" class="summary-card group text-left p-4 rounded-xl bg-neutral-900/40 border border-white/5 hover:border-yakuza/30 hover:bg-neutral-900/60 transition">
-            <span class="block font-semibold text-neutral-100 group-hover:text-yakuza transition-colors">Videos</span>
-            <span class="block text-sm text-neutral-500 mt-1">Contenido en YouTube</span>
+          <button type="button" data-goto="videos" class="explore-card group">
+            <span class="explore-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m22 8-6 4 6 4V8Z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>
+            </span>
+            <span class="explore-card-title">Videos</span>
+            <span class="explore-card-desc">Contenido en YouTube</span>
           </button>
-          <button type="button" data-goto="lore" class="summary-card group text-left p-4 rounded-xl bg-neutral-900/40 border border-white/5 hover:border-yakuza/30 hover:bg-neutral-900/60 transition">
-            <span class="block font-semibold text-neutral-100 group-hover:text-yakuza transition-colors">Lore</span>
-            <span class="block text-sm text-neutral-500 mt-1">Historia del clan</span>
+          <button type="button" data-goto="lore" class="explore-card group">
+            <span class="explore-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            </span>
+            <span class="explore-card-title">Lore</span>
+            <span class="explore-card-desc">Historia del clan</span>
           </button>
-          <button type="button" data-goto="multikick" class="summary-card group text-left p-4 rounded-xl bg-neutral-900/40 border border-white/5 hover:border-yakuza/30 hover:bg-neutral-900/60 transition sm:col-span-2 lg:col-span-1">
-            <span class="block font-semibold text-neutral-100 group-hover:text-yakuza transition-colors">MultiKick</span>
-            <span class="block text-sm text-neutral-500 mt-1">Varios streams en simultáneo</span>
+          <button type="button" data-goto="multikick" class="explore-card group">
+            <span class="explore-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="m7 8 3 3-3 3M13 14h4"/></svg>
+            </span>
+            <span class="explore-card-title">MultiKick</span>
+            <span class="explore-card-desc">Varios streams en simultáneo</span>
           </button>
         </div>
       </div>
