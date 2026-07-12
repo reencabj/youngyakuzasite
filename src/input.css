@@ -372,7 +372,12 @@
   }
 
   .home-picker {
-    @apply flex flex-wrap items-center justify-center gap-2.5 mb-4;
+    @apply ml-auto flex items-center gap-2 overflow-x-auto;
+    scrollbar-width: none;
+  }
+
+  .home-picker::-webkit-scrollbar {
+    display: none;
   }
 
   .home-picker-btn {
@@ -381,7 +386,7 @@
   }
 
   .home-picker-btn img {
-    @apply w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover block;
+    @apply w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover block;
   }
 
   .home-picker-btn-active {
