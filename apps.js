@@ -447,10 +447,8 @@
       const theater = document.getElementById('home-live-theater');
       const empty = document.getElementById('home-live-empty');
       const countEl = document.getElementById('home-live-count');
-      const statEl = document.getElementById('home-stat-members');
 
       if (countEl) countEl.textContent = String(HOME_LIVE_LIST.length);
-      if (statEl) statEl.textContent = `${DATA.length} miembros en el roster`;
 
       if (!HOME_LIVE_LIST.length) {
         theater?.classList.add('hidden');
