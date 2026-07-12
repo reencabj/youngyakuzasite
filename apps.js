@@ -139,13 +139,12 @@
           return;
         }
 
-        box.innerHTML = live.map(p => {
+        box.innerHTML = [...live].reverse().map(p => {
           const sel = selected.has(p.kick);
           return `
-            <button type="button" class="mk-chip ${sel ? 'mk-chip-active' : ''}" data-slug="${p.kick}">
+            <button type="button" class="mk-picker-btn ${sel ? 'mk-picker-btn-active' : ''}"
+                    data-slug="${p.kick}" aria-label="${p.nombre}">
               <img src="${p.foto || FALLBACK_AVATAR}" alt="" loading="lazy" decoding="async" />
-              <span class="mk-chip-name">${p.nombre}</span>
-              ${sel ? '<span class="mk-chip-dot" aria-hidden="true"></span>' : ''}
             </button>
           `;
         }).join('');
@@ -241,7 +240,7 @@
       function stop() { clearInterval(timer); timer = null; }
 
       document.getElementById('view-multikick')?.addEventListener('click', (e) => {
-        const chip = e.target.closest('.mk-chip');
+        const chip = e.target.closest('.mk-picker-btn');
         if (chip?.dataset.slug) {
           toggleSlug(chip.dataset.slug);
           return;
