@@ -961,11 +961,7 @@
                    class="yy-zoomable w-full h-full object-cover"
                    loading="lazy" decoding="async"
                    data-idx="${idx}" data-id="${id || ""}">
-              ${alt ? `
-                <figcaption class="absolute inset-x-0 bottom-0 px-3 py-2.5 text-xs text-white bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-                  ${alt}
-                </figcaption>
-              ` : ''}
+              ${alt ? `<figcaption class="gallery-caption">${alt}</figcaption>` : ''}
             </figure>
           `;
         }).join('');
