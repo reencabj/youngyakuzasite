@@ -367,72 +367,35 @@
     }
   }
 
+  .home-theater-wrap {
+    @apply flex items-center gap-2 sm:gap-3;
+  }
+
   .home-picker {
-    @apply flex flex-wrap items-center justify-center gap-2 mb-4;
+    @apply flex flex-wrap items-center justify-center gap-2.5 mb-4;
   }
 
   .home-picker-btn {
-    @apply inline-flex items-center gap-2 pl-1.5 pr-3.5 py-1.5 rounded-full border border-white/10
-           bg-neutral-900/50 backdrop-blur-sm transition shrink-0
-           hover:border-yakuza/40 hover:bg-neutral-900/70;
+    @apply p-0.5 rounded-full border-2 border-transparent transition shrink-0
+           hover:border-yakuza/35;
   }
 
   .home-picker-btn img {
-    @apply w-7 h-7 rounded-full object-cover ring-1 ring-white/10 transition;
-  }
-
-  .home-picker-btn-name {
-    @apply text-sm font-medium text-neutral-300 max-w-[130px] truncate transition-colors;
-  }
-
-  .home-picker-btn-dot {
-    @apply w-1.5 h-1.5 rounded-full bg-neutral-600 shrink-0 transition-colors;
+    @apply w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover block;
   }
 
   .home-picker-btn-active {
-    @apply border-yakuza/50 bg-yakuza/10 ring-1 ring-yakuza/25;
-  }
-
-  .home-picker-btn-active img {
-    @apply ring-yakuza/50;
-  }
-
-  .home-picker-btn-active .home-picker-btn-name {
-    @apply text-neutral-50;
-  }
-
-  .home-picker-btn-active .home-picker-btn-dot {
-    @apply bg-yakuza;
-    animation: live-pulse 2s ease-in-out infinite;
+    @apply border-yakuza ring-2 ring-yakuza/20;
   }
 
   .home-nav-arrow {
-    @apply absolute top-1/2 -translate-y-1/2 z-20 w-10 h-10 inline-flex items-center justify-center
-           rounded-full text-white bg-black/45 border border-white/15 backdrop-blur-sm
-           opacity-0 transition hover:bg-black/75 hover:border-yakuza/60;
+    @apply shrink-0 w-9 h-9 sm:w-10 sm:h-10 inline-flex items-center justify-center
+           rounded-full text-neutral-200 bg-neutral-900/85 border border-white/10 backdrop-blur-sm
+           transition hover:bg-neutral-800 hover:border-yakuza/50 hover:text-white;
   }
 
   .home-nav-arrow svg {
     @apply w-5 h-5;
-  }
-
-  .home-nav-prev {
-    @apply left-3;
-  }
-
-  .home-nav-next {
-    @apply right-3;
-  }
-
-  .group\/player:hover .home-nav-arrow:not(.hidden),
-  .home-nav-arrow:focus-visible {
-    @apply opacity-100;
-  }
-
-  @media (hover: none) {
-    .home-nav-arrow:not(.hidden) {
-      @apply opacity-100;
-    }
   }
 
   .home-live-pos {

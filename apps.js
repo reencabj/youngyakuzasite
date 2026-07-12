@@ -453,10 +453,8 @@
       picker.classList.remove('hidden');
       picker.innerHTML = liveList.map((p, i) => `
         <button type="button" class="home-picker-btn ${i === HOME_LIVE_INDEX ? 'home-picker-btn-active' : ''}"
-                data-home-index="${i}">
+                data-home-index="${i}" aria-label="${p.nombre}">
           <img src="${p.foto || FALLBACK_AVATAR}" alt="" loading="lazy" decoding="async" />
-          <span class="home-picker-btn-name">${p.nombre}</span>
-          <span class="home-picker-btn-dot"></span>
         </button>
       `).join('');
     }
