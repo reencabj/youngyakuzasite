@@ -165,7 +165,7 @@
   }
 
   .lore-enemies {
-    @apply flex flex-wrap gap-2 mt-4 not-prose;
+    @apply flex flex-wrap gap-2 mt-4;
   }
 
   .lore-enemy-tag {
@@ -175,7 +175,7 @@
   }
 
   .lore-timeline {
-    @apply relative list-none m-0 p-0 pl-1 not-prose;
+    @apply relative list-none m-0 p-0 pl-1;
   }
 
   .lore-timeline::before {
