@@ -268,6 +268,10 @@
         btn.className = (id === activeId) ? TAB_ACTIVE : TAB_INACTIVE;
       });
     }
+    function shouldHideRotator(view) {
+      return view === 'inicio' || view === 'multikick';
+    }
+
     function showView(v) {
       VIEWS.forEach(id => {
         const el = document.getElementById('view-'+id);
@@ -285,7 +289,7 @@
       else { MK.stop?.(); }
 
       const rotator = document.getElementById('live-rotator');
-      if (v === 'inicio') {
+      if (shouldHideRotator(v)) {
         rotator?.classList.add('hidden');
         clearInterval(rotateTimer);
         rotateTimer = null;
@@ -684,10 +688,12 @@
       if (changed) { LIVE_INDEX = 0; startRotation(); }
     
       const panel = document.getElementById('live-rotator');
-      const onInicio = isViewVisible('inicio');
-      if (LIVE_QUEUE.length === 0 || onInicio) {
+      const hideRotator = shouldHideRotator(
+        VIEWS.find(id => isViewVisible(id))
+      );
+      if (LIVE_QUEUE.length === 0 || hideRotator) {
         panel.classList.add('hidden');
-        if (onInicio) {
+        if (hideRotator) {
           clearInterval(rotateTimer);
           rotateTimer = null;
         }
