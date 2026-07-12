@@ -112,6 +112,7 @@ async function main() {
   // Extraer slugs kick unicos
   const slugs = [...new Set(
     data
+      .filter(x => Number(x?.activo ?? 1) !== 0)
       .map(x => (x?.kick ? String(x.kick).trim().toLowerCase() : ""))
       .filter(Boolean)
   )];

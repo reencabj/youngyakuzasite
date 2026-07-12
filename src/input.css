@@ -332,6 +332,28 @@
     @apply transition-all duration-200;
   }
 
+  .char-card-inactive {
+    opacity: 0.72;
+  }
+
+  .char-card-inactive:hover {
+    opacity: 0.88;
+  }
+
+  .personajes-inactivos-sep {
+    @apply flex items-center gap-4 pt-4;
+  }
+
+  .personajes-inactivos-sep::before,
+  .personajes-inactivos-sep::after {
+    content: '';
+    @apply flex-1 h-px bg-white/10;
+  }
+
+  .personajes-inactivos-sep span {
+    @apply text-xs font-semibold uppercase tracking-widest text-neutral-500 shrink-0;
+  }
+
   .char-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);

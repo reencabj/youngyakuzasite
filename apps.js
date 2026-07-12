@@ -29,6 +29,10 @@
       return s.length > 0 && !/^x+$/i.test(s);
     }
 
+    function isCharacterActive(p) {
+      return Number(p?.activo ?? 1) !== 0;
+    }
+
     function sanitizeCharacters(list = []) {
       const seen = new Set();
       const sanitized = [];
@@ -53,6 +57,7 @@
       const kick = isValidKickSlug(kickRaw) ? kickRaw : undefined;
       const foto = (raw.foto || '').trim() || FALLBACK_AVATAR;
       const links = normalizeLinks(raw.links);
+      const activo = Number(raw.activo ?? raw.active ?? 1) === 0 ? 0 : 1;
 
       return {
         ...raw,
@@ -63,6 +68,7 @@
         kick,
         foto,
         links,
+        activo,
       };
     }
 
@@ -147,7 +153,7 @@
 
       async function liveListAsync() {
         const LIVE_MAP = await getLiveMap();
-        return DATA.filter(p => p.kick && LIVE_MAP.get(p.kick)?.live === true);
+        return DATA.filter(p => isCharacterActive(p) && p.kick && LIVE_MAP.get(p.kick)?.live === true);
       }
 
       function updateCount() {
@@ -576,8 +582,10 @@
         </div>
       ` : '';
 
+      const inactiveClass = isCharacterActive(p) ? '' : ' char-card-inactive';
+
       return `
-        <article class="char-card scroll-reveal group rounded-xl overflow-hidden bg-neutral-900/50 border border-white/5 backdrop-blur-sm hover:border-yakuza/25"
+        <article class="char-card scroll-reveal group rounded-xl overflow-hidden bg-neutral-900/50 border border-white/5 backdrop-blur-sm hover:border-yakuza/25${inactiveClass}"
                  data-char-key="${escapeHtml(p.kick || p.nombre)}"${p.kick ? ` data-kick="${escapeHtml(p.kick)}"` : ''}>
           <div class="relative aspect-[3/4] overflow-hidden bg-neutral-950">
             <img src="${p.foto || FALLBACK_AVATAR}" alt="${p.nombre}"
@@ -768,7 +776,7 @@
 
       const LIVE_MAP = await getLiveMap();
       HOME_LIVE_LIST = DATA
-        .filter(p => p.kick && LIVE_MAP.get(p.kick)?.live === true)
+        .filter(p => isCharacterActive(p) && p.kick && LIVE_MAP.get(p.kick)?.live === true)
         .sort((a, b) => norm(a.nombre).localeCompare(norm(b.nombre)));
 
       const theater = document.getElementById('home-live-theater');
@@ -812,12 +820,16 @@
       scheduleRender();
     }
 
-    function getFilteredList(LIVE_MAP) {
+    function getFilteredList(LIVE_MAP, { scope = 'activos' } = {}) {
       const q = norm(document.getElementById('q').value);
       const rango = document.getElementById('rango').value;
       const sort = document.getElementById('sort').value;
 
       const list = DATA.filter(p => {
+        const active = isCharacterActive(p);
+        if (scope === 'activos' && !active) return false;
+        if (scope === 'inactivos' && active) return false;
+
         const matchQ =
           !q ||
           norm(p.nombre).includes(q) ||
@@ -847,7 +859,7 @@
     function syncLiveSnapshotFromData(LIVE_MAP) {
       lastLiveSnapshot.clear();
       DATA.forEach(p => {
-        if (!p.kick) return;
+        if (!p.kick || !isCharacterActive(p)) return;
         lastLiveSnapshot.set(p.kick, LIVE_MAP.get(p.kick)?.live ?? false);
       });
     }
@@ -860,7 +872,7 @@
       const grid = document.getElementById('grid');
       if (!grid?.querySelector('.char-card')) return false;
 
-      const { list } = getFilteredList(LIVE_MAP);
+      const { list } = getFilteredList(LIVE_MAP, { scope: 'activos' });
       const cardsByKey = new Map();
       grid.querySelectorAll('.char-card').forEach(card => {
         const key = card.dataset.charKey;
@@ -897,9 +909,13 @@
       DATA.forEach(p => {
         if (!p.kick) return;
         const live = LIVE_MAP.get(p.kick)?.live ?? false;
-        const prev = lastLiveSnapshot.get(p.kick);
-        if (prev !== undefined && prev !== live) liveChanged = true;
-        paintKickButton(p.kick, { live });
+        if (isCharacterActive(p)) {
+          const prev = lastLiveSnapshot.get(p.kick);
+          if (prev !== undefined && prev !== live) liveChanged = true;
+          paintKickButton(p.kick, { live });
+        } else {
+          paintKickButton(p.kick, { live: false });
+        }
       });
 
       await updateLiveUI_fromMap(LIVE_MAP);
@@ -924,30 +940,36 @@
 
       async function render() {
         const LIVE_MAP = await getLiveMap();
-        const { list, sort } = getFilteredList(LIVE_MAP);
-      
-        const grid = document.getElementById('grid');
-        const empty = document.getElementById('empty');
-      
-        if (!list.length) {
-          grid.innerHTML = '';
-          empty.classList.remove('hidden');
-          await updateLiveUI_fromMap(LIVE_MAP);
-          syncLiveSnapshotFromData(LIVE_MAP);
-          scheduleRender();
-          return;
-        }
-        empty.classList.add('hidden');
+        const active = getFilteredList(LIVE_MAP, { scope: 'activos' });
+        const inactive = getFilteredList(LIVE_MAP, { scope: 'inactivos' });
 
-        grid.innerHTML = list.map(renderCharacterCard).join('');
-        requestAnimationFrame(() => initScrollReveal('#grid .scroll-reveal'));
-      
-        list.forEach(p => {
+        const grid = document.getElementById('grid');
+        const gridInactivos = document.getElementById('grid-inactivos');
+        const inactivosSection = document.getElementById('inactivos-section');
+        const empty = document.getElementById('empty');
+
+        const hasActive = active.list.length > 0;
+        const hasInactive = inactive.list.length > 0;
+
+        grid.innerHTML = hasActive ? active.list.map(renderCharacterCard).join('') : '';
+        empty.classList.toggle('hidden', hasActive || hasInactive);
+
+        if (hasInactive) {
+          inactivosSection?.classList.remove('hidden');
+          if (gridInactivos) gridInactivos.innerHTML = inactive.list.map(renderCharacterCard).join('');
+        } else {
+          inactivosSection?.classList.add('hidden');
+          if (gridInactivos) gridInactivos.innerHTML = '';
+        }
+
+        requestAnimationFrame(() => initScrollReveal('#grid .scroll-reveal, #grid-inactivos .scroll-reveal'));
+
+        [...active.list, ...inactive.list].forEach(p => {
           if (!p.kick) return;
-          const live = LIVE_MAP.get(p.kick)?.live ?? false;
+          const live = isCharacterActive(p) && (LIVE_MAP.get(p.kick)?.live ?? false);
           paintKickButton(p.kick, { live });
         });
-      
+
         await updateLiveUI_fromMap(LIVE_MAP);
         syncLiveSnapshotFromData(LIVE_MAP);
         scheduleRender();
@@ -1009,7 +1031,7 @@
 
     async function updateLiveUI_fromMap(LIVE_MAP) {
       const liveNow = DATA
-        .filter(p => p.kick && (LIVE_MAP.get(p.kick)?.live === true))
+        .filter(p => isCharacterActive(p) && p.kick && (LIVE_MAP.get(p.kick)?.live === true))
         .map(p => String(p.kick).toLowerCase());
     
       const changed = JSON.stringify(liveNow) !== JSON.stringify(LIVE_QUEUE);

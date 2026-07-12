@@ -267,8 +267,14 @@
     </section>
 
     <main class="max-w-6xl mx-auto px-4">
-      <div id="grid" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 py-8"></div>
+      <div id="grid" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 pt-8 pb-4"></div>
       <p id="empty" class="hidden text-neutral-300 text-center pb-16">No se encontraron personajes con esos filtros.</p>
+      <div id="inactivos-section" class="hidden pb-10">
+        <div class="personajes-inactivos-sep" role="separator" aria-label="Personajes inactivos">
+          <span>Inactivos</span>
+        </div>
+        <div id="grid-inactivos" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 pt-6"></div>
+      </div>
     </main>
   </div>
 
