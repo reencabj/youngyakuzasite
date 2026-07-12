@@ -1076,7 +1076,8 @@
     document.getElementById('yy-next')?.addEventListener('click', yyNext);
     // click en fondo oscuro cierra
     document.getElementById('yy-lightbox')?.addEventListener('click', (e) => {
-      if (e.target.id === 'yy-lightbox') yyClose();
+      if (e.target.closest('.yy-lb-media, .yy-lb-nav, .yy-lb-close, #yy-dl')) return;
+      yyClose();
     });
 
 
