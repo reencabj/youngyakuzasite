@@ -270,28 +270,20 @@
   </section>
 
   <!-- VIEW: MultiKick -->
-  <section id="view-multikick" class="max-w-6xl mx-auto px-4 hidden">
-    <h2 class="text-xl font-semibold mb-3">MultiKick</h2>
+  <section id="view-multikick" class="max-w-6xl mx-auto px-4 hidden py-6">
+    <h2 class="text-lg font-display font-semibold text-neutral-100 uppercase tracking-wide mb-4">MultiKick</h2>
 
-    <div id="mk-live-list" class="flex flex-wrap gap-2 mb-3"></div>
-
-    <div class="flex items-center gap-2 mb-4">
-      <button id="mk-select-all"
-        class="px-3 py-2 rounded-xl text-sm border border-yakuza bg-yakuza/20 hover:bg-yakuza/30">
-        Mostrar todos
-      </button>
-      <button id="mk-clear"
-        class="px-3 py-2 rounded-xl text-sm border border-neutral-700 bg-neutral-800/70 hover:bg-neutral-700">
-        Limpiar selección
-      </button>
-      <button id="mk-full"
-        class="px-3 py-2 rounded-xl text-sm border border-neutral-700 bg-neutral-800/70 hover:bg-neutral-700">
-        Pantalla completa
-      </button>
-      <span id="mk-count" class="text-sm text-neutral-400 ml-2">0 seleccionados</span>
+    <div class="mk-toolbar">
+      <div id="mk-live-list" class="mk-chips"></div>
+      <div class="mk-actions">
+        <button id="mk-select-all" type="button" class="mk-btn mk-btn-primary">Mostrar todos</button>
+        <button id="mk-clear" type="button" class="mk-btn">Limpiar</button>
+        <button id="mk-full" type="button" class="mk-btn">Pantalla completa</button>
+        <span id="mk-count" class="mk-count">0 seleccionados</span>
+      </div>
     </div>
 
-    <div id="mk-grid" class="grid gap-4 pb-10"></div>
+    <div id="mk-grid" class="mk-grid"></div>
   </section>
 
   <!-- Rotador flotante -->

@@ -117,89 +117,120 @@
     (() => {
       let selected = new Set();
       let timer = null;
+      let cachedLive = [];
 
       async function liveListAsync() {
         const LIVE_MAP = await getLiveMap();
         return DATA.filter(p => p.kick && LIVE_MAP.get(p.kick)?.live === true);
       }
 
+      function updateCount() {
+        const countEl = document.getElementById('mk-count');
+        if (countEl) countEl.textContent = `${selected.size} seleccionados`;
+      }
+
       function renderChips(live) {
         const box = document.getElementById('mk-live-list');
-        const countEl = document.getElementById('mk-count');
-        if (!box || !countEl) return;
+        if (!box) return;
 
         if (!live.length) {
-          box.innerHTML = '<p class="text-neutral-400">No hay streams en vivo.</p>';
-          countEl.textContent = '0 seleccionados';
-          document.getElementById('mk-grid').innerHTML = '';
+          box.innerHTML = '<p class="text-sm text-neutral-500">No hay streams en vivo.</p>';
+          updateCount();
           return;
         }
 
         box.innerHTML = live.map(p => {
           const sel = selected.has(p.kick);
-          const cls = sel ? 'border-yakuza bg-yakuza/20'
-                          : 'border-neutral-800 bg-neutral-900/70 hover:bg-neutral-800';
           return `
-            <button class="mk-item inline-flex items-center gap-2 px-3 py-2 rounded-xl border ${cls}"
-                    data-slug="${p.kick}">
-              <img src="${p.foto || FALLBACK_AVATAR}" class="w-8 h-8 rounded-full object-cover" alt="" loading="lazy" decoding="async">
-              <span class="text-sm">${p.nombre}</span>
-              ${sel ? '<span class="text-emerald-400 text-xs">â—</span>' : ''}
+            <button type="button" class="mk-chip ${sel ? 'mk-chip-active' : ''}" data-slug="${p.kick}">
+              <img src="${p.foto || FALLBACK_AVATAR}" alt="" loading="lazy" decoding="async" />
+              <span class="mk-chip-name">${p.nombre}</span>
+              ${sel ? '<span class="mk-chip-dot" aria-hidden="true"></span>' : ''}
             </button>
           `;
         }).join('');
 
-        countEl.textContent = `${selected.size} seleccionados`;
+        updateCount();
       }
 
       function setGridCols(n) {
         const grid = document.getElementById('mk-grid');
         if (!grid) return;
-        let cols = 'md:grid-cols-1';
-        if (n === 2) cols = 'md:grid-cols-2';
-        else if (n === 3) cols = 'md:grid-cols-3';
-        else if (n === 4) cols = 'md:grid-cols-2 xl:grid-cols-2';
-        else if (n >= 5 && n <= 6) cols = 'md:grid-cols-3';
-        else if (n >= 7) cols = 'md:grid-cols-4';
-        grid.className = `grid gap-4 pb-10 ${cols}`;
+        grid.classList.remove('mk-grid-cols-2', 'mk-grid-cols-3', 'mk-grid-cols-4');
+        if (n === 2) grid.classList.add('mk-grid-cols-2');
+        else if (n === 3) grid.classList.add('mk-grid-cols-3');
+        else if (n >= 4) grid.classList.add('mk-grid-cols-4');
       }
 
-      function renderGrid() {
+      function createPlayer(slug) {
+        const wrap = document.createElement('div');
+        wrap.className = 'mk-player';
+        wrap.dataset.slug = slug;
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://player.kick.com/${encodeURIComponent(slug)}?autoplay=true&muted=true`;
+        iframe.allow = 'autoplay; fullscreen';
+        iframe.allowFullscreen = true;
+        iframe.loading = 'lazy';
+        iframe.title = `Stream ${slug}`;
+        wrap.appendChild(iframe);
+        return wrap;
+      }
+
+      function syncGrid() {
         const grid = document.getElementById('mk-grid');
-        const countEl = document.getElementById('mk-count');
-        if (!grid || !countEl) return;
+        if (!grid) return;
 
-        const sel = [...selected];
-        setGridCols(sel.length);
-        grid.innerHTML = sel.map(slug => `
-          <div class="rounded-2xl overflow-hidden bg-black border border-neutral-800">
-            <iframe class="w-full aspect-video" loading="lazy"
-                    src="" data-src="https://player.kick.com/${encodeURIComponent(slug)}?autoplay=true&muted=true"
-                    allow="autoplay; fullscreen" allowfullscreen frameborder="0"></iframe>
-          </div>
-        `).join('');
+        const slugs = [...selected];
+        setGridCols(slugs.length);
 
-        grid.querySelectorAll('iframe[data-src]').forEach(fr => {
-          fr.src = fr.dataset.src;
-          fr.removeAttribute('data-src');
+        grid.querySelectorAll('.mk-player').forEach(el => {
+          if (!selected.has(el.dataset.slug)) el.remove();
         });
 
-        countEl.textContent = `${selected.size} seleccionados`;
+        slugs.forEach(slug => {
+          if (grid.querySelector(`.mk-player[data-slug="${CSS.escape(slug)}"]`)) return;
+          grid.appendChild(createPlayer(slug));
+        });
+
+        const order = new Map(slugs.map((slug, i) => [slug, i]));
+        [...grid.querySelectorAll('.mk-player')].sort((a, b) => {
+          return (order.get(a.dataset.slug) ?? 0) - (order.get(b.dataset.slug) ?? 0);
+        }).forEach(el => grid.appendChild(el));
+
+        updateCount();
+      }
+
+      function clearGrid() {
+        const grid = document.getElementById('mk-grid');
+        if (grid) grid.innerHTML = '';
+        updateCount();
       }
 
       async function refresh(first = false) {
-        const live = await liveListAsync();
-        const liveSlugs = live.map(p => p.kick);
+        cachedLive = await liveListAsync();
+        if (!cachedLive.length) {
+          selected.clear();
+          renderChips(cachedLive);
+          clearGrid();
+          return;
+        }
+        const liveSlugs = cachedLive.map(p => p.kick);
         selected = new Set([...selected].filter(s => liveSlugs.includes(s)));
-        if (first && selected.size === 0) live.forEach(p => selected.add(p.kick));
-        renderChips(live);
-        renderGrid();
+        if (first && selected.size === 0) cachedLive.forEach(p => selected.add(p.kick));
+        renderChips(cachedLive);
+        syncGrid();
+      }
+
+      function toggleSlug(slug) {
+        if (selected.has(slug)) selected.delete(slug);
+        else selected.add(slug);
+        renderChips(cachedLive);
+        syncGrid();
       }
 
       async function open() {
         if (!Array.isArray(DATA) || DATA.length === 0) {
-          const onReady = () => { refresh(true); };
-          document.addEventListener('yy:data-ready', onReady, { once: true });
+          document.addEventListener('yy:data-ready', () => { refresh(true); }, { once: true });
           return;
         }
         await refresh(true);
@@ -210,18 +241,26 @@
       function stop() { clearInterval(timer); timer = null; }
 
       document.getElementById('view-multikick')?.addEventListener('click', (e) => {
-        const chip = e.target.closest('.mk-item');
-        if (chip) {
-          const slug = chip.dataset.slug;
-          if (selected.has(slug)) selected.delete(slug); else selected.add(slug);
-          refresh(false);
+        const chip = e.target.closest('.mk-chip');
+        if (chip?.dataset.slug) {
+          toggleSlug(chip.dataset.slug);
+          return;
         }
-        if (e.target.closest('#mk-clear'))      { selected.clear(); refresh(false); }
-        if (e.target.closest('#mk-select-all')) { liveListAsync().then(l => { selected = new Set(l.map(p => p.kick)); refresh(false); }); }
+        if (e.target.closest('#mk-clear')) {
+          selected.clear();
+          clearGrid();
+          renderChips(cachedLive);
+          return;
+        }
+        if (e.target.closest('#mk-select-all')) {
+          selected = new Set(cachedLive.map(p => p.kick));
+          renderChips(cachedLive);
+          syncGrid();
+        }
       });
 
-      // Exponer sin "return"
       MK.open = open; MK.stop = stop; MK.refresh = refresh;
+      MK.syncGrid = syncGrid;
     })();
 
     // ==== Fullscreen para MultiKick ====
@@ -248,7 +287,6 @@
 
       const updateLabel = () => {
         btn.textContent = isFS() ? 'Salir de pantalla completa' : 'Pantalla completa';
-        try { if (typeof MK.refresh === 'function') MK.refresh(false); } catch {}
       };
 
       btn.addEventListener('click', () => (isFS() ? exitFS() : enterFS()));

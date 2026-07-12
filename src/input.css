@@ -449,12 +449,105 @@
     margin: 0;
     padding: 16px;
     overflow: auto;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.85);
   }
 
-  #view-multikick:fullscreen #mk-grid,
-  #view-multikick:-webkit-full-screen #mk-grid {
+  #view-multikick:fullscreen .mk-grid,
+  #view-multikick:-webkit-full-screen .mk-grid {
     gap: 12px;
+  }
+
+  .mk-toolbar {
+    @apply rounded-xl border border-white/10 bg-neutral-950/55 backdrop-blur-md p-3 sm:p-4 mb-4 space-y-3;
+  }
+
+  .mk-chips {
+    @apply flex flex-wrap gap-2;
+  }
+
+  .mk-chip {
+    @apply inline-flex items-center gap-2 pl-1 pr-3 py-1 rounded-full border border-white/10
+           bg-neutral-900/50 transition hover:border-yakuza/35;
+  }
+
+  .mk-chip-active {
+    @apply border-yakuza/50 bg-yakuza/10 ring-1 ring-yakuza/20;
+  }
+
+  .mk-chip img {
+    @apply w-8 h-8 rounded-full object-cover block;
+  }
+
+  .mk-chip-name {
+    @apply text-sm font-medium text-neutral-300;
+  }
+
+  .mk-chip-active .mk-chip-name {
+    @apply text-neutral-100;
+  }
+
+  .mk-chip-dot {
+    @apply w-1.5 h-1.5 rounded-full bg-yakuza shrink-0;
+  }
+
+  .mk-actions {
+    @apply flex flex-wrap items-center gap-2 pt-3 border-t border-white/5;
+  }
+
+  .mk-btn {
+    @apply h-9 px-3 inline-flex items-center justify-center rounded-lg text-sm
+           text-neutral-300 border border-white/10 bg-neutral-900/50
+           hover:border-yakuza/35 hover:text-neutral-100 transition;
+  }
+
+  .mk-btn-primary {
+    @apply text-yakuza border-yakuza/30 bg-yakuza/10 hover:bg-yakuza/15 hover:border-yakuza/45;
+  }
+
+  .mk-count {
+    @apply text-xs text-neutral-500 ml-auto tabular-nums;
+  }
+
+  .mk-grid {
+    @apply grid gap-4 pb-10;
+    grid-template-columns: 1fr;
+  }
+
+  .mk-grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mk-grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .mk-grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  @media (max-width: 767px) {
+    .mk-grid-cols-2,
+    .mk-grid-cols-3,
+    .mk-grid-cols-4 {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1279px) {
+    .mk-grid-cols-3,
+    .mk-grid-cols-4 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .mk-player {
+    @apply rounded-xl overflow-hidden bg-black border border-white/10;
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 360px;
+  }
+
+  .mk-player iframe {
+    @apply w-full aspect-video block;
   }
 
   #grid,
