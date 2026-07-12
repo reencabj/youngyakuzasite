@@ -15,11 +15,10 @@
   <link rel="preconnect" href="https://kick.com">
   <link rel="preconnect" href="https://www.youtube-nocookie.com">
   <link rel="preconnect" href="https://i.ytimg.com">
-  <link rel="preconnect" href="https://i.postimg.cc">
   <link rel="dns-prefetch" href="https://player.kick.com">
 
-  <!-- Perf: precarga del fondo grande -->
-  <link rel="preload" as="image" href="https://i.postimg.cc/tRLXYwGm/wallpaper.png">
+  <!-- Perf: precarga del fondo local -->
+  <link rel="preload" as="image" href="img/wallpaper.png">
 
 <!-- Cloudflare Web Analytics -->
 <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "adb803349cc244de91d7e4bcc6261efc"}'></script> 
@@ -29,49 +28,50 @@
 <body class="min-h-screen bg-neutral-950 text-neutral-100">
   <!-- Fondo -->
   <div class="fixed inset-0 -z-10">
-    <img src="https://i.postimg.cc/tRLXYwGm/wallpaper.png" alt="" class="w-full h-full object-cover" loading="eager" decoding="async" fetchpriority="low">
-    <div class="absolute inset-0 bg-black/60"></div>
+    <img src="img/wallpaper.png" alt="" class="w-full h-full object-cover" loading="eager" decoding="async" fetchpriority="high">
+    <div class="absolute inset-0 bg-black/65"></div>
   </div>
 
-  <!-- Header -->
-  <header class="max-w-6xl mx-auto px-4 py-6">
-    <div class="flex flex-col sm:flex-row items-center gap-4">
-      <img src="img/logo.png" alt="Logo" class="w-20 h-20 object-contain drop-shadow" loading="lazy" decoding="async" />
-      <div class="flex items-center gap-3 flex-wrap">
-        <h1 class="text-3xl font-extrabold">Young Yakuza - Dovux Life RP</h1>
+  <!-- Header + Nav -->
+  <header class="site-header">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-4">
+        <div class="flex items-center gap-4">
+          <img src="img/logo.png" alt="Logo Young Yakuza" class="w-16 h-16 sm:w-20 sm:h-20 object-contain drop-shadow" loading="eager" decoding="async" />
+          <div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Young Yakuza</h1>
+            <p class="text-sm text-neutral-400">Dovux Life RP</p>
+          </div>
+        </div>
         <button id="live-pill"
-          class="hidden sm:inline-flex items-center gap-2 text-sm px-3 py-1 rounded-full border border-yakuza bg-yakuza/20 hover:bg-yakuza/30 transition">
+          class="hidden sm:inline-flex items-center gap-2 text-sm px-3 py-1.5 rounded-full border border-yakuza/60 bg-yakuza/10 hover:bg-yakuza/20 transition self-start sm:self-auto">
           <span class="inline-block w-2 h-2 rounded-full bg-yakuza animate-pulse"></span>
           <span>En vivo (0)</span>
         </button>
       </div>
+      <nav class="flex gap-1 overflow-x-auto -mx-4 px-4 border-t border-white/5" aria-label="Secciones">
+        <button class="tab tab-active" data-view="personajes">Personajes</button>
+        <button class="tab" data-view="galeria">Galería</button>
+        <button class="tab" data-view="videos">Videos</button>
+        <button class="tab" data-view="lore">Lore</button>
+        <button class="tab" data-view="multikick">MultiKick</button>
+      </nav>
     </div>
   </header>
 
-  <!-- Tabs -->
-  <nav class="max-w-6xl mx-auto px-4">
-    <div class="flex flex-wrap gap-2 pb-3">
-      <button class="tab px-3 py-2 rounded-xl border border-yakuza bg-yakuza/20 hover:bg-yakuza/30" data-view="personajes">Personajes</button>
-      <button class="tab px-3 py-2 rounded-xl border border-neutral-800 bg-neutral-900/70 hover:bg-neutral-800" data-view="galeria">Galería</button>
-      <button class="tab px-3 py-2 rounded-xl border border-neutral-800 bg-neutral-900/70 hover:bg-neutral-800" data-view="videos">Videos</button>
-      <button class="tab px-3 py-2 rounded-xl border border-neutral-800 bg-neutral-900/70 hover:bg-neutral-800" data-view="lore">Lore</button>
-      <button class="tab px-3 py-2 rounded-xl border border-neutral-800 bg-neutral-900/70 hover:bg-neutral-800" data-view="multikick">MultiKick</button>
-    </div>
-  </nav>
-
   <!-- VIEW: Personajes -->
-  <div id="view-personajes">
+  <div id="view-personajes" class="py-6">
     <section class="max-w-6xl mx-auto px-4">
       <div class="flex flex-col lg:flex-row lg:items-end gap-4">
         <div class="flex-1 min-w-[280px]">
           <label class="block text-sm text-neutral-300 mb-1">Buscar personaje</label>
           <input id="q" type="search" placeholder="Ej: Mikaro, Yoshi, etc."
-                 class="w-full h-10 rounded-xl bg-neutral-900 border border-neutral-800 px-3 outline-none focus:ring-2 focus:ring-emerald-500" />
+                 class="w-full h-10 rounded-xl bg-neutral-900/80 border border-neutral-800 px-3 outline-none focus:ring-2 focus:ring-yakuza focus:border-yakuza/50" />
         </div>
         <div class="flex flex-wrap lg:flex-nowrap items-end gap-3 shrink-0">
           <div class="w-56">
             <label class="block text-sm text-neutral-300 mb-1">Ordenar</label>
-            <select id="sort" class="w-full h-10 rounded-xl bg-neutral-900 border border-neutral-800 px-3">
+            <select id="sort" class="w-full h-10 rounded-xl bg-neutral-900/80 border border-neutral-800 px-3 outline-none focus:ring-2 focus:ring-yakuza">
               <option value="rango-desc">Ordenar por rango (↓)</option>
               <option value="rango-asc">Ordenar por rango (↑)</option>
               <option value="nombre-asc">Nombre (A→Z)</option>
@@ -81,7 +81,7 @@
           </div>
           <div class="w-56">
             <label class="block text-sm text-neutral-300 mb-1">Rango</label>
-            <select id="rango" class="w-full h-10 rounded-xl bg-neutral-900 border border-neutral-800 px-3">
+            <select id="rango" class="w-full h-10 rounded-xl bg-neutral-900/80 border border-neutral-800 px-3 outline-none focus:ring-2 focus:ring-yakuza">
               <option value="">Todos</option>
               <option value="1">1 — Jefe</option>
               <option value="2">2 — Yakuza</option>
@@ -119,9 +119,8 @@
   </section>
 
   <!-- VIEW: Lore -->
-  <section id="view-lore" class="max-w-6xl mx-auto px-4 hidden">
-    <h2 class="text-xl font-semibold mb-3">Lore</h2>
-    <article id="lore-body" class="pb-10 space-y-4 text-neutral-200"></article>
+  <section id="view-lore" class="max-w-6xl mx-auto px-4 hidden py-6">
+    <article id="lore-body" class="pb-10 prose prose-invert max-w-3xl mx-auto prose-headings:text-yakuza prose-headings:font-semibold prose-p:text-neutral-300 prose-li:text-neutral-300 prose-strong:text-neutral-100"></article>
   </section>
 
   <!-- VIEW: MultiKick -->
@@ -462,8 +461,8 @@
 
     // ===== Tabs =====
     const VIEWS = ['personajes','galeria','videos','lore','multikick'];
-    const TAB_ACTIVE   = 'tab px-3 py-2 rounded-xl border border-yakuza bg-yakuza/20 hover:bg-yakuza/30';
-    const TAB_INACTIVE = 'tab px-3 py-2 rounded-xl border border-neutral-800 bg-neutral-900/70 hover:bg-neutral-800';
+    const TAB_ACTIVE   = 'tab tab-active';
+    const TAB_INACTIVE = 'tab';
 
     function styleTabs(activeId) {
       document.querySelectorAll('.tab[data-view]').forEach(btn => {

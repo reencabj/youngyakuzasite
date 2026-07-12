@@ -25,6 +25,19 @@
 }
 
 @layer components {
+  .site-header {
+    @apply sticky top-0 z-40 border-b border-white/5 bg-neutral-950/80 backdrop-blur-md;
+  }
+
+  .tab {
+    @apply px-4 py-3 text-sm font-medium text-neutral-400 border-b-2 border-transparent
+           transition-colors whitespace-nowrap hover:text-neutral-200;
+  }
+
+  .tab-active {
+    @apply text-yakuza border-yakuza;
+  }
+
   .card:hover {
     transform: translateY(-2px);
   }
