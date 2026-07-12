@@ -61,14 +61,21 @@
           <p class="header-subtitle truncate">DOVUX LIFE RP</p>
         </div>
       </button>
-      <nav class="header-nav" aria-label="Secciones">
-        <button class="tab tab-active" data-view="inicio">Inicio</button>
-        <button class="tab" data-view="personajes">Personajes</button>
-        <button class="tab" data-view="galeria">Galería</button>
-        <button class="tab" data-view="videos">Videos</button>
-        <button class="tab" data-view="lore">Lore</button>
-        <button class="tab" data-view="multikick">MultiKick</button>
-      </nav>
+      <div class="header-end">
+        <button type="button" id="header-menu-toggle" class="header-menu-btn" aria-expanded="false" aria-controls="header-nav" aria-label="Abrir menú">
+          <svg class="header-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/>
+          </svg>
+        </button>
+        <nav id="header-nav" class="header-nav" aria-label="Secciones">
+          <button class="tab tab-active" data-view="inicio">Inicio</button>
+          <button class="tab" data-view="personajes">Personajes</button>
+          <button class="tab" data-view="galeria">Galería</button>
+          <button class="tab" data-view="videos">Videos</button>
+          <button class="tab" data-view="lore">Lore</button>
+          <button class="tab" data-view="multikick">MultiKick</button>
+        </nav>
+      </div>
     </div>
   </header>
 

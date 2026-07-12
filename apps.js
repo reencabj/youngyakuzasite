@@ -410,12 +410,33 @@
       return view === 'inicio' || view === 'multikick';
     }
 
+    const headerNav = document.getElementById('header-nav');
+    const headerMenuToggle = document.getElementById('header-menu-toggle');
+
+    function closeHeaderMenu() {
+      headerNav?.classList.remove('header-nav-open');
+      headerMenuToggle?.setAttribute('aria-expanded', 'false');
+      headerMenuToggle?.setAttribute('aria-label', 'Abrir menú');
+    }
+
+    headerMenuToggle?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const open = headerNav?.classList.toggle('header-nav-open');
+      headerMenuToggle.setAttribute('aria-expanded', String(!!open));
+      headerMenuToggle.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.header-end')) closeHeaderMenu();
+    });
+
     function showView(v) {
       VIEWS.forEach(id => {
         const el = document.getElementById('view-'+id);
         if (el) el.classList.toggle('hidden', id !== v);
       });
       styleTabs(v);
+      closeHeaderMenu();
       if (v === 'inicio') { renderHome(); }
       else { stopHomeRotation(); }
       if (v === 'personajes' && DATA.length) { render(); }
