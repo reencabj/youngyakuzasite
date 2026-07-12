@@ -96,7 +96,58 @@
           <h2 class="text-lg font-display font-semibold text-neutral-100">En vivo ahora</h2>
           <span id="home-live-count" class="text-xs px-2 py-0.5 rounded-full bg-yakuza/20 text-yakuza border border-yakuza/30 tabular-nums">0</span>
         </div>
-        <div id="home-live-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+
+        <!-- Theater: player + info + chat (estilo Kick/Twitch) -->
+        <div id="home-live-theater" class="hidden">
+          <div id="home-live-picker" class="flex gap-2 overflow-x-auto pb-3 mb-3 scrollbar-thin"></div>
+
+          <div class="live-theater rounded-xl overflow-hidden border border-white/10 bg-neutral-950/80 backdrop-blur-sm shadow-2xl shadow-black/40">
+            <div class="live-theater-grid">
+              <!-- Player + info -->
+              <div class="live-theater-main flex flex-col min-w-0">
+                <div class="relative aspect-video bg-black">
+                  <iframe id="home-player" class="absolute inset-0 w-full h-full" src=""
+                    title="Stream en vivo" allow="autoplay; fullscreen" allowfullscreen frameborder="0" loading="lazy"></iframe>
+                  <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-600/90 text-white backdrop-blur-sm">
+                    <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                    EN VIVO
+                  </span>
+                </div>
+
+                <div id="home-stream-info" class="p-4 sm:p-5 border-t border-white/5 bg-neutral-900/50">
+                  <div class="flex flex-col sm:flex-row sm:items-start gap-4">
+                    <img id="home-info-avatar" src="" alt="" class="w-16 h-16 rounded-full object-cover ring-2 ring-yakuza/40 shrink-0" />
+                    <div class="flex-1 min-w-0">
+                      <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                        <h3 id="home-info-name" class="text-xl font-display font-bold text-neutral-100"></h3>
+                        <span id="home-info-alias" class="text-yakuza/80 text-sm font-medium"></span>
+                      </div>
+                      <p id="home-info-ooc" class="text-sm text-neutral-400 mt-0.5"></p>
+                      <p id="home-info-rank" class="text-xs text-neutral-500 mt-1"></p>
+                      <div id="home-info-links" class="flex flex-wrap gap-1.5 mt-3"></div>
+                    </div>
+                    <a id="home-info-kick" href="#" target="_blank" rel="noreferrer"
+                       class="shrink-0 inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-semibold bg-yakuza hover:bg-yakuza-light text-white transition">
+                      Ver en Kick
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Chat sidebar -->
+              <aside class="live-theater-chat flex flex-col border-t lg:border-t-0 lg:border-l border-white/10 bg-neutral-950/90 min-h-[320px] lg:min-h-0">
+                <div class="flex items-center justify-between px-3 py-2.5 border-b border-white/10 shrink-0">
+                  <span class="text-sm font-semibold text-neutral-300">Chat</span>
+                  <a id="home-chat-link" href="#" target="_blank" rel="noreferrer"
+                     class="text-xs text-yakuza hover:text-yakuza-light transition">Abrir ↗</a>
+                </div>
+                <iframe id="home-chat" class="flex-1 w-full min-h-[280px] lg:min-h-0 bg-black" src=""
+                  title="Chat de Kick" frameborder="0" loading="lazy"></iframe>
+              </aside>
+            </div>
+          </div>
+        </div>
+
         <p id="home-live-empty" class="hidden text-neutral-500 text-center py-12 rounded-xl bg-neutral-900/30 border border-white/5">
           Nadie está en vivo en este momento. Volvé más tarde o revisá el roster completo en Personajes.
         </p>

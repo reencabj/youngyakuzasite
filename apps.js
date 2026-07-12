@@ -370,68 +370,102 @@
       `;
     }
 
-    function renderLiveCard(p) {
-      const kickHtml = p.kick ? `
-        <a id="kick-${p.kick}"
-           data-slug="${p.kick}"
-           href="https://kick.com/${p.kick}"
-           target="_blank" rel="noreferrer"
-           class="kick-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border border-yakuza/50 bg-yakuza/10 hover:bg-yakuza/20">
-          <span class="kick-dot inline-block w-2 h-2 rounded-full bg-yakuza animate-pulse"></span>
-          <span class="kick-label">En vivo</span>
-        </a>
-      ` : '';
+    let HOME_LIVE_LIST = [];
+    let HOME_LIVE_INDEX = 0;
 
-      return `
-        <article class="live-card rounded-xl overflow-hidden bg-neutral-900/40 border border-white/5 backdrop-blur-sm hover:border-yakuza/30 fade-in">
-          <div class="relative">
-            <img src="${p.foto || FALLBACK_AVATAR}" alt="${p.nombre}"
-                 class="w-full aspect-[4/3] object-cover" loading="lazy" decoding="async" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-            <span class="absolute top-2.5 left-2.5 inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium bg-yakuza/20 text-yakuza border border-yakuza/40 backdrop-blur-sm">
-              <span class="w-1.5 h-1.5 rounded-full bg-yakuza animate-pulse"></span>
-              En vivo
-            </span>
-            <div class="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2">
-              <span class="px-2 py-0.5 rounded-md text-xs bg-black/50 text-yakuza border border-yakuza/30 backdrop-blur-sm">${rankLabel(p.rango)}</span>
-              ${p.alias ? `<span class="px-2 py-0.5 rounded-md text-xs bg-black/50 text-neutral-200 border border-white/10 backdrop-blur-sm truncate max-w-[50%]">${p.alias}</span>` : ''}
-            </div>
-          </div>
-          <div class="p-4">
-            <h3 class="text-lg font-semibold text-neutral-100">${p.nombre}</h3>
-            <p class="text-sm text-neutral-500 mt-0.5">${p.ooc || '—'}</p>
-            ${kickHtml}
-            ${renderCharacterLinks(p)}
-          </div>
-        </article>
-      `;
+    function setHomeStream(index) {
+      if (!HOME_LIVE_LIST.length) return;
+      HOME_LIVE_INDEX = ((index % HOME_LIVE_LIST.length) + HOME_LIVE_LIST.length) % HOME_LIVE_LIST.length;
+      const p = HOME_LIVE_LIST[HOME_LIVE_INDEX];
+      const slug = p.kick;
+
+      const player = document.getElementById('home-player');
+      const chat = document.getElementById('home-chat');
+      if (player) {
+        player.src = `https://player.kick.com/${encodeURIComponent(slug)}?autoplay=true&muted=true`;
+      }
+      if (chat) {
+        chat.src = `https://kick.com/popout/${encodeURIComponent(slug)}/chat`;
+      }
+
+      const avatar = document.getElementById('home-info-avatar');
+      const nameEl = document.getElementById('home-info-name');
+      const aliasEl = document.getElementById('home-info-alias');
+      const oocEl = document.getElementById('home-info-ooc');
+      const rankEl = document.getElementById('home-info-rank');
+      const linksEl = document.getElementById('home-info-links');
+      const kickLink = document.getElementById('home-info-kick');
+      const chatLink = document.getElementById('home-chat-link');
+
+      if (avatar) { avatar.src = p.foto || FALLBACK_AVATAR; avatar.alt = p.nombre; }
+      if (nameEl) nameEl.textContent = p.nombre;
+      if (aliasEl) {
+        aliasEl.textContent = p.alias ? `"${p.alias}"` : '';
+        aliasEl.classList.toggle('hidden', !p.alias);
+      }
+      if (oocEl) oocEl.textContent = p.ooc ? `OOC: ${p.ooc}` : '';
+      if (rankEl) rankEl.textContent = rankLabel(p.rango);
+      if (linksEl) linksEl.innerHTML = renderCharacterLinks(p).replace('mt-3', 'mt-0') || '';
+      const kickUrl = `https://kick.com/${encodeURIComponent(slug)}`;
+      if (kickLink) kickLink.href = kickUrl;
+      if (chatLink) chatLink.href = `https://kick.com/popout/${encodeURIComponent(slug)}/chat`;
+
+      document.querySelectorAll('.home-picker-btn').forEach((btn, i) => {
+        btn.classList.toggle('home-picker-btn-active', i === HOME_LIVE_INDEX);
+      });
+    }
+
+    function renderHomePicker(liveList) {
+      const picker = document.getElementById('home-live-picker');
+      if (!picker) return;
+
+      if (liveList.length <= 1) {
+        picker.innerHTML = '';
+        picker.classList.add('hidden');
+        return;
+      }
+
+      picker.classList.remove('hidden');
+      picker.innerHTML = liveList.map((p, i) => `
+        <button type="button" class="home-picker-btn ${i === HOME_LIVE_INDEX ? 'home-picker-btn-active' : ''}"
+                data-home-index="${i}">
+          <img src="${p.foto || FALLBACK_AVATAR}" alt="" class="w-8 h-8 rounded-full object-cover ring-1 ring-white/10" loading="lazy" decoding="async" />
+          <span class="text-sm font-medium text-neutral-200 max-w-[120px] truncate">${p.nombre}</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-yakuza animate-pulse shrink-0"></span>
+        </button>
+      `).join('');
     }
 
     async function renderHome() {
       if (!DATA.length) return;
 
       const LIVE_MAP = await getLiveMap();
-      const liveList = DATA
+      HOME_LIVE_LIST = DATA
         .filter(p => p.kick && LIVE_MAP.get(p.kick)?.live === true)
         .sort((a, b) => norm(a.nombre).localeCompare(norm(b.nombre)));
 
-      const grid = document.getElementById('home-live-grid');
+      const theater = document.getElementById('home-live-theater');
       const empty = document.getElementById('home-live-empty');
       const countEl = document.getElementById('home-live-count');
       const statEl = document.getElementById('home-stat-members');
 
-      if (countEl) countEl.textContent = String(liveList.length);
+      if (countEl) countEl.textContent = String(HOME_LIVE_LIST.length);
       if (statEl) statEl.textContent = `${DATA.length} miembros en el roster`;
 
-      if (!grid) return;
-
-      if (!liveList.length) {
-        grid.innerHTML = '';
+      if (!HOME_LIVE_LIST.length) {
+        theater?.classList.add('hidden');
         empty?.classList.remove('hidden');
+        const player = document.getElementById('home-player');
+        const chat = document.getElementById('home-chat');
+        if (player) player.src = '';
+        if (chat) chat.src = '';
       } else {
         empty?.classList.add('hidden');
-        grid.innerHTML = liveList.map(renderLiveCard).join('');
-        liveList.forEach(p => paintKickButton(p.kick, { live: true }));
+        theater?.classList.remove('hidden');
+
+        if (HOME_LIVE_INDEX >= HOME_LIVE_LIST.length) HOME_LIVE_INDEX = 0;
+        renderHomePicker(HOME_LIVE_LIST);
+        setHomeStream(HOME_LIVE_INDEX);
       }
 
       await updateLiveUI_fromMap(LIVE_MAP);
@@ -534,7 +568,14 @@
       await updateLiveUI_fromMap(LIVE_MAP);
 
       if (liveChanged) {
-        if (isViewVisible('inicio')) await renderHome();
+        if (isViewVisible('inicio')) {
+          const prevSlug = HOME_LIVE_LIST[HOME_LIVE_INDEX]?.kick;
+          await renderHome();
+          if (prevSlug) {
+            const newIdx = HOME_LIVE_LIST.findIndex(p => p.kick === prevSlug);
+            if (newIdx >= 0) setHomeStream(newIdx);
+          }
+        }
         if (isViewVisible('personajes')) await render();
         else syncLiveSnapshotFromData(LIVE_MAP);
       } else {
@@ -602,13 +643,10 @@
       if (!slug) return;
       window.open(`https://kick.com/${encodeURIComponent(slug)}`, '_blank', 'noopener,noreferrer');
     });
-    document.getElementById('home-live-grid')?.addEventListener('click', (e) => {
-      const btn = e.target.closest('.kick-btn');
+    document.getElementById('home-live-picker')?.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-home-index]');
       if (!btn) return;
-      e.preventDefault();
-      const slug = (btn.getAttribute('data-slug') || '').trim().toLowerCase();
-      if (!slug) return;
-      window.open(`https://kick.com/${encodeURIComponent(slug)}`, '_blank', 'noopener,noreferrer');
+      setHomeStream(Number(btn.dataset.homeIndex || 0));
     });
 
     async function updateLiveUI_fromMap(LIVE_MAP) {

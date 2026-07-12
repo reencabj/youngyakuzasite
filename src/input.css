@@ -51,9 +51,50 @@
     transform: translateY(-3px);
   }
 
-  #home-live-grid {
+  .live-theater-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 1024px) {
+    .live-theater-grid {
+      grid-template-columns: 1fr 340px;
+    }
+
+    .live-theater-main {
+      min-height: 100%;
+    }
+
+    .live-theater-chat {
+      height: 100%;
+      min-height: 480px;
+    }
+
+    .live-theater-chat iframe {
+      height: 100%;
+    }
+  }
+
+  .home-picker-btn {
+    @apply flex items-center gap-2 px-3 py-2 rounded-xl border border-white/10 bg-neutral-900/60
+           hover:border-yakuza/40 transition shrink-0;
+  }
+
+  .home-picker-btn-active {
+    @apply border-yakuza/60 bg-yakuza/10 ring-1 ring-yakuza/30;
+  }
+
+  #home-live-picker::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  #home-live-picker::-webkit-scrollbar-thumb {
+    background: rgba(158, 140, 237, 0.35);
+    border-radius: 9999px;
+  }
+
+  #home-live-picker {
     content-visibility: auto;
-    contain-intrinsic-size: 1px 400px;
   }
 
   .fade-in {
