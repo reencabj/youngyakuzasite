@@ -270,15 +270,22 @@
     @apply text-sm text-neutral-400 m-0 leading-relaxed;
   }
 
+  .scroll-reveal,
   .lore-reveal {
     opacity: 0;
     transform: translateY(18px);
     transition: opacity 0.55s ease, transform 0.55s ease;
   }
 
+  .scroll-revealed,
   .lore-revealed {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  .char-card.scroll-reveal:not(.scroll-revealed):hover {
+    transform: translateY(18px);
+    box-shadow: none;
   }
 
   .roster-row {

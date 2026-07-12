@@ -350,7 +350,7 @@
       ` : '';
 
       return `
-        <article class="char-card group fade-in rounded-xl overflow-hidden bg-neutral-900/50 border border-white/5 backdrop-blur-sm hover:border-yakuza/25">
+        <article class="char-card scroll-reveal group rounded-xl overflow-hidden bg-neutral-900/50 border border-white/5 backdrop-blur-sm hover:border-yakuza/25">
           <div class="relative aspect-[3/4] overflow-hidden bg-neutral-950">
             <img src="${p.foto || FALLBACK_AVATAR}" alt="${p.nombre}"
                  class="char-photo w-full h-full object-cover object-top" loading="lazy" decoding="async" />
@@ -573,6 +573,7 @@
         empty.classList.add('hidden');
 
         grid.innerHTML = list.map(renderCharacterCard).join('');
+        requestAnimationFrame(() => initScrollReveal('#grid .scroll-reveal'));
       
         list.forEach(p => {
           if (!p.kick) return;
@@ -945,32 +946,44 @@
 
 
 
-    // ===== Lore =====
-    let loreLoaded = false;
-    function initLoreReveal() {
-      const els = document.querySelectorAll('#lore-body .lore-reveal');
+    // ===== Scroll reveal (Lore + Personajes) =====
+    let scrollRevealObserver = null;
+
+    function initScrollReveal(selector = '.scroll-reveal, .lore-reveal') {
+      const els = document.querySelectorAll(selector);
       if (!els.length) return;
+
+      scrollRevealObserver?.disconnect();
+      scrollRevealObserver = null;
+
       if (!('IntersectionObserver' in window)) {
-        els.forEach(el => el.classList.add('lore-revealed'));
+        els.forEach(el => el.classList.add('scroll-revealed', 'lore-revealed'));
         return;
       }
-      const io = new IntersectionObserver((entries) => {
+
+      scrollRevealObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (!entry.isIntersecting) return;
-          entry.target.classList.add('lore-revealed');
-          io.unobserve(entry.target);
+          entry.target.classList.add('scroll-revealed', 'lore-revealed');
+          scrollRevealObserver.unobserve(entry.target);
         });
       }, { threshold: 0.1, rootMargin: '0px 0px -32px 0px' });
-      els.forEach(el => io.observe(el));
+
+      els.forEach(el => {
+        el.classList.remove('scroll-revealed', 'lore-revealed');
+        scrollRevealObserver.observe(el);
+      });
     }
 
+    // ===== Lore =====
+    let loreLoaded = false;
     async function loadLore() {
       try {
         const r = await fetch('lore.html', { cache: 'no-store' });
         if (!r.ok) throw new Error('lore.html no encontrado');
         const html = await r.text();
         document.getElementById('lore-body').innerHTML = html;
-        requestAnimationFrame(() => initLoreReveal());
+        requestAnimationFrame(() => initScrollReveal('#lore-body .lore-reveal'));
         loreLoaded = true;
       } catch {
         document.getElementById('lore-body').innerHTML =
