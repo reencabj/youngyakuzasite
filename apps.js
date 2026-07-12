@@ -282,6 +282,16 @@
 
       if (v === 'multikick') { MK.open?.(); }
       else { MK.stop?.(); }
+
+      const rotator = document.getElementById('live-rotator');
+      if (v === 'inicio') {
+        rotator?.classList.add('hidden');
+        clearInterval(rotateTimer);
+        rotateTimer = null;
+      } else if (ROTATOR_OPEN && LIVE_QUEUE.length > 0) {
+        rotator?.classList.remove('hidden');
+        if (!rotateTimer) startRotation();
+      }
     }
     document.addEventListener('click', (e) => {
       const goto = e.target.closest('[data-goto]');
@@ -664,8 +674,14 @@
       if (changed) { LIVE_INDEX = 0; startRotation(); }
     
       const panel = document.getElementById('live-rotator');
-      if (LIVE_QUEUE.length === 0) panel.classList.add('hidden');
-      else if (ROTATOR_OPEN) {
+      const onInicio = isViewVisible('inicio');
+      if (LIVE_QUEUE.length === 0 || onInicio) {
+        panel.classList.add('hidden');
+        if (onInicio) {
+          clearInterval(rotateTimer);
+          rotateTimer = null;
+        }
+      } else if (ROTATOR_OPEN) {
         panel.classList.remove('hidden');
         setIframeTo(LIVE_QUEUE[LIVE_INDEX % LIVE_QUEUE.length]);
         if (!rotateTimer) startRotation();
@@ -694,7 +710,7 @@
       }, 20_000);
     }
     document.getElementById('live-pill').addEventListener('click', () => {
-      if (LIVE_QUEUE.length === 0) return;
+      if (LIVE_QUEUE.length === 0 || isViewVisible('inicio')) return;
       ROTATOR_OPEN = !ROTATOR_OPEN;
       document.getElementById('live-rotator').classList.toggle('hidden', !ROTATOR_OPEN);
       if (ROTATOR_OPEN) startRotation();
