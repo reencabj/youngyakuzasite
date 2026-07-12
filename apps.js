@@ -946,12 +946,30 @@
 
     // ===== Lore =====
     let loreLoaded = false;
+    function initLoreReveal() {
+      const els = document.querySelectorAll('#lore-body .lore-reveal');
+      if (!els.length) return;
+      if (!('IntersectionObserver' in window)) {
+        els.forEach(el => el.classList.add('lore-revealed'));
+        return;
+      }
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('lore-revealed');
+          io.unobserve(entry.target);
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -32px 0px' });
+      els.forEach(el => io.observe(el));
+    }
+
     async function loadLore() {
       try {
         const r = await fetch('lore.html');
         if (!r.ok) throw new Error('lore.html no encontrado');
         const html = await r.text();
         document.getElementById('lore-body').innerHTML = html;
+        requestAnimationFrame(() => initLoreReveal());
         loreLoaded = true;
       } catch {
         document.getElementById('lore-body').innerHTML =

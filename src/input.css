@@ -75,6 +75,147 @@
     @apply w-full lg:w-auto lg:shrink-0;
   }
 
+  .lore-page {
+    @apply space-y-5;
+  }
+
+  .lore-hero {
+    @apply relative text-center rounded-2xl border border-white/10 bg-neutral-950/55 backdrop-blur-md
+           px-6 py-10 sm:py-12 overflow-hidden;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  }
+
+  .lore-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(158, 140, 237, 0.14), transparent 70%);
+    pointer-events: none;
+  }
+
+  .lore-hero-kicker {
+    @apply relative text-[10px] font-semibold uppercase tracking-[0.25em] text-neutral-500 mb-3;
+  }
+
+  .lore-hero-title {
+    @apply relative font-display text-4xl sm:text-5xl font-bold text-yakuza tracking-tight;
+  }
+
+  .lore-hero-sub {
+    @apply relative mt-2 text-lg sm:text-xl text-neutral-200 font-display;
+  }
+
+  .lore-hero-tagline {
+    @apply relative mt-4 text-sm text-neutral-500 tracking-widest uppercase;
+  }
+
+  .lore-stats {
+    @apply grid grid-cols-2 lg:grid-cols-4 gap-3;
+  }
+
+  .lore-stat {
+    @apply flex flex-col items-center justify-center rounded-xl border border-white/10 bg-neutral-950/50
+           backdrop-blur-sm px-4 py-5 text-center transition-colors hover:border-yakuza/25 hover:bg-neutral-900/50;
+  }
+
+  .lore-stat-value {
+    @apply font-display text-2xl sm:text-3xl font-bold text-yakuza leading-none;
+  }
+
+  .lore-stat-label {
+    @apply mt-2 text-[10px] font-semibold uppercase tracking-widest text-neutral-500;
+  }
+
+  .lore-chapter {
+    @apply rounded-xl border border-white/10 bg-neutral-950/45 backdrop-blur-sm p-5 sm:p-6;
+  }
+
+  .lore-chapter-finale {
+    @apply border-yakuza/25;
+    background: linear-gradient(135deg, rgba(158, 140, 237, 0.08), rgba(10, 10, 10, 0.55));
+  }
+
+  .lore-chapter-head {
+    @apply flex items-center gap-3 mb-4 pb-3 border-b border-white/5;
+  }
+
+  .lore-chapter-num {
+    @apply font-display text-xs font-bold text-yakuza/70 tracking-widest;
+  }
+
+  .lore-chapter-title {
+    @apply font-display text-xl sm:text-2xl font-semibold text-neutral-100;
+  }
+
+  .lore-prose {
+    @apply prose prose-invert prose-sm max-w-none
+           prose-p:text-neutral-300 prose-li:text-neutral-300 prose-strong:text-neutral-100;
+  }
+
+  .lore-dropcap::first-letter {
+    @apply float-left font-display text-5xl sm:text-6xl font-bold text-yakuza leading-none mr-2 mt-1;
+  }
+
+  .lore-quote {
+    @apply relative my-6 pl-5 border-l-2 border-yakuza/60 not-italic;
+  }
+
+  .lore-quote p {
+    @apply font-display text-lg sm:text-xl text-neutral-200 leading-snug m-0;
+  }
+
+  .lore-enemies {
+    @apply flex flex-wrap gap-2 mt-4 not-prose;
+  }
+
+  .lore-enemy-tag {
+    @apply inline-flex px-3 py-1.5 rounded-lg text-xs font-medium
+           text-neutral-300 border border-white/10 bg-neutral-900/60
+           hover:text-yakuza hover:border-yakuza/30 hover:bg-yakuza/5 transition;
+  }
+
+  .lore-timeline {
+    @apply relative list-none m-0 p-0 pl-1 not-prose;
+  }
+
+  .lore-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.4rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 1px;
+    background: linear-gradient(to bottom, rgba(158, 140, 237, 0.5), rgba(158, 140, 237, 0.1));
+  }
+
+  .lore-timeline-item {
+    @apply relative pl-8 pb-6 last:pb-0;
+  }
+
+  .lore-timeline-dot {
+    @apply absolute left-0 top-1.5 w-3 h-3 rounded-full border-2 border-yakuza bg-neutral-950;
+    box-shadow: 0 0 12px rgba(158, 140, 237, 0.35);
+  }
+
+  .lore-timeline-content h3 {
+    @apply font-display text-base font-semibold text-neutral-100 m-0 mb-1;
+  }
+
+  .lore-timeline-content p {
+    @apply text-sm text-neutral-400 m-0 leading-relaxed;
+  }
+
+  .lore-reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+
+  .lore-revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
   .roster-row {
     @apply transition-colors;
   }
