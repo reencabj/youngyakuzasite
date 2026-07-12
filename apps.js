@@ -596,14 +596,10 @@
             <span class="char-rank-badge absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wide bg-black/55 text-yakuza border border-yakuza/35 backdrop-blur-sm">
               ${escapeHtml(rankLabel(p.rango))}
             </span>
-            ${p.alias ? `
-              <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md text-[10px] bg-black/55 text-neutral-200 border border-white/10 backdrop-blur-sm max-w-[48%] truncate">
-                ${escapeHtml(p.alias)}
-              </span>
-            ` : ''}
             <div class="absolute bottom-0 inset-x-0 p-3">
               <h3 class="char-name">${escapeHtml(p.nombre)}</h3>
-              <p class="text-xs text-neutral-400 truncate mt-0.5">${escapeHtml(p.ooc || '—')}</p>
+              ${p.alias ? `<p class="char-alias">${escapeHtml(p.alias)}</p>` : ''}
+              <p class="char-ooc">${escapeHtml(p.ooc || '—')}</p>
             </div>
           </div>
           ${actionsHtml ? `<div class="p-3">${actionsHtml}</div>` : ''}
