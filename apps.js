@@ -570,7 +570,7 @@
         aliasEl.textContent = p.alias ? `"${p.alias}"` : '';
         aliasEl.classList.toggle('hidden', !p.alias);
       }
-      if (oocEl) oocEl.textContent = p.ooc ? `OOC: ${p.ooc}` : '';
+      if (oocEl) oocEl.textContent = p.ooc || '';
       if (rankEl) rankEl.textContent = rankLabel(p.rango);
       if (linksEl) linksEl.innerHTML = renderCharacterLinks(p).replace('mt-3', 'mt-0') || '';
       const kickUrl = `https://kick.com/${encodeURIComponent(slug)}`;
@@ -854,7 +854,7 @@
         avatar.alt = p?.nombre || slug;
       }
       if (name) name.textContent = p?.nombre || slug;
-      if (ooc) ooc.textContent = p?.ooc ? `OOC: ${p.ooc}` : '';
+      if (ooc) ooc.textContent = p?.ooc || '';
       if (counter) {
         counter.textContent = LIVE_QUEUE.length > 1
           ? `${LIVE_INDEX + 1} / ${LIVE_QUEUE.length}`
