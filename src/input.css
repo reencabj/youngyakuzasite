@@ -109,23 +109,6 @@
     @apply relative mt-4 text-sm text-neutral-500 tracking-widest uppercase;
   }
 
-  .lore-stats {
-    @apply grid grid-cols-2 lg:grid-cols-4 gap-3;
-  }
-
-  .lore-stat {
-    @apply flex flex-col items-center justify-center rounded-xl border border-white/10 bg-neutral-950/50
-           backdrop-blur-sm px-4 py-5 text-center transition-colors hover:border-yakuza/25 hover:bg-neutral-900/50;
-  }
-
-  .lore-stat-value {
-    @apply font-display text-2xl sm:text-3xl font-bold text-yakuza leading-none;
-  }
-
-  .lore-stat-label {
-    @apply mt-2 text-[10px] font-semibold uppercase tracking-widest text-neutral-500;
-  }
-
   .lore-chapter {
     @apply rounded-xl border border-white/10 bg-neutral-950/45 backdrop-blur-sm p-5 sm:p-6;
   }
