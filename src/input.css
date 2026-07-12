@@ -60,6 +60,32 @@
     transform: scale(1.04);
   }
 
+  .live-rotator {
+    @apply rounded-xl overflow-hidden border border-white/10 bg-neutral-950/90 backdrop-blur-md;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+    animation: rotator-in 0.28s ease-out;
+  }
+
+  @keyframes rotator-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px) scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .live-rotator-btn {
+    @apply w-7 h-7 inline-flex items-center justify-center rounded-lg text-neutral-400
+           hover:text-neutral-100 hover:bg-white/5 transition text-sm leading-none;
+  }
+
+  .live-rotator-btn-close:hover {
+    @apply text-red-300 bg-red-500/10;
+  }
+
   .live-card {
     @apply transition-transform duration-200;
   }

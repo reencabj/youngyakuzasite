@@ -656,12 +656,33 @@
       } catch {}
     }
 
+    function updateRotatorInfo(slug) {
+      const p = DATA.find(x => x.kick && String(x.kick).toLowerCase() === String(slug).toLowerCase());
+      const avatar = document.getElementById('live-rotator-avatar');
+      const name = document.getElementById('live-rotator-name');
+      const ooc = document.getElementById('live-rotator-ooc');
+      const counter = document.getElementById('live-rotator-counter');
+
+      if (avatar) {
+        avatar.src = p?.foto || FALLBACK_AVATAR;
+        avatar.alt = p?.nombre || slug;
+      }
+      if (name) name.textContent = p?.nombre || slug;
+      if (ooc) ooc.textContent = p?.ooc ? `OOC: ${p.ooc}` : '';
+      if (counter) {
+        counter.textContent = LIVE_QUEUE.length > 1
+          ? `${LIVE_INDEX + 1} / ${LIVE_QUEUE.length}`
+          : '';
+      }
+    }
+
     function setIframeTo(slug) {
       const iframe = document.getElementById('live-iframe');
       const link = document.getElementById('live-link');
       if (!slug) return;
       iframe.src = `https://player.kick.com/${encodeURIComponent(slug)}?autoplay=true&muted=true`;
       link.href = `https://kick.com/${encodeURIComponent(slug)}`;
+      updateRotatorInfo(slug);
     }
     function startRotation() {
       clearInterval(rotateTimer);

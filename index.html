@@ -260,23 +260,37 @@
   </section>
 
   <!-- Rotador flotante -->
-  <div id="live-rotator" class="hidden fixed right-4 bottom-4 z-50 w-[min(92vw,360px)] rounded-2xl overflow-hidden border border-yakuza bg-neutral-900/85 backdrop-blur shadow-2xl">
-    <div class="flex items-center justify-between px-3 py-2">
-      <div class="flex items-center gap-2 text-sm font-semibold">
-        <span class="inline-block w-2 h-2 rounded-full bg-yakuza animate-pulse"></span>
-        <span>Streams en vivo</span>
+  <div id="live-rotator" class="live-rotator hidden fixed right-4 bottom-4 z-50 w-[min(92vw,380px)]">
+    <div class="flex items-center justify-between px-3 py-2.5 border-b border-white/5 bg-neutral-900/60">
+      <div class="flex items-center gap-2 min-w-0">
+        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide bg-red-600/90 text-white">
+          <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+          En vivo
+        </span>
+        <span id="live-rotator-counter" class="text-xs text-neutral-500 tabular-nums"></span>
       </div>
-      <div class="flex items-center gap-1">
-        <button id="live-prev" class="px-2 py-1 rounded hover:bg-neutral-800" title="Anterior">◀</button>
-        <button id="live-next" class="px-2 py-1 rounded hover:bg-neutral-800" title="Siguiente">▶</button>
-        <button id="live-close" class="px-2 py-1 rounded hover:bg-neutral-800" title="Cerrar">✕</button>
+      <div class="flex items-center gap-1 shrink-0">
+        <button id="live-prev" class="live-rotator-btn" title="Anterior" aria-label="Stream anterior">‹</button>
+        <button id="live-next" class="live-rotator-btn" title="Siguiente" aria-label="Stream siguiente">›</button>
+        <button id="live-close" class="live-rotator-btn live-rotator-btn-close" title="Cerrar" aria-label="Cerrar">✕</button>
       </div>
     </div>
-    <div class="w-full aspect-video bg-black">
-      <iframe id="live-iframe" src="" allow="autoplay; fullscreen" allowfullscreen frameborder="0" class="w-full h-full" loading="lazy"></iframe>
+    <div class="relative aspect-video bg-black">
+      <iframe id="live-iframe" src="" allow="autoplay; fullscreen" allowfullscreen frameborder="0" class="absolute inset-0 w-full h-full" loading="lazy"></iframe>
     </div>
-    <a id="live-link" href="#" target="_blank" rel="noreferrer"
-       class="block px-3 py-2 text-xs underline text-neutral-300 hover:text-white">Abrir canal en Kick</a>
+    <div class="p-3 border-t border-white/5 bg-neutral-900/70">
+      <div class="flex items-center gap-3">
+        <img id="live-rotator-avatar" src="" alt="" class="w-11 h-11 rounded-full object-cover ring-2 ring-yakuza/40 shrink-0" />
+        <div class="flex-1 min-w-0">
+          <p id="live-rotator-name" class="font-semibold text-sm text-neutral-100 truncate"></p>
+          <p id="live-rotator-ooc" class="text-xs text-neutral-500 truncate"></p>
+        </div>
+        <a id="live-link" href="#" target="_blank" rel="noreferrer"
+           class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold bg-yakuza hover:bg-yakuza-light text-white transition">
+          Kick
+        </a>
+      </div>
+    </div>
   </div>
 
 <footer class="max-w-6xl mx-auto px-4 pb-10 text-center">
