@@ -377,8 +377,13 @@
   }
 
   .char-card .char-name {
-    @apply font-display text-base sm:text-lg font-bold text-neutral-50 leading-tight tracking-tight truncate;
+    @apply font-display text-base sm:text-lg font-bold text-neutral-50 leading-tight tracking-wide truncate uppercase;
     text-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
+  }
+
+  #home-info-name,
+  #live-rotator-name {
+    @apply uppercase tracking-wide;
   }
 
   .char-rank-badge {
