@@ -679,14 +679,6 @@
         .filter(p => p.kick && (LIVE_MAP.get(p.kick)?.live === true))
         .map(p => String(p.kick).toLowerCase());
     
-      const pill = document.getElementById('live-pill');
-      const pillCount = document.getElementById('live-pill-count');
-      const count = liveNow.length;
-      if (count > 0) {
-        pill.classList.remove('hidden');
-        if (pillCount) pillCount.textContent = count;
-      } else { pill.classList.add('hidden'); }
-    
       const changed = JSON.stringify(liveNow) !== JSON.stringify(LIVE_QUEUE);
       LIVE_QUEUE = liveNow;
       if (changed) { LIVE_INDEX = 0; startRotation(); }
@@ -748,12 +740,6 @@
         setIframeTo(LIVE_QUEUE[LIVE_INDEX]);
       }, 20_000);
     }
-    document.getElementById('live-pill').addEventListener('click', () => {
-      if (LIVE_QUEUE.length === 0 || isViewVisible('inicio')) return;
-      ROTATOR_OPEN = !ROTATOR_OPEN;
-      document.getElementById('live-rotator').classList.toggle('hidden', !ROTATOR_OPEN);
-      if (ROTATOR_OPEN) startRotation();
-    });
     document.getElementById('live-close').addEventListener('click', () => {
       ROTATOR_OPEN = false;
       document.getElementById('live-rotator').classList.add('hidden');

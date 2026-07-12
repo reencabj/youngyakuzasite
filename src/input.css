@@ -53,48 +53,6 @@
     @apply text-[11px] sm:text-xs text-neutral-500 tracking-[0.15em] mt-1 uppercase;
   }
 
-  .header-live-pill {
-    @apply inline-flex items-center gap-2.5 shrink-0 px-3 py-2 rounded-xl
-           border border-yakuza/25 bg-yakuza/10 backdrop-blur-sm
-           hover:bg-yakuza/15 hover:border-yakuza/40 transition cursor-pointer;
-  }
-
-  .header-live-dot {
-    @apply relative w-2 h-2 rounded-full bg-yakuza shrink-0;
-  }
-
-  .header-live-dot::after {
-    content: '';
-    position: absolute;
-    inset: -4px;
-    border-radius: 9999px;
-    border: 1px solid rgba(158, 140, 237, 0.45);
-    animation: live-pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes live-pulse {
-    0%, 100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.35;
-      transform: scale(1.2);
-    }
-  }
-
-  .header-live-text {
-    @apply flex items-baseline gap-1.5 text-sm leading-none;
-  }
-
-  .header-live-label {
-    @apply text-neutral-300 font-medium;
-  }
-
-  .header-live-count {
-    @apply font-display text-base font-bold text-yakuza tabular-nums;
-  }
-
   .header-nav {
     @apply flex w-full gap-0.5 overflow-x-auto justify-center border-t border-white/5 px-4;
     scrollbar-width: none;
