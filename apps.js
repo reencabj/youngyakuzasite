@@ -965,7 +965,7 @@
 
     async function loadLore() {
       try {
-        const r = await fetch('lore.html');
+        const r = await fetch('lore.html', { cache: 'no-store' });
         if (!r.ok) throw new Error('lore.html no encontrado');
         const html = await r.text();
         document.getElementById('lore-body').innerHTML = html;
