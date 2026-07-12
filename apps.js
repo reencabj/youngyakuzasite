@@ -116,7 +116,6 @@
     const MK = {};
     (() => {
       let selected = new Set();
-      let timer = null;
       let cachedLive = [];
 
       async function liveListAsync() {
@@ -227,17 +226,20 @@
         syncGrid();
       }
 
+      async function manualRefresh() {
+        LIVE_CACHE = { t: 0, map: new Map() };
+        await refresh(false);
+      }
+
       async function open() {
         if (!Array.isArray(DATA) || DATA.length === 0) {
           document.addEventListener('yy:data-ready', () => { refresh(true); }, { once: true });
           return;
         }
         await refresh(true);
-        clearInterval(timer);
-        timer = setInterval(() => refresh(false), 60_000);
       }
 
-      function stop() { clearInterval(timer); timer = null; }
+      function stop() {}
 
       document.getElementById('view-multikick')?.addEventListener('click', (e) => {
         const chip = e.target.closest('.mk-picker-btn');
@@ -251,6 +253,10 @@
           renderChips(cachedLive);
           return;
         }
+        if (e.target.closest('#mk-refresh')) {
+          manualRefresh();
+          return;
+        }
         if (e.target.closest('#mk-select-all')) {
           selected = new Set(cachedLive.map(p => p.kick));
           renderChips(cachedLive);
@@ -258,7 +264,7 @@
         }
       });
 
-      MK.open = open; MK.stop = stop; MK.refresh = refresh;
+      MK.open = open; MK.stop = stop; MK.refresh = manualRefresh;
       MK.syncGrid = syncGrid;
     })();
 
@@ -285,7 +291,7 @@
       };
 
       const updateLabel = () => {
-        btn.textContent = isFS() ? 'Salir de pantalla completa' : 'Pantalla completa';
+        btn.textContent = isFS() ? 'Salir' : 'Pantalla completa';
       };
 
       btn.addEventListener('click', () => (isFS() ? exitFS() : enterFS()));
@@ -739,11 +745,6 @@
         setIframeTo(LIVE_QUEUE[LIVE_INDEX % LIVE_QUEUE.length]);
         if (!rotateTimer) startRotation();
       }
-    
-      try {
-        const mkVisible = !document.getElementById('view-multikick')?.classList.contains('hidden');
-        if (mkVisible && typeof MK.refresh === 'function') MK.refresh(false);
-      } catch {}
     }
 
     function updateRotatorInfo(slug) {
