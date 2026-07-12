@@ -275,6 +275,7 @@
       });
       styleTabs(v);
       if (v === 'inicio') { renderHome(); }
+      else { stopHomeRotation(); }
       if (v === 'personajes' && DATA.length) { render(); }
       if (v === 'galeria') { loadGallery(); }
       if (v === 'videos'  && !videosLoaded)  loadVideos();
@@ -381,6 +382,21 @@
 
     let HOME_LIVE_LIST = [];
     let HOME_LIVE_INDEX = 0;
+    let homeRotateTimer = null;
+    const HOME_ROTATE_MS = 20_000;
+
+    function stopHomeRotation() {
+      clearInterval(homeRotateTimer);
+      homeRotateTimer = null;
+    }
+
+    function startHomeRotation() {
+      stopHomeRotation();
+      if (!isViewVisible('inicio') || HOME_LIVE_LIST.length <= 1 || document.hidden) return;
+      homeRotateTimer = setInterval(() => {
+        setHomeStream(HOME_LIVE_INDEX + 1);
+      }, HOME_ROTATE_MS);
+    }
 
     function setHomeStream(index) {
       if (!HOME_LIVE_LIST.length) return;
@@ -476,6 +492,7 @@
       if (!HOME_LIVE_LIST.length) {
         theater?.classList.add('hidden');
         empty?.classList.remove('hidden');
+        stopHomeRotation();
         const player = document.getElementById('home-player');
         const chat = document.getElementById('home-chat');
         if (player) player.src = '';
@@ -487,6 +504,7 @@
         if (HOME_LIVE_INDEX >= HOME_LIVE_LIST.length) HOME_LIVE_INDEX = 0;
         renderHomePicker(HOME_LIVE_LIST);
         setHomeStream(HOME_LIVE_INDEX);
+        startHomeRotation();
       }
 
       await updateLiveUI_fromMap(LIVE_MAP);
@@ -560,6 +578,7 @@
             const newIdx = HOME_LIVE_LIST.findIndex(p => p.kick === prevSlug);
             if (newIdx >= 0) setHomeStream(newIdx);
           }
+          startHomeRotation();
         }
         if (isViewVisible('personajes')) await render();
         else syncLiveSnapshotFromData(LIVE_MAP);
@@ -618,7 +637,13 @@
       document.getElementById('sort').value = 'rango-desc';
       render();
     });
-    document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshLiveState(); });
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) refreshLiveState();
+      if (isViewVisible('inicio')) {
+        if (document.hidden) stopHomeRotation();
+        else startHomeRotation();
+      }
+    });
 
     // Click en boton Kick: abrir canal
     document.getElementById('grid').addEventListener('click', (e) => {
@@ -633,12 +658,19 @@
       const btn = e.target.closest('[data-home-index]');
       if (!btn) return;
       setHomeStream(Number(btn.dataset.homeIndex || 0));
+      startHomeRotation();
     });
     document.getElementById('home-prev')?.addEventListener('click', () => {
-      if (HOME_LIVE_LIST.length > 1) setHomeStream(HOME_LIVE_INDEX - 1);
+      if (HOME_LIVE_LIST.length > 1) {
+        setHomeStream(HOME_LIVE_INDEX - 1);
+        startHomeRotation();
+      }
     });
     document.getElementById('home-next')?.addEventListener('click', () => {
-      if (HOME_LIVE_LIST.length > 1) setHomeStream(HOME_LIVE_INDEX + 1);
+      if (HOME_LIVE_LIST.length > 1) {
+        setHomeStream(HOME_LIVE_INDEX + 1);
+        startHomeRotation();
+      }
     });
 
     async function updateLiveUI_fromMap(LIVE_MAP) {
