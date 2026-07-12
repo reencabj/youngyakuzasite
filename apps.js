@@ -14,6 +14,15 @@
         .replace(/'/g, '&#39;');
     }
 
+    function decodeHtmlEntities(s) {
+      return String(s ?? '')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'");
+    }
+
     function isValidKickSlug(kick) {
       if (!kick) return false;
       const s = String(kick).trim().toLowerCase();
@@ -105,6 +114,8 @@
     let videosLoaded = false;
     let videosTimer = null;
     const VIDEOS_REFRESH_MS = 5 * 60_000;
+    let VIDEOS_CACHE = { t: 0, items: [] };
+    const VIDEOS_LIST_TTL = 5 * 60_000;
 
     // ===== LIVE STATUS desde live.json (generado por GitHub Actions) =====
     const LIVE_TTL = 60_000; // revalida cada 60s
@@ -613,11 +624,68 @@
       }, HOME_ROTATE_MS);
     }
 
+    function setHomeTheaterMode(mode) {
+      const shell = document.querySelector('#home-live-theater .live-theater');
+      shell?.classList.toggle('home-theater-mode-live', mode === 'live');
+      shell?.classList.toggle('home-theater-mode-video', mode === 'video');
+      document.getElementById('home-live-badge')?.classList.toggle('hidden', mode !== 'live');
+      document.getElementById('home-video-badge')?.classList.toggle('hidden', mode !== 'video');
+      document.getElementById('home-info-videos')?.classList.toggle('hidden', mode !== 'video');
+    }
+
+    function setHomeVideoFallback(video) {
+      if (!video?.id) return;
+      setHomeTheaterMode('video');
+
+      const title = decodeHtmlEntities(video.title || 'Video');
+      const player = document.getElementById('home-player');
+      const chat = document.getElementById('home-chat');
+      if (player) {
+        player.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(video.id)}`;
+        player.title = title;
+      }
+      if (chat) chat.removeAttribute('src');
+
+      const avatar = document.getElementById('home-info-avatar');
+      const nameEl = document.getElementById('home-info-name');
+      const aliasEl = document.getElementById('home-info-alias');
+      const oocEl = document.getElementById('home-info-ooc');
+      const rankEl = document.getElementById('home-info-rank');
+      const linksEl = document.getElementById('home-info-links');
+      const kickLink = document.getElementById('home-info-kick');
+
+      if (avatar) {
+        avatar.src = `https://i.ytimg.com/vi/${encodeURIComponent(video.id)}/hqdefault.jpg`;
+        avatar.alt = title;
+      }
+      if (nameEl) nameEl.textContent = title;
+      if (aliasEl) aliasEl.classList.add('hidden');
+      if (oocEl) oocEl.textContent = video._channelName || 'YouTube';
+      if (rankEl) {
+        rankEl.textContent = new Date(video.published).toLocaleString('es-UY', {
+          dateStyle: 'medium',
+          timeStyle: 'short',
+        });
+      }
+      if (linksEl) linksEl.innerHTML = '';
+      if (kickLink) {
+        kickLink.href = `https://www.youtube.com/watch?v=${encodeURIComponent(video.id)}`;
+        kickLink.textContent = 'Ver en YouTube';
+        kickLink.classList.remove('hidden');
+      }
+
+      document.getElementById('home-prev')?.classList.add('hidden');
+      document.getElementById('home-next')?.classList.add('hidden');
+      document.getElementById('home-live-pos')?.classList.add('hidden');
+    }
+
     function setHomeStream(index) {
       if (!HOME_LIVE_LIST.length) return;
       HOME_LIVE_INDEX = ((index % HOME_LIVE_LIST.length) + HOME_LIVE_LIST.length) % HOME_LIVE_LIST.length;
       const p = HOME_LIVE_LIST[HOME_LIVE_INDEX];
       const slug = p.kick;
+
+      setHomeTheaterMode('live');
 
       const player = document.getElementById('home-player');
       const chat = document.getElementById('home-chat');
@@ -647,7 +715,11 @@
       if (rankEl) rankEl.textContent = rankLabel(p.rango);
       if (linksEl) linksEl.innerHTML = renderLinkButtons(p) || '';
       const kickUrl = `https://kick.com/${encodeURIComponent(slug)}`;
-      if (kickLink) kickLink.href = kickUrl;
+      if (kickLink) {
+        kickLink.href = kickUrl;
+        kickLink.textContent = 'Ver en Kick';
+        kickLink.classList.remove('hidden');
+      }
       if (chatLink) chatLink.href = `https://kick.com/popout/${encodeURIComponent(slug)}/chat`;
 
       document.querySelectorAll('.home-picker-btn').forEach((btn, i) => {
@@ -705,14 +777,25 @@
       if (countEl) countEl.textContent = String(HOME_LIVE_LIST.length);
 
       if (!HOME_LIVE_LIST.length) {
-        theater?.classList.add('hidden');
-        empty?.classList.remove('hidden');
-        renderHomePicker(HOME_LIVE_LIST);
-        stopHomeRotation();
-        const player = document.getElementById('home-player');
-        const chat = document.getElementById('home-chat');
-        if (player) player.src = '';
-        if (chat) chat.src = '';
+        const videos = await getVideosList();
+        const latest = videos[0] || null;
+
+        if (latest) {
+          empty?.classList.add('hidden');
+          theater?.classList.remove('hidden');
+          renderHomePicker(HOME_LIVE_LIST);
+          stopHomeRotation();
+          setHomeVideoFallback(latest);
+        } else {
+          theater?.classList.add('hidden');
+          empty?.classList.remove('hidden');
+          renderHomePicker(HOME_LIVE_LIST);
+          stopHomeRotation();
+          const player = document.getElementById('home-player');
+          const chat = document.getElementById('home-chat');
+          if (player) player.removeAttribute('src');
+          if (chat) chat.removeAttribute('src');
+        }
       } else {
         empty?.classList.add('hidden');
         theater?.classList.remove('hidden');
@@ -1157,6 +1240,27 @@
   // ===== Videos (estático desde videos.json) =====
     let videosListenersBound = false;
 
+    async function getVideosList() {
+      const now = Date.now();
+      if (now - VIDEOS_CACHE.t < VIDEOS_LIST_TTL && VIDEOS_CACHE.items.length) {
+        return VIDEOS_CACHE.items;
+      }
+      try {
+        const r = await fetch('videos.json', { cache: 'no-cache' });
+        if (!r.ok) return VIDEOS_CACHE.items;
+        const items = await r.json();
+        VIDEOS_CACHE = {
+          t: now,
+          items: (Array.isArray(items) ? items : [])
+            .slice()
+            .sort((a, b) => new Date(b.published) - new Date(a.published)),
+        };
+        return VIDEOS_CACHE.items;
+      } catch {
+        return VIDEOS_CACHE.items;
+      }
+    }
+
     function mountVideoPlayer(facade) {
       const id = facade.dataset.ytId;
       if (!id || facade.dataset.loaded === '1') return;
@@ -1177,11 +1281,9 @@
 
     async function loadVideos() {
       try {
-        const r = await fetch('videos.json', { cache: 'no-cache' });
-        if (!r.ok) throw new Error('videos.json no encontrado');
-        const items = await r.json();
+        const items = await getVideosList();
     
-        const html = (Array.isArray(items) ? items : []).map((v, i) => {
+        const html = items.map((v, i) => {
           const featured = i === 0 ? 'md:col-span-2' : '';
           const title = escapeHtml(v.title || 'Video');
           const date = new Date(v.published).toLocaleString('es-UY', { dateStyle: 'medium', timeStyle: 'short' });

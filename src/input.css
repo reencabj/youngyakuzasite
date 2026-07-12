@@ -435,6 +435,28 @@
     }
   }
 
+  .home-live-badge {
+    @apply bg-red-600/90;
+  }
+
+  .home-video-badge {
+    @apply bg-yakuza/90 border border-yakuza/40;
+  }
+
+  .home-theater-mode-video .live-theater-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-theater-mode-video .live-theater-chat {
+    display: none;
+  }
+
+  @media (min-width: 1024px) {
+    .home-theater-mode-video .live-theater-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
   .home-theater-shell {
     position: relative;
     width: calc(100% + 5.5rem);
