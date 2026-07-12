@@ -465,11 +465,22 @@
     right: 10px;
     z-index: 30;
     margin: 0;
-    padding: 6px 10px;
-    border-radius: 12px;
-    background: rgba(8, 8, 10, 0.88);
-    backdrop-filter: blur(12px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+    padding: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: none;
+  }
+
+  #view-multikick.mk-is-fullscreen .mk-bar {
+    pointer-events: auto;
+  }
+
+  #view-multikick.mk-is-fullscreen.mk-hud-hidden .mk-toolbar {
+    opacity: 0;
+    transform: translateY(-12px);
   }
 
   #view-multikick.mk-is-fullscreen .mk-bar {
@@ -478,9 +489,15 @@
 
   #view-multikick.mk-is-fullscreen .mk-btn {
     height: 2rem;
-    padding-left: 0.625rem;
-    padding-right: 0.625rem;
-    font-size: 0.75rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    font-size: 0.6875rem;
+    background: rgba(8, 8, 10, 0.82);
+  }
+
+  #view-multikick.mk-is-fullscreen .mk-btn-icon {
+    width: 2rem;
+    padding: 0;
   }
 
   #view-multikick.mk-is-fullscreen .mk-picker-btn img {
@@ -521,11 +538,15 @@
   }
 
   .mk-toolbar {
-    @apply rounded-xl border border-white/10 bg-neutral-950/55 backdrop-blur-md p-3 sm:p-4 mb-4;
+    @apply mb-4;
   }
 
   .mk-bar {
     @apply flex flex-wrap items-center gap-2 sm:gap-3;
+  }
+
+  .mk-controls {
+    @apply flex flex-wrap items-center gap-2;
   }
 
   .mk-picker {
@@ -551,13 +572,32 @@
   }
 
   .mk-btn {
-    @apply h-9 px-3 inline-flex items-center justify-center rounded-lg text-sm
-           text-neutral-300 border border-white/10 bg-neutral-900/50
-           hover:border-yakuza/35 hover:text-neutral-100 transition;
+    @apply h-9 px-4 inline-flex items-center justify-center gap-1.5 rounded-full text-xs font-medium uppercase tracking-wide
+           text-neutral-200 border border-white/10 bg-neutral-950/45 backdrop-blur-sm
+           shadow-[0_4px_18px_rgba(0,0,0,0.22)]
+           hover:border-yakuza/40 hover:text-white hover:bg-neutral-900/65
+           active:scale-[0.98] transition-all duration-200;
   }
 
   .mk-btn-primary {
-    @apply text-yakuza border-yakuza/30 bg-yakuza/10 hover:bg-yakuza/15 hover:border-yakuza/45;
+    @apply text-yakuza border-yakuza/35 bg-yakuza/10 shadow-[0_4px_22px_rgba(158,140,237,0.14)]
+           hover:bg-yakuza/15 hover:border-yakuza/50 hover:text-yakuza-light;
+  }
+
+  .mk-btn-icon {
+    @apply w-9 h-9 p-0 shrink-0;
+  }
+
+  .mk-btn-svg {
+    @apply w-4 h-4;
+  }
+
+  .mk-btn-spin .mk-btn-svg {
+    animation: mk-spin 0.65s linear infinite;
+  }
+
+  @keyframes mk-spin {
+    to { transform: rotate(360deg); }
   }
 
   .mk-count {

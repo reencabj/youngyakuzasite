@@ -160,12 +160,44 @@
         else if (n >= 4) grid.classList.add('mk-grid-cols-4');
       }
 
+      function playerSrc(slug) {
+        return `https://player.kick.com/${encodeURIComponent(slug)}?autoplay=true&muted=true`;
+      }
+
+      function pausePlayers() {
+        document.querySelectorAll('#mk-grid .mk-player iframe').forEach(iframe => {
+          if (iframe.src) iframe.dataset.mkSrc = iframe.src;
+          iframe.removeAttribute('src');
+        });
+      }
+
+      function resumePlayers() {
+        document.querySelectorAll('#mk-grid .mk-player').forEach(wrap => {
+          const slug = wrap.dataset.slug;
+          const iframe = wrap.querySelector('iframe');
+          if (!iframe || !slug || iframe.src) return;
+          iframe.src = iframe.dataset.mkSrc || playerSrc(slug);
+        });
+      }
+
+      function exitFullscreenIfNeeded() {
+        const root = document.getElementById('view-multikick');
+        const inFs = root && (
+          document.fullscreenElement === root ||
+          document.webkitFullscreenElement === root ||
+          document.msFullscreenElement === root
+        );
+        if (!inFs) return;
+        const ex = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+        ex?.call(document);
+      }
+
       function createPlayer(slug) {
         const wrap = document.createElement('div');
         wrap.className = 'mk-player';
         wrap.dataset.slug = slug;
         const iframe = document.createElement('iframe');
-        iframe.src = `https://player.kick.com/${encodeURIComponent(slug)}?autoplay=true&muted=true`;
+        iframe.src = playerSrc(slug);
         iframe.allow = 'autoplay; fullscreen';
         iframe.allowFullscreen = true;
         iframe.loading = 'lazy';
@@ -231,15 +263,29 @@
         await refresh(false);
       }
 
+      let mkActive = false;
+
       async function open() {
         if (!Array.isArray(DATA) || DATA.length === 0) {
-          document.addEventListener('yy:data-ready', () => { refresh(true); }, { once: true });
+          document.addEventListener('yy:data-ready', () => { open(); }, { once: true });
+          return;
+        }
+        if (mkActive) return;
+        mkActive = true;
+
+        if (document.querySelectorAll('#mk-grid .mk-player').length) {
+          resumePlayers();
           return;
         }
         await refresh(true);
       }
 
-      function stop() {}
+      function stop() {
+        if (!mkActive) return;
+        mkActive = false;
+        pausePlayers();
+        exitFullscreenIfNeeded();
+      }
 
       document.getElementById('view-multikick')?.addEventListener('click', (e) => {
         const chip = e.target.closest('.mk-picker-btn');
@@ -254,7 +300,9 @@
           return;
         }
         if (e.target.closest('#mk-refresh')) {
-          manualRefresh();
+          const refreshBtn = e.target.closest('#mk-refresh');
+          refreshBtn?.classList.add('mk-btn-spin');
+          manualRefresh().finally(() => refreshBtn?.classList.remove('mk-btn-spin'));
           return;
         }
         if (e.target.closest('#mk-select-all')) {
@@ -274,6 +322,10 @@
       if (!btn) return;
 
       const root = document.getElementById('view-multikick');
+      const hudBar = root?.querySelector('.mk-bar');
+      const HIDE_MS = 3000;
+      const TOP_ZONE = 72;
+      let hideTimer = null;
 
       const isFS = () =>
         document.fullscreenElement === root ||
@@ -290,11 +342,52 @@
         if (ex) ex.call(document);
       };
 
+      const clearHideTimer = () => {
+        if (hideTimer) {
+          clearTimeout(hideTimer);
+          hideTimer = null;
+        }
+      };
+
+      const hideHud = () => {
+        if (isFS()) root.classList.add('mk-hud-hidden');
+      };
+
+      const scheduleHide = () => {
+        clearHideTimer();
+        hideTimer = setTimeout(hideHud, HIDE_MS);
+      };
+
+      const showHud = () => {
+        root.classList.remove('mk-hud-hidden');
+        scheduleHide();
+      };
+
       const updateLabel = () => {
         const active = isFS();
         root.classList.toggle('mk-is-fullscreen', active);
+        root.classList.remove('mk-hud-hidden');
+        clearHideTimer();
         btn.textContent = active ? 'Salir' : 'Pantalla completa';
+        if (active) scheduleHide();
       };
+
+      root.addEventListener('mousemove', (e) => {
+        if (!isFS()) return;
+        const y = e.clientY - root.getBoundingClientRect().top;
+        if (y <= TOP_ZONE) showHud();
+      });
+
+      hudBar?.addEventListener('mouseenter', () => {
+        if (!isFS()) return;
+        clearHideTimer();
+        root.classList.remove('mk-hud-hidden');
+      });
+
+      hudBar?.addEventListener('mouseleave', () => {
+        if (!isFS()) return;
+        scheduleHide();
+      });
 
       btn.addEventListener('click', () => (isFS() ? exitFS() : enterFS()));
       document.addEventListener('fullscreenchange', updateLabel);
