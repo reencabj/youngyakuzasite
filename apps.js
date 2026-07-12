@@ -506,7 +506,9 @@
       if (v === 'personajes' && DATA.length) { render(); }
       if (v === 'galeria') { loadGallery(); }
       if (v === 'videos'  && !videosLoaded)  loadVideos();
-      if (v === 'lore'    && !loreLoaded)    loadLore();
+      if (v === 'lore') {
+        loadLore().then(() => requestAnimationFrame(refreshLoreReveal));
+      }
 
       if (v === 'multikick') { MK.open?.(); }
       else { MK.stop?.(); }
@@ -1460,19 +1462,38 @@
     }
 
     // ===== Lore =====
-    let loreLoaded = false;
-    async function loadLore() {
-      try {
-        const r = await fetch('lore.html', { cache: 'no-store' });
-        if (!r.ok) throw new Error('lore.html no encontrado');
-        const html = await r.text();
-        document.getElementById('lore-body').innerHTML = html;
-        requestAnimationFrame(() => initScrollReveal('#lore-body .lore-reveal'));
-        loreLoaded = true;
-      } catch {
-        document.getElementById('lore-body').innerHTML =
-          '<p class="text-red-400">Subí <code>lore.html</code> con tu historia.</p>';
+    let loreLoadPromise = null;
+
+    function refreshLoreReveal() {
+      const body = document.getElementById('lore-body');
+      if (!body?.querySelector('.lore-reveal, .lore-chapter')) return;
+
+      if (prefersReducedMotion()) {
+        body.querySelectorAll('.lore-reveal').forEach(el => {
+          el.classList.add('scroll-revealed', 'lore-revealed');
+        });
+        return;
       }
+      initScrollReveal('#lore-body .lore-reveal');
+    }
+
+    function loadLore() {
+      if (loreLoadPromise) return loreLoadPromise;
+
+      loreLoadPromise = (async () => {
+        try {
+          const r = await fetch('lore.html', { cache: 'no-store' });
+          if (!r.ok) throw new Error('lore.html no encontrado');
+          const html = await r.text();
+          document.getElementById('lore-body').innerHTML = html;
+        } catch {
+          document.getElementById('lore-body').innerHTML =
+            '<p class="text-red-400">Subí <code>lore.html</code> con tu historia.</p>';
+        }
+      })();
+
+      loreLoadPromise.catch(() => { loreLoadPromise = null; });
+      return loreLoadPromise;
     }
 
     // ===== Go! =====
