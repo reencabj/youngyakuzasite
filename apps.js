@@ -1,5 +1,5 @@
 ﻿    // ===== Utilidades =====
-    const RANKS = { "1": "Jefe", "2": "Yakuza", "3": "Shatei" };
+    const RANKS = { "1": "Jefe", "2": "Campera", "3": "Yakuza", "4": "Shatei" };
     const FALLBACK_AVATAR = 'img/logo.png';
     const rankLabel = v => RANKS[String(v)] ?? "-";
     const norm = s => (s || "").toString().normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase();
