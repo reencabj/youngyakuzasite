@@ -316,21 +316,20 @@
       }
     }
 
-    function renderCharacterRow(p) {
-      const linksHtml = p.links?.length ? `
-        <div class="flex items-center gap-1.5">
-          ${p.links.map(l => {
-            const t = linkType(l);
-            const title = l.label || t.charAt(0).toUpperCase() + t.slice(1);
-            return `
-              <a class="yy-icon-btn" href="${l.href}" target="_blank" rel="noreferrer" aria-label="${title}" title="${title}">
-                ${iconSvg(t)}
-              </a>
-            `;
-          }).join('')}
-        </div>
-      ` : '';
+    function renderLinkButtons(p) {
+      if (!p.links?.length) return '';
+      return p.links.map(l => {
+        const t = linkType(l);
+        const title = l.label || t.charAt(0).toUpperCase() + t.slice(1);
+        return `
+          <a class="yy-icon-btn" href="${l.href}" target="_blank" rel="noreferrer" aria-label="${title}" title="${title}">
+            ${iconSvg(t)}
+          </a>
+        `;
+      }).join('');
+    }
 
+    function renderCharacterCard(p) {
       const kickHtml = p.kick ? `
         <a id="kick-${p.kick}"
            data-slug="${p.kick}"
@@ -342,42 +341,42 @@
         </a>
       ` : '';
 
+      const linksHtml = renderLinkButtons(p);
+      const actionsHtml = (kickHtml || linksHtml) ? `
+        <div class="flex flex-wrap items-center gap-1.5 mt-3 pt-3 border-t border-white/5">
+          ${kickHtml}
+          ${linksHtml}
+        </div>
+      ` : '';
+
       return `
-        <article class="roster-row flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 px-4 py-3.5 border-b border-white/5 last:border-b-0 hover:bg-white/[0.03]">
-          <div class="flex items-center gap-3 flex-1 min-w-0">
+        <article class="char-card group fade-in rounded-xl overflow-hidden bg-neutral-900/50 border border-white/5 backdrop-blur-sm hover:border-yakuza/25">
+          <div class="relative aspect-[3/4] overflow-hidden bg-neutral-950">
             <img src="${p.foto || FALLBACK_AVATAR}" alt="${p.nombre}"
-                 class="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover ring-2 ring-white/10 shrink-0" loading="lazy" decoding="async" />
-            <div class="min-w-0">
-              <div class="flex items-baseline gap-2 flex-wrap">
-                <h3 class="font-semibold text-neutral-100">${p.nombre}</h3>
-                ${p.alias ? `<span class="text-yakuza/70 text-xs font-medium">${p.alias}</span>` : ''}
-              </div>
-              <p class="text-sm text-neutral-500 truncate">${p.ooc || '—'}</p>
+                 class="char-photo w-full h-full object-cover object-top" loading="lazy" decoding="async" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent"></div>
+            <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wide bg-black/55 text-yakuza border border-yakuza/35 backdrop-blur-sm">
+              ${rankLabel(p.rango)}
+            </span>
+            ${p.alias ? `
+              <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md text-[10px] bg-black/55 text-neutral-200 border border-white/10 backdrop-blur-sm max-w-[48%] truncate">
+                ${p.alias}
+              </span>
+            ` : ''}
+            <div class="absolute bottom-0 inset-x-0 p-3">
+              <h3 class="font-semibold text-neutral-100 truncate leading-tight">${p.nombre}</h3>
+              <p class="text-xs text-neutral-400 truncate mt-0.5">${p.ooc || '—'}</p>
             </div>
           </div>
-          <div class="flex items-center gap-2 pl-14 sm:pl-0 shrink-0">
-            ${kickHtml}
-            ${linksHtml}
-          </div>
+          ${actionsHtml ? `<div class="p-3">${actionsHtml}</div>` : ''}
         </article>
       `;
     }
 
     function renderCharacterLinks(p) {
-      if (!p.links?.length) return '';
-      return `
-        <div class="flex flex-wrap gap-1.5 mt-3">
-          ${p.links.map(l => {
-            const t = linkType(l);
-            const title = l.label || t.charAt(0).toUpperCase() + t.slice(1);
-            return `
-              <a class="yy-icon-btn" href="${l.href}" target="_blank" rel="noreferrer" aria-label="${title}" title="${title}">
-                ${iconSvg(t)}
-              </a>
-            `;
-          }).join('')}
-        </div>
-      `;
+      const btns = renderLinkButtons(p);
+      if (!btns) return '';
+      return `<div class="flex flex-wrap gap-1.5 mt-3">${btns}</div>`;
     }
 
     let HOME_LIVE_LIST = [];
@@ -481,42 +480,6 @@
       scheduleRender();
     }
 
-    function buildRosterHTML(list, sort) {
-      const rangoFilter = document.getElementById('rango').value;
-      const rankOrder = sort === 'rango-asc' ? [3, 2, 1] : [1, 2, 3];
-      const groups = new Map();
-
-      list.forEach(p => {
-        const r = p.rango ?? 99;
-        if (!groups.has(r)) groups.set(r, []);
-        groups.get(r).push(p);
-      });
-
-      const ranks = rangoFilter
-        ? [Number(rangoFilter)]
-        : [
-            ...rankOrder.filter(r => groups.has(r)),
-            ...[...groups.keys()].filter(r => !rankOrder.includes(r)).sort((a, b) => a - b),
-          ];
-
-      return ranks.map(r => {
-        const items = groups.get(r) || [];
-        if (!items.length) return '';
-        return `
-          <section class="roster-section fade-in">
-            <h2 class="flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-yakuza/80 mb-2 font-display">
-              <span>${rankLabel(r)}</span>
-              <span class="flex-1 h-px bg-gradient-to-r from-yakuza/30 to-transparent"></span>
-              <span class="text-neutral-500 font-normal tabular-nums">${items.length}</span>
-            </h2>
-            <div class="rounded-xl overflow-hidden bg-neutral-900/40 border border-white/5 backdrop-blur-sm">
-              ${items.map(renderCharacterRow).join('')}
-            </div>
-          </section>
-        `;
-      }).join('');
-    }
-
     function getFilteredList(LIVE_MAP) {
       const q = norm(document.getElementById('q').value);
       const rango = document.getElementById('rango').value;
@@ -609,7 +572,7 @@
         }
         empty.classList.add('hidden');
 
-        grid.innerHTML = buildRosterHTML(list, sort);
+        grid.innerHTML = list.map(renderCharacterCard).join('');
       
         list.forEach(p => {
           if (!p.kick) return;

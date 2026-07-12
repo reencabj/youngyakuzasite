@@ -43,6 +43,23 @@
     @apply transition-colors;
   }
 
+  .char-card {
+    @apply transition-all duration-200;
+  }
+
+  .char-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  }
+
+  .char-card .char-photo {
+    @apply transition-transform duration-300;
+  }
+
+  .char-card:hover .char-photo {
+    transform: scale(1.04);
+  }
+
   .live-card {
     @apply transition-transform duration-200;
   }
