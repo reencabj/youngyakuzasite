@@ -53,22 +53,28 @@
 
   <!-- Header + Nav -->
   <header class="site-header">
-    <div class="max-w-6xl mx-auto px-4">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-4">
-        <div class="flex items-center gap-4">
-          <img src="img/logo.png" alt="Logo Yakuza" class="w-16 h-16 sm:w-20 sm:h-20 object-contain drop-shadow" loading="eager" decoding="async" />
-          <div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight font-display">Yakuza</h1>
-            <p class="text-sm text-neutral-400">Dovux Life RP</p>
+    <div class="header-inner max-w-6xl mx-auto px-4">
+      <div class="header-top flex items-center justify-between gap-4 py-3">
+        <button type="button" data-goto="inicio" class="header-brand group flex items-center gap-3 min-w-0 text-left">
+          <div class="header-logo-wrap">
+            <img src="img/logo.png" alt="" class="header-logo" loading="eager" decoding="async" />
           </div>
-        </div>
-        <button id="live-pill"
-          class="hidden sm:inline-flex items-center gap-2 text-sm px-3 py-1.5 rounded-full border border-yakuza/60 bg-yakuza/10 hover:bg-yakuza/20 transition self-start sm:self-auto">
-          <span class="inline-block w-2 h-2 rounded-full bg-yakuza animate-pulse"></span>
-          <span>En vivo (0)</span>
+          <div class="header-title-block min-w-0">
+            <p class="header-kicker">Clan</p>
+            <h1 class="header-title truncate">Yakuza</h1>
+            <p class="header-subtitle truncate">Dovux Life RP</p>
+          </div>
+        </button>
+        <button id="live-pill" type="button" data-goto="inicio"
+          class="header-live-pill hidden" aria-label="Ver streams en vivo">
+          <span class="header-live-dot" aria-hidden="true"></span>
+          <span class="header-live-text">
+            <span class="header-live-label">En vivo</span>
+            <span id="live-pill-count" class="header-live-count">0</span>
+          </span>
         </button>
       </div>
-      <nav class="flex gap-1 overflow-x-auto -mx-4 px-4 border-t border-white/5" aria-label="Secciones">
+      <nav class="header-nav" aria-label="Secciones">
         <button class="tab tab-active" data-view="inicio">Inicio</button>
         <button class="tab" data-view="personajes">Personajes</button>
         <button class="tab" data-view="galeria">Galería</button>

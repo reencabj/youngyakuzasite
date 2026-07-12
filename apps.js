@@ -626,10 +626,11 @@
         .map(p => String(p.kick).toLowerCase());
     
       const pill = document.getElementById('live-pill');
+      const pillCount = document.getElementById('live-pill-count');
       const count = liveNow.length;
       if (count > 0) {
         pill.classList.remove('hidden');
-        pill.querySelector('span:last-child').textContent = `En vivo (${count})`;
+        if (pillCount) pillCount.textContent = count;
       } else { pill.classList.add('hidden'); }
     
       const changed = JSON.stringify(liveNow) !== JSON.stringify(LIVE_QUEUE);

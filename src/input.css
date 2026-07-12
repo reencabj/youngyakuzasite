@@ -27,16 +27,106 @@
 
 @layer components {
   .site-header {
-    @apply sticky top-0 z-40 border-b border-white/5 bg-neutral-950/80 backdrop-blur-md;
+    @apply sticky top-0 z-40 border-b border-white/5;
+    background: linear-gradient(to bottom, rgba(8, 8, 10, 0.92), rgba(8, 8, 10, 0.78));
+    backdrop-filter: blur(14px);
+  }
+
+  .header-brand {
+    @apply rounded-xl -ml-1 pl-1 pr-2 py-1 transition hover:bg-white/[0.03];
+  }
+
+  .header-logo-wrap {
+    @apply relative shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl border border-white/10 bg-neutral-900/55 p-1.5 overflow-hidden
+           transition group-hover:border-yakuza/35 group-hover:shadow-[0_0_20px_rgba(158,140,237,0.12)];
+  }
+
+  .header-logo {
+    @apply w-full h-full object-contain;
+  }
+
+  .header-kicker {
+    @apply text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-500 leading-none mb-0.5;
+  }
+
+  .header-title {
+    @apply font-display text-xl sm:text-2xl font-bold tracking-tight text-neutral-50 leading-tight;
+  }
+
+  .header-subtitle {
+    @apply text-[11px] sm:text-xs text-neutral-500 tracking-wide mt-0.5;
+  }
+
+  .header-live-pill {
+    @apply inline-flex items-center gap-2.5 shrink-0 px-3 py-2 rounded-xl
+           border border-yakuza/25 bg-yakuza/10 backdrop-blur-sm
+           hover:bg-yakuza/15 hover:border-yakuza/40 transition cursor-pointer;
+  }
+
+  .header-live-dot {
+    @apply relative w-2 h-2 rounded-full bg-yakuza shrink-0;
+  }
+
+  .header-live-dot::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 9999px;
+    border: 1px solid rgba(158, 140, 237, 0.45);
+    animation: live-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes live-pulse {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.35;
+      transform: scale(1.2);
+    }
+  }
+
+  .header-live-text {
+    @apply flex items-baseline gap-1.5 text-sm leading-none;
+  }
+
+  .header-live-label {
+    @apply text-neutral-300 font-medium;
+  }
+
+  .header-live-count {
+    @apply font-display text-base font-bold text-yakuza tabular-nums;
+  }
+
+  .header-nav {
+    @apply flex gap-0.5 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 border-t border-white/5;
+    scrollbar-width: none;
+  }
+
+  .header-nav::-webkit-scrollbar {
+    display: none;
   }
 
   .tab {
-    @apply px-4 py-3 text-sm font-medium text-neutral-400 border-b-2 border-transparent
+    @apply relative px-3 sm:px-4 py-3 text-sm font-medium text-neutral-500 border-b-2 border-transparent
            transition-colors whitespace-nowrap hover:text-neutral-200;
   }
 
   .tab-active {
-    @apply text-yakuza border-yakuza;
+    @apply text-yakuza border-transparent;
+  }
+
+  .tab-active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0.65rem;
+    right: 0.65rem;
+    height: 2px;
+    background: #9e8ced;
+    border-radius: 2px 2px 0 0;
+    box-shadow: 0 0 10px rgba(158, 140, 237, 0.45);
   }
 
   .filter-label {
