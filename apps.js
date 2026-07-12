@@ -577,7 +577,8 @@
       ` : '';
 
       return `
-        <article class="char-card scroll-reveal group rounded-xl overflow-hidden bg-neutral-900/50 border border-white/5 backdrop-blur-sm hover:border-yakuza/25">
+        <article class="char-card scroll-reveal group rounded-xl overflow-hidden bg-neutral-900/50 border border-white/5 backdrop-blur-sm hover:border-yakuza/25"
+                 data-char-key="${escapeHtml(p.kick || p.nombre)}"${p.kick ? ` data-kick="${escapeHtml(p.kick)}"` : ''}>
           <div class="relative aspect-[3/4] overflow-hidden bg-neutral-950">
             <img src="${p.foto || FALLBACK_AVATAR}" alt="${p.nombre}"
                  class="char-photo w-full h-full object-cover object-top" loading="lazy" decoding="async" />
@@ -851,6 +852,40 @@
       });
     }
 
+    function cardKeyForPerson(p) {
+      return p.kick || p.nombre;
+    }
+
+    function reorderPersonajesGrid(LIVE_MAP) {
+      const grid = document.getElementById('grid');
+      if (!grid?.querySelector('.char-card')) return false;
+
+      const { list } = getFilteredList(LIVE_MAP);
+      const cardsByKey = new Map();
+      grid.querySelectorAll('.char-card').forEach(card => {
+        const key = card.dataset.charKey;
+        if (key) cardsByKey.set(key, card);
+      });
+
+      const expectedKeys = list.map(cardKeyForPerson);
+      if (expectedKeys.length !== cardsByKey.size) return false;
+      for (const key of expectedKeys) {
+        if (!cardsByKey.has(key)) return false;
+      }
+
+      expectedKeys.forEach(key => grid.appendChild(cardsByKey.get(key)));
+      return true;
+    }
+
+    async function updatePersonajesLiveOrder(LIVE_MAP) {
+      const grid = document.getElementById('grid');
+      if (!grid?.querySelector('.char-card')) {
+        await render();
+        return;
+      }
+      if (!reorderPersonajesGrid(LIVE_MAP)) await render();
+    }
+
     function isViewVisible(id) {
       return !document.getElementById('view-' + id)?.classList.contains('hidden');
     }
@@ -879,7 +914,7 @@
           }
           startHomeRotation();
         }
-        if (isViewVisible('personajes')) await render();
+        if (isViewVisible('personajes')) await updatePersonajesLiveOrder(LIVE_MAP);
         else syncLiveSnapshotFromData(LIVE_MAP);
       } else {
         syncLiveSnapshotFromData(LIVE_MAP);
@@ -1063,7 +1098,7 @@
 
         if (state.live === true) {
           el.className = 'kick-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border border-yakuza/50 bg-yakuza/10 hover:bg-yakuza/20';
-          dot.className = 'kick-dot inline-block w-2 h-2 rounded-full bg-yakuza animate-pulse';
+          dot.className = 'kick-dot kick-dot-live inline-block w-2 h-2 rounded-full bg-yakuza';
           label.textContent = 'En vivo';
         } else if (state.live === false) {
           el.className = 'kick-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border border-neutral-700/50 bg-neutral-800/50 hover:bg-neutral-700/50';
@@ -1177,16 +1212,52 @@
       dl.download = (item.alt || `imagen-${YY_INDEX+1}`).replace(/[^\w.-]+/g,'_');
     }
     
+    let yyFocusReturn = null;
+
+    function yyFocusables(container) {
+      return [...container.querySelectorAll(
+        'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )].filter(el => !el.closest('[hidden]') && el.getAttribute('aria-hidden') !== 'true');
+    }
+
+    function yyTrapFocus(e) {
+      if (e.key !== 'Tab') return;
+      const lb = document.getElementById('yy-lightbox');
+      if (!lb || lb.classList.contains('hidden')) return;
+      const items = yyFocusables(lb);
+      if (!items.length) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else if (document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+
     function yyOpen(i=0) {
       YY_INDEX = Math.max(0, Math.min(i, YY_GALLERY.length-1));
       yyRender();
-      document.getElementById('yy-lightbox').classList.remove('hidden'); // mostrar overlay
+      const lb = document.getElementById('yy-lightbox');
+      yyFocusReturn = document.activeElement;
+      lb.classList.remove('hidden');
+      lb.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('yy-lb-open');
       document.addEventListener('keydown', yyKeys);
+      document.addEventListener('keydown', yyTrapFocus);
+      requestAnimationFrame(() => document.getElementById('yy-close')?.focus());
     }
 
     function yyClose() {
-      document.getElementById('yy-lightbox').classList.add('hidden');
+      const lb = document.getElementById('yy-lightbox');
+      lb.classList.add('hidden');
+      lb.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('yy-lb-open');
       document.removeEventListener('keydown', yyKeys);
+      document.removeEventListener('keydown', yyTrapFocus);
+      if (yyFocusReturn?.focus) yyFocusReturn.focus();
+      yyFocusReturn = null;
     }
     function yyPrev() { if (!YY_GALLERY.length) return; YY_INDEX = (YY_INDEX - 1 + YY_GALLERY.length) % YY_GALLERY.length; yyRender(); }
     function yyNext() { if (!YY_GALLERY.length) return; YY_INDEX = (YY_INDEX + 1) % YY_GALLERY.length; yyRender(); }
@@ -1336,6 +1407,10 @@
     // ===== Scroll reveal (Lore + Personajes) =====
     let scrollRevealObserver = null;
 
+    function prefersReducedMotion() {
+      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
+
     function initScrollReveal(selector = '.scroll-reveal, .lore-reveal') {
       const els = document.querySelectorAll(selector);
       if (!els.length) return;
@@ -1343,7 +1418,7 @@
       scrollRevealObserver?.disconnect();
       scrollRevealObserver = null;
 
-      if (!('IntersectionObserver' in window)) {
+      if (prefersReducedMotion() || !('IntersectionObserver' in window)) {
         els.forEach(el => el.classList.add('scroll-revealed', 'lore-revealed'));
         return;
       }
@@ -1381,3 +1456,4 @@
     // ===== Go! =====
     showView(viewFromHash(), { updateHash: false });
     loadData();
+    loadLore();
