@@ -32,8 +32,12 @@
     backdrop-filter: blur(14px);
   }
 
+  .header-inner {
+    @apply flex flex-col items-center;
+  }
+
   .header-brand {
-    @apply rounded-xl -ml-1 pl-1 pr-2 py-1 transition hover:bg-white/[0.03];
+    @apply rounded-xl px-2 py-1 transition hover:bg-white/[0.03];
   }
 
   .header-logo {
@@ -92,7 +96,7 @@
   }
 
   .header-nav {
-    @apply flex gap-0.5 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 border-t border-white/5;
+    @apply flex w-full gap-0.5 overflow-x-auto justify-center border-t border-white/5 px-4;
     scrollbar-width: none;
   }
 
