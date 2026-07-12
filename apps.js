@@ -597,8 +597,8 @@
               ${escapeHtml(rankLabel(p.rango))}
             </span>
             <div class="absolute bottom-0 inset-x-0 p-3">
-              <h3 class="char-name">${escapeHtml(p.nombre)}</h3>
               ${p.alias ? `<p class="char-alias">${escapeHtml(p.alias)}</p>` : ''}
+              <h3 class="char-name">${escapeHtml(p.nombre)}</h3>
               <p class="char-ooc">${escapeHtml(p.ooc || '—')}</p>
             </div>
           </div>
