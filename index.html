@@ -175,38 +175,44 @@
   <!-- VIEW: Personajes -->
   <div id="view-personajes" class="py-6 hidden">
     <section class="max-w-6xl mx-auto px-4">
-      <div class="flex flex-col lg:flex-row lg:items-end gap-4">
-        <div class="flex-1 min-w-[280px]">
-          <label class="block text-sm text-neutral-300 mb-1">Buscar personaje</label>
-          <input id="q" type="search" placeholder="Ej: Mikaro, Yoshi, etc."
-                 class="w-full h-10 rounded-xl bg-neutral-900/80 border border-neutral-800 px-3 outline-none focus:ring-2 focus:ring-yakuza focus:border-yakuza/50" />
-        </div>
-        <div class="flex flex-wrap lg:flex-nowrap items-end gap-3 shrink-0">
-          <div class="w-56">
-            <label class="block text-sm text-neutral-300 mb-1">Ordenar</label>
-            <select id="sort" class="w-full h-10 rounded-xl bg-neutral-900/80 border border-neutral-800 px-3 outline-none focus:ring-2 focus:ring-yakuza">
-              <option value="rango-desc">Ordenar por rango (↓)</option>
-              <option value="rango-asc">Ordenar por rango (↑)</option>
+      <div class="filters-bar rounded-xl border border-white/10 bg-neutral-950/55 backdrop-blur-md p-3 sm:p-4 shadow-lg shadow-black/20">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_160px_160px_auto] gap-3 lg:gap-4 lg:items-end">
+          <div class="filter-field sm:col-span-2 lg:col-span-1">
+            <label for="q" class="filter-label">Buscar</label>
+            <div class="relative">
+              <svg class="filter-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
+              </svg>
+              <input id="q" type="search" placeholder="Mikaro, Yoshi, etc."
+                     class="filter-input filter-input-search" />
+            </div>
+          </div>
+          <div class="filter-field">
+            <label for="sort" class="filter-label">Ordenar</label>
+            <select id="sort" class="filter-input filter-select">
+              <option value="rango-desc">Rango (↓)</option>
+              <option value="rango-asc">Rango (↑)</option>
               <option value="nombre-asc">Nombre (A→Z)</option>
               <option value="nombre-desc">Nombre (Z→A)</option>
-              <option value="live-desc">Estado (en vivo primero)</option>
+              <option value="live-desc">En vivo primero</option>
             </select>
           </div>
-          <div class="w-56">
-            <label class="block text-sm text-neutral-300 mb-1">Rango</label>
-            <select id="rango" class="w-full h-10 rounded-xl bg-neutral-900/80 border border-neutral-800 px-3 outline-none focus:ring-2 focus:ring-yakuza">
+          <div class="filter-field">
+            <label for="rango" class="filter-label">Rango</label>
+            <select id="rango" class="filter-input filter-select">
               <option value="">Todos</option>
-              <option value="1">1 — Jefe</option>
-              <option value="2">2 — Yakuza</option>
-              <option value="3">3 — Shatei</option>
+              <option value="1">Jefe</option>
+              <option value="2">Yakuza</option>
+              <option value="3">Shatei</option>
             </select>
           </div>
-          <div class="w-44">
-            <label class="block text-sm text-neutral-300 mb-1 invisible">Acción</label>
-            <button id="clear"
-                    class="w-full h-10 inline-flex items-center justify-center rounded-xl
-                           bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 px-3 text-sm">
-              Limpiar filtros
+          <div class="filter-field sm:col-span-2 lg:col-span-1">
+            <span class="filter-label hidden lg:block invisible" aria-hidden="true">&nbsp;</span>
+            <button id="clear" type="button" class="filter-btn-clear">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M18 6 6 18M6 6l12 12"/>
+              </svg>
+              Limpiar
             </button>
           </div>
         </div>

@@ -39,6 +39,38 @@
     @apply text-yakuza border-yakuza;
   }
 
+  .filter-label {
+    @apply block text-[10px] font-semibold uppercase tracking-widest text-neutral-500 mb-1.5;
+  }
+
+  .filter-input {
+    @apply w-full h-10 rounded-lg bg-neutral-900/70 border border-white/5 px-3 text-sm text-neutral-100
+           outline-none transition placeholder:text-neutral-600
+           focus:border-yakuza/40 focus:ring-2 focus:ring-yakuza/20;
+  }
+
+  .filter-input-search {
+    @apply pl-9;
+  }
+
+  .filter-search-icon {
+    @apply absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500 pointer-events-none;
+  }
+
+  .filter-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23737373' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding-right: 2rem;
+  }
+
+  .filter-btn-clear {
+    @apply w-full h-10 inline-flex items-center justify-center gap-1.5 rounded-lg text-sm
+           text-neutral-400 border border-white/5 bg-white/[0.02]
+           hover:text-yakuza hover:border-yakuza/30 hover:bg-yakuza/5 transition;
+  }
+
   .roster-row {
     @apply transition-colors;
   }
