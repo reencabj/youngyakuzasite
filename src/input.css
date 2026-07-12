@@ -333,11 +333,20 @@
   }
 
   .char-card-inactive {
-    opacity: 0.72;
+    opacity: 0.85;
+  }
+
+  .char-card-inactive .char-photo {
+    filter: grayscale(1);
+    transition: filter 0.35s ease, transform 0.3s ease;
   }
 
   .char-card-inactive:hover {
-    opacity: 0.88;
+    opacity: 0.95;
+  }
+
+  .char-card-inactive:hover .char-photo {
+    filter: grayscale(0.65);
   }
 
   .personajes-inactivos-sep {
