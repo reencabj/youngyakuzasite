@@ -271,6 +271,11 @@
     transform: scale(1.04);
   }
 
+  .char-card .char-name {
+    @apply font-display text-base sm:text-lg font-bold text-neutral-50 leading-tight tracking-tight truncate;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
+  }
+
   .live-rotator {
     @apply rounded-xl overflow-hidden border border-white/10 bg-neutral-950/90 backdrop-blur-md;
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);

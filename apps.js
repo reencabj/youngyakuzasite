@@ -507,7 +507,7 @@
               </span>
             ` : ''}
             <div class="absolute bottom-0 inset-x-0 p-3">
-              <h3 class="font-semibold text-neutral-100 truncate leading-tight">${p.nombre}</h3>
+              <h3 class="char-name">${p.nombre}</h3>
               <p class="text-xs text-neutral-400 truncate mt-0.5">${p.ooc || '—'}</p>
             </div>
           </div>
