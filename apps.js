@@ -117,7 +117,6 @@
     let ROTATOR_OPEN = true;
 
     // Videos
-    let videosLoaded = false;
     let videosTimer = null;
     const VIDEOS_REFRESH_MS = 5 * 60_000;
     let VIDEOS_CACHE = { t: 0, items: [] };
@@ -505,7 +504,7 @@
       }
       if (v === 'personajes' && DATA.length) { render(); }
       if (v === 'galeria') { loadGallery(); }
-      if (v === 'videos'  && !videosLoaded)  loadVideos();
+      if (v === 'videos') { loadVideos(); }
       if (v === 'lore') {
         loadLore().then(() => requestAnimationFrame(refreshLoreReveal));
       }
@@ -1330,6 +1329,91 @@
 
   // ===== Videos (estático desde videos.json) =====
     let videosListenersBound = false;
+    let videosEditorBound = false;
+    let VIDEOS_CHANNELS = [];
+    let videosChannelsLoaded = false;
+    let videoEditorFilter = '';
+
+    async function getChannelsList() {
+      if (videosChannelsLoaded) return VIDEOS_CHANNELS;
+      try {
+        const r = await fetch('channels.json', { cache: 'no-cache' });
+        if (!r.ok) return VIDEOS_CHANNELS;
+        const cfg = await r.json();
+        VIDEOS_CHANNELS = Array.isArray(cfg?.channels) ? cfg.channels : [];
+        videosChannelsLoaded = true;
+      } catch { /* keep cache empty */ }
+      return VIDEOS_CHANNELS;
+    }
+
+    function renderVideoEditorSelect(channels) {
+      const sel = document.getElementById('videos-editor');
+      if (!sel) return;
+      const current = sel.value || videoEditorFilter;
+      sel.innerHTML = [
+        '<option value="">Todos los editores</option>',
+        ...channels.map(ch => {
+          const name = escapeHtml(ch.name || '');
+          return `<option value="${name}">${name}</option>`;
+        }),
+      ].join('');
+      const valid = current && channels.some(ch => ch.name === current);
+      sel.value = valid ? current : '';
+      videoEditorFilter = sel.value;
+    }
+
+    function renderVideoCard(v, i) {
+      const featured = i === 0 ? 'md:col-span-2' : '';
+      const title = escapeHtml(v.title || 'Video');
+      const date = new Date(v.published).toLocaleString('es-UY', { dateStyle: 'medium', timeStyle: 'short' });
+      const channel = escapeHtml(v._channelName || '');
+      const id = escapeHtml(v.id || '');
+      return `
+        <article class="video-item ${featured}">
+          <button type="button" class="video-facade w-full text-left rounded-lg overflow-hidden bg-black ring-1 ring-white/10 shadow-xl shadow-black/30"
+                  data-yt-id="${id}" data-yt-title="${title}" aria-label="Reproducir: ${title}">
+            <span class="video-facade-media relative block aspect-video">
+              <img src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" alt="" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
+              <span class="video-facade-play" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              </span>
+            </span>
+          </button>
+          <div class="mt-3 px-0.5">
+            <h3 class="font-medium text-neutral-100 leading-snug line-clamp-2">${title}</h3>
+            <p class="text-sm text-neutral-500 mt-1">${date}${channel ? ` · ${channel}` : ''}</p>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderVideosGrid(items) {
+      const filtered = videoEditorFilter
+        ? items.filter(v => v._channelName === videoEditorFilter)
+        : items;
+
+      const grid = document.getElementById('videos-grid');
+      const empty = document.getElementById('videos-empty');
+      if (!grid) return;
+
+      if (!filtered.length) {
+        grid.innerHTML = '';
+        empty?.classList.remove('hidden');
+        return;
+      }
+
+      empty?.classList.add('hidden');
+      grid.innerHTML = filtered.map((v, i) => renderVideoCard(v, i)).join('');
+    }
+
+    function bindVideosEditorFilter() {
+      if (videosEditorBound) return;
+      document.getElementById('videos-editor')?.addEventListener('change', async (e) => {
+        videoEditorFilter = e.target.value;
+        renderVideosGrid(await getVideosList());
+      });
+      videosEditorBound = true;
+    }
 
     async function getVideosList() {
       const now = Date.now();
@@ -1372,35 +1456,10 @@
 
     async function loadVideos() {
       try {
-        const items = await getVideosList();
-    
-        const html = items.map((v, i) => {
-          const featured = i === 0 ? 'md:col-span-2' : '';
-          const title = escapeHtml(v.title || 'Video');
-          const date = new Date(v.published).toLocaleString('es-UY', { dateStyle: 'medium', timeStyle: 'short' });
-          const channel = escapeHtml(v._channelName || '');
-          const id = escapeHtml(v.id || '');
-          return `
-          <article class="video-item ${featured}">
-            <button type="button" class="video-facade w-full text-left rounded-lg overflow-hidden bg-black ring-1 ring-white/10 shadow-xl shadow-black/30"
-                    data-yt-id="${id}" data-yt-title="${title}" aria-label="Reproducir: ${title}">
-              <span class="video-facade-media relative block aspect-video">
-                <img src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" alt="" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
-                <span class="video-facade-play" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                </span>
-              </span>
-            </button>
-            <div class="mt-3 px-0.5">
-              <h3 class="font-medium text-neutral-100 leading-snug line-clamp-2">${title}</h3>
-              <p class="text-sm text-neutral-500 mt-1">${date}${channel ? ` · ${channel}` : ''}</p>
-            </div>
-          </article>
-        `;
-        }).join('');
-    
-        document.getElementById('videos-grid').innerHTML = html || '<p class="text-neutral-400">Sin resultados.</p>';
-        videosLoaded = true;
+        const [items, channels] = await Promise.all([getVideosList(), getChannelsList()]);
+        renderVideoEditorSelect(channels);
+        bindVideosEditorFilter();
+        renderVideosGrid(items);
 
         if (!videosListenersBound) {
           document.getElementById('videos-grid')?.addEventListener('click', (e) => {
@@ -1409,16 +1468,20 @@
           });
           videosListenersBound = true;
         }
-    
+
         clearInterval(videosTimer);
         videosTimer = setInterval(() => {
           const visible = !document.getElementById('view-videos')?.classList.contains('hidden');
           if (visible) loadVideos();
         }, VIDEOS_REFRESH_MS);
-    
-      } catch (e) {
-        document.getElementById('videos-grid').innerHTML =
-          '<div class="text-red-400">No se pudo cargar la pestaña Videos. Revisa <code>videos.json</code> y <code>channels.json</code>.</div>';
+
+      } catch {
+        const grid = document.getElementById('videos-grid');
+        if (grid) {
+          grid.innerHTML =
+            '<div class="text-red-400">No se pudo cargar la pestaña Videos. Revisa <code>videos.json</code> y <code>channels.json</code>.</div>';
+        }
+        document.getElementById('videos-empty')?.classList.add('hidden');
       }
     }
 

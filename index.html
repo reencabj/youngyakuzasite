@@ -286,7 +286,20 @@
 
   <!-- VIEW: Videos -->
   <section id="view-videos" class="max-w-6xl mx-auto px-4 hidden py-6">
+    <header class="videos-header">
+      <div class="videos-header-text">
+        <h2 class="videos-title">Videos</h2>
+        <p class="videos-subtitle">Highlights y edits de la banda en YouTube, curados por la comunidad.</p>
+      </div>
+      <div class="filter-field videos-header-filter">
+        <label for="videos-editor" class="filter-label">Editor</label>
+        <select id="videos-editor" class="filter-input filter-select">
+          <option value="">Todos los editores</option>
+        </select>
+      </div>
+    </header>
     <div id="videos-grid" class="grid md:grid-cols-2 gap-x-6 gap-y-10 pb-10"></div>
+    <p id="videos-empty" class="hidden text-neutral-400 text-center py-12">No hay videos para este editor.</p>
   </section>
 
   <!-- VIEW: Lore -->

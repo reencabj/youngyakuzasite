@@ -845,6 +845,22 @@
     contain-intrinsic-size: 1px 600px;
   }
 
+  .videos-header {
+    @apply flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8 pb-6 border-b border-white/10;
+  }
+
+  .videos-title {
+    @apply font-display text-xl sm:text-2xl font-bold text-neutral-100 uppercase tracking-wide;
+  }
+
+  .videos-subtitle {
+    @apply text-sm text-neutral-500 mt-1 max-w-lg leading-relaxed;
+  }
+
+  .videos-header-filter {
+    @apply w-full sm:w-48 shrink-0 mb-0.5;
+  }
+
   #view-galeria .gallery-item .yy-zoomable {
     @apply transition-transform duration-300;
   }
