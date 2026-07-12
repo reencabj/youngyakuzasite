@@ -312,7 +312,7 @@
 
   @media (min-width: 1024px) {
     .live-theater-grid {
-      grid-template-columns: 1fr 340px;
+      grid-template-columns: 1fr 360px;
     }
 
     .live-theater-main {
@@ -329,8 +329,27 @@
     }
   }
 
-  .home-theater-wrap {
-    @apply flex items-center gap-2 sm:gap-3;
+  .home-theater-shell {
+    position: relative;
+    width: calc(100% + 5.5rem);
+    margin-left: -2.75rem;
+    margin-right: -2.75rem;
+  }
+
+  .home-theater-shell .live-theater {
+    width: calc(100% - 5.5rem);
+    margin-left: 2.75rem;
+    margin-right: 2.75rem;
+  }
+
+  .home-nav-prev {
+    @apply absolute top-[38%] sm:top-1/2 z-10 -translate-y-1/2;
+    left: 0.25rem;
+  }
+
+  .home-nav-next {
+    @apply absolute top-[38%] sm:top-1/2 z-10 -translate-y-1/2;
+    right: 0.25rem;
   }
 
   .home-picker {
