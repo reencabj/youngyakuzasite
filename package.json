@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "build:css": "tailwindcss -i ./src/input.css -o ./styles.css --minify",
+    "build:wallpaper": "node -e \"require('sharp')('img/wallpaper.png').webp({quality:82}).toFile('img/wallpaper.webp').then(i=>console.log('OK',Math.round(i.size/1024)+'KB'))\"",
     "dev:css": "tailwindcss -i ./src/input.css -o ./styles.css --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -23,6 +24,7 @@
     "@tailwindcss/typography": "^0.5.20",
     "autoprefixer": "^10.4.22",
     "postcss": "^8.5.6",
+    "sharp": "^0.35.3",
     "tailwindcss": "^3.4.14"
   }
 }

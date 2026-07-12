@@ -43,6 +43,19 @@
     @apply transition-colors;
   }
 
+  .live-card {
+    @apply transition-transform duration-200;
+  }
+
+  .live-card:hover {
+    transform: translateY(-3px);
+  }
+
+  #home-live-grid {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 400px;
+  }
+
   .fade-in {
     animation: fade 0.35s ease-in-out;
   }

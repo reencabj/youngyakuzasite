@@ -3,6 +3,7 @@ module.exports = {
   content: [
     './index.html',
     './lore.html',
+    './apps.js',
     './*.{js,mjs}',
     './src/**/*.{js,ts,jsx,tsx,html}'
   ],
@@ -20,4 +21,3 @@ module.exports = {
   },
   plugins: [require('@tailwindcss/typography')],
 };
-
