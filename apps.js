@@ -492,6 +492,7 @@
       if (!HOME_LIVE_LIST.length) {
         theater?.classList.add('hidden');
         empty?.classList.remove('hidden');
+        renderHomePicker(HOME_LIVE_LIST);
         stopHomeRotation();
         const player = document.getElementById('home-player');
         const chat = document.getElementById('home-chat');
