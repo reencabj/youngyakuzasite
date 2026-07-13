@@ -24,8 +24,9 @@ async function fetchJson(url, { retries = 2, backoffMs = 600 } = {}) {
       const res = await fetch(url, {
         headers: {
           accept: "application/json",
-          "user-agent": "Mozilla/5.0 (compatible; YY-LiveBot/1.0)",
-          referer: "https://youngyakuza.reenz.site/"
+          "accept-language": "es-UY,es;q=0.9,en;q=0.8",
+          "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+          referer: "https://kick.com/"
         },
         signal: ac.signal,
         cache: "no-store",
@@ -96,13 +97,45 @@ async function fetchKick(slug) {
   }
 }
 
+async function loadPreviousLive() {
+  try {
+    const raw = await fs.readFile(OUTPUT, "utf8");
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr : [];
+  } catch {
+    return [];
+  }
+}
+
+function mergeWithPrevious(results, previous) {
+  const prevMap = new Map(previous.map(x => [String(x.slug).toLowerCase(), x]));
+  return results.map(entry => {
+    if (!entry.error) return entry;
+    const prev = prevMap.get(entry.slug);
+    if (!prev) return entry;
+    return {
+      ...prev,
+      slug: entry.slug,
+      platform: "kick",
+      updatedAt: entry.updatedAt,
+      stale: true,
+      error: entry.error,
+    };
+  });
+}
+
 async function main() {
   let data;
+  const previous = await loadPreviousLive();
   try {
     const raw = await fs.readFile(INPUT, "utf8");
     data = JSON.parse(raw);
   } catch (e) {
-    console.log(`[data.json] no encontrado o invalido (${e?.message || e}). Genero live.json vacio.`);
+    console.log(`[data.json] no encontrado o invalido (${e?.message || e}).`);
+    if (previous.length) {
+      console.log("[skip] conservo live.json previo.");
+      return;
+    }
     await fs.writeFile(OUTPUT, "[]\n", "utf8");
     return;
   }
@@ -149,21 +182,28 @@ async function main() {
     }
   }
 
+  let merged = mergeWithPrevious(results, previous);
+  const okCount = merged.filter(x => !x.error).length;
+
+  if (!okCount && previous.length) {
+    console.log(`[skip] ${merged.length} slugs fallaron (Cloudflare?). Conservo live.json previo.`);
+    return;
+  }
+
   // Ordenar: live primero, luego por viewers desc, luego alfabetico por slug
-  results.sort((a, b) =>
+  merged.sort((a, b) =>
     (Number(b.live) - Number(a.live)) ||
     (b.viewers - a.viewers) ||
     a.slug.localeCompare(b.slug)
   );
 
-  await fs.writeFile(OUTPUT, JSON.stringify(results, null, 2) + "\n", "utf8");
+  await fs.writeFile(OUTPUT, JSON.stringify(merged, null, 2) + "\n", "utf8");
 
-  const liveCount = results.filter(x => x.live).length;
-  console.log(`[done] live.json generado: ${results.length} canales, ${liveCount} en vivo.`);
+  const liveCount = merged.filter(x => x.live).length;
+  console.log(`[done] live.json generado: ${merged.length} canales, ${liveCount} en vivo, ${okCount} consultas OK.`);
 }
 
 main().catch(async (err) => {
   console.error(`[fatal] ${err?.stack || err}`);
-  try { await fs.writeFile(OUTPUT, "[]\n", "utf8"); } catch {}
-  // No hacemos process.exit(1) para que el workflow no falle.
+  // No vaciar live.json ante un fallo global.
 });

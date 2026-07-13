@@ -127,18 +127,19 @@
     // o: git checkout backup-pre-live-hybrid -- apps.js .github/workflows/
     const YY_LIVE = {
       clientKickRefresh: true,
-      jsonTtlMs: 60_000,
-      staleJsonMs: 5 * 60_000,
-      clientSweepMinGapMs: 3 * 60_000,
-      clientBatchSize: 6,
-      clientConcurrency: 2,
+      jsonTtlMs: 45_000,
+      clientSweepMinGapMs: 90_000,
+      clientBatchSize: 8,
+      clientConcurrency: 3,
+      clientRetryAfterMs: 5 * 60_000,
     };
 
     let LIVE_CACHE = { t: 0, map: new Map(), jsonUpdatedAt: 0 };
     let lastLiveSnapshot = new Map();
     let lastClientSweep = 0;
     let clientSweepCursor = 0;
-    let clientKickDisabled = false;
+    let clientKickDisabledUntil = 0;
+    let clientConsecutiveFails = 0;
 
     function getActiveKickSlugs() {
       return [...new Set(
@@ -150,7 +151,26 @@
 
     function isLiveJsonStale() {
       if (!LIVE_CACHE.jsonUpdatedAt) return true;
-      return Date.now() - LIVE_CACHE.jsonUpdatedAt > YY_LIVE.staleJsonMs;
+      return Date.now() - LIVE_CACHE.jsonUpdatedAt > 5 * 60_000;
+    }
+
+    function preserveClientEntries() {
+      const overlay = new Map();
+      for (const [slug, entry] of LIVE_CACHE.map) {
+        if (entry?.source === 'client') overlay.set(slug, entry);
+      }
+      return overlay;
+    }
+
+    function mergeClientEntries(overlay) {
+      for (const [slug, entry] of overlay) {
+        const current = LIVE_CACHE.map.get(slug);
+        const entryTime = new Date(entry.updatedAt).getTime();
+        const currentTime = current?.updatedAt ? new Date(current.updatedAt).getTime() : 0;
+        if (!current || entryTime >= currentTime || current.error || current.stale) {
+          LIVE_CACHE.map.set(slug, entry);
+        }
+      }
     }
 
     function liveJsonHasErrors() {
@@ -190,7 +210,11 @@
         const res = await fetch(url, {
           signal: ac.signal,
           cache: 'no-store',
-          headers: { accept: 'application/json' },
+          headers: {
+            accept: 'application/json',
+            'accept-language': 'es-UY,es;q=0.9,en;q=0.8',
+            referer: `https://kick.com/${slug}`,
+          },
         });
         clearTimeout(timer);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -229,11 +253,11 @@
       return out;
     }
 
-    async function maybeClientKickRefresh() {
-      if (!YY_LIVE.clientKickRefresh || clientKickDisabled) return;
+    async function maybeClientKickRefresh({ force = false } = {}) {
+      if (!YY_LIVE.clientKickRefresh) return;
+      if (Date.now() < clientKickDisabledUntil) return;
       if (document.hidden || !needsLiveView()) return;
-      if (Date.now() - lastClientSweep < YY_LIVE.clientSweepMinGapMs) return;
-      if (!isLiveJsonStale() && !liveJsonHasErrors()) return;
+      if (!force && Date.now() - lastClientSweep < YY_LIVE.clientSweepMinGapMs) return;
 
       const slugs = getClientPollSlugs();
       if (!slugs.length) return;
@@ -241,23 +265,37 @@
       lastClientSweep = Date.now();
       const results = await fetchKickClientBatch(slugs);
       if (!results.length) {
-        clientKickDisabled = true;
+        clientConsecutiveFails += 1;
+        if (clientConsecutiveFails >= 2) {
+          clientKickDisabledUntil = Date.now() + YY_LIVE.clientRetryAfterMs;
+          clientConsecutiveFails = 0;
+        }
         return;
       }
 
+      clientConsecutiveFails = 0;
       for (const entry of results) {
         LIVE_CACHE.map.set(entry.slug, entry);
       }
-      LIVE_CACHE.jsonUpdatedAt = Date.now();
     }
 
     async function getLiveMap({ force = false } = {}) {
       const now = Date.now();
-      if (!force && now - LIVE_CACHE.t < YY_LIVE.jsonTtlMs) return LIVE_CACHE.map;
+      const clientOverlay = preserveClientEntries();
+
+      if (!force && now - LIVE_CACHE.t < YY_LIVE.jsonTtlMs) {
+        mergeClientEntries(clientOverlay);
+        if (needsLiveView()) await maybeClientKickRefresh();
+        return LIVE_CACHE.map;
+      }
 
       try {
         const res = await fetch(`live.json?t=${now}`, { cache: 'no-cache' });
-        if (!res.ok) return LIVE_CACHE.map;
+        if (!res.ok) {
+          mergeClientEntries(clientOverlay);
+          if (needsLiveView()) await maybeClientKickRefresh({ force: isLiveJsonStale() });
+          return LIVE_CACHE.map;
+        }
         const raw = await res.json();
 
         const arr = (Array.isArray(raw) ? raw : []).filter(x => x && x.slug);
@@ -270,8 +308,13 @@
         }
 
         LIVE_CACHE = { t: now, map, jsonUpdatedAt: jsonUpdatedAt || now };
+        mergeClientEntries(clientOverlay);
       } catch {
-        /* keep previous cache */
+        mergeClientEntries(clientOverlay);
+      }
+
+      if (needsLiveView()) {
+        await maybeClientKickRefresh({ force: isLiveJsonStale() });
       }
       return LIVE_CACHE.map;
     }
@@ -509,6 +552,8 @@
       async function manualRefresh() {
         LIVE_CACHE = { t: 0, map: new Map(), jsonUpdatedAt: 0 };
         lastClientSweep = 0;
+        clientKickDisabledUntil = 0;
+        clientConsecutiveFails = 0;
         await refresh(false);
       }
 
@@ -1126,8 +1171,7 @@
     }
 
     async function refreshLiveState() {
-      await getLiveMap();
-      await maybeClientKickRefresh();
+      await getLiveMap({ force: true });
       const LIVE_MAP = LIVE_CACHE.map;
 
       let liveChanged = false;
@@ -1204,7 +1248,7 @@
       clearTimeout(liveRefreshTimer);
       const needsRefresh = (isViewVisible('personajes') || isViewVisible('inicio') || isViewVisible('multikick')) && !document.hidden;
       if (needsRefresh) {
-        liveRefreshTimer = setTimeout(() => refreshLiveState(), 65_000);
+        liveRefreshTimer = setTimeout(() => refreshLiveState(), 90_000);
       }
     }
 
@@ -1219,7 +1263,11 @@
       render();
     });
     document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) refreshLiveState();
+      if (!document.hidden) {
+        clientKickDisabledUntil = 0;
+        lastClientSweep = 0;
+        refreshLiveState();
+      }
       if (isViewVisible('inicio')) {
         if (document.hidden) stopHomeRotation();
         else startHomeRotation();
