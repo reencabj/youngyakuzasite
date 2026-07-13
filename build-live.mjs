@@ -138,6 +138,17 @@ async function main() {
     Array.from({ length: Math.max(1, Math.min(CONCURRENCY, slugs.length)) }, worker)
   );
 
+  const errored = results.filter(r => r.error);
+  if (errored.length) {
+    console.log(`[retry] ${errored.length} slugs con error, segunda pasada...`);
+    await sleep(2500);
+    for (const prev of errored) {
+      const retry = await fetchKick(prev.slug);
+      const idx = results.findIndex(r => r.slug === prev.slug);
+      if (idx >= 0) results[idx] = retry;
+    }
+  }
+
   // Ordenar: live primero, luego por viewers desc, luego alfabetico por slug
   results.sort((a, b) =>
     (Number(b.live) - Number(a.live)) ||

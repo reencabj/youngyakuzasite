@@ -123,25 +123,157 @@
     const VIDEOS_LIST_TTL = 5 * 60_000;
 
     // ===== LIVE STATUS desde live.json (generado por GitHub Actions) =====
-    const LIVE_TTL = 60_000; // revalida cada 60s
-    let LIVE_CACHE = { t: 0, map: new Map() };
-    let lastLiveSnapshot = new Map();
-    
-    async function getLiveMap() {
-      const now = Date.now();
-      if (now - LIVE_CACHE.t < LIVE_TTL) return LIVE_CACHE.map;
-    
-      const res = await fetch('live.json', { cache: 'no-cache' });
-      if (!res.ok) return LIVE_CACHE.map;
-      const raw = await res.json();
-      
-      // ðŸ”§ Filtra entradas nulas o sin slug
-      const arr = (Array.isArray(raw) ? raw : []).filter(x => x && x.slug);
-      
-      const map = new Map(arr.map(x => [String(x.slug).toLowerCase(), x]));
-      LIVE_CACHE = { t: now, map };
-      return map;
+    // Revertir poll hibrido: YY_LIVE.clientKickRefresh = false
+    // o: git checkout backup-pre-live-hybrid -- apps.js .github/workflows/
+    const YY_LIVE = {
+      clientKickRefresh: true,
+      jsonTtlMs: 60_000,
+      staleJsonMs: 5 * 60_000,
+      clientSweepMinGapMs: 3 * 60_000,
+      clientBatchSize: 6,
+      clientConcurrency: 2,
+    };
 
+    let LIVE_CACHE = { t: 0, map: new Map(), jsonUpdatedAt: 0 };
+    let lastLiveSnapshot = new Map();
+    let lastClientSweep = 0;
+    let clientSweepCursor = 0;
+    let clientKickDisabled = false;
+
+    function getActiveKickSlugs() {
+      return [...new Set(
+        DATA
+          .filter(p => isCharacterActive(p) && p.kick && isValidKickSlug(p.kick))
+          .map(p => String(p.kick).toLowerCase())
+      )];
+    }
+
+    function isLiveJsonStale() {
+      if (!LIVE_CACHE.jsonUpdatedAt) return true;
+      return Date.now() - LIVE_CACHE.jsonUpdatedAt > YY_LIVE.staleJsonMs;
+    }
+
+    function liveJsonHasErrors() {
+      for (const entry of LIVE_CACHE.map.values()) {
+        if (entry?.error) return true;
+      }
+      return false;
+    }
+
+    function needsLiveView() {
+      const visible = id => !document.getElementById('view-' + id)?.classList.contains('hidden');
+      if (visible('inicio') || visible('personajes') || visible('multikick')) return true;
+      const rotator = document.getElementById('live-rotator');
+      return rotator && !rotator.classList.contains('hidden');
+    }
+
+    function getClientPollSlugs() {
+      const slugs = getActiveKickSlugs();
+      if (!slugs.length) return [];
+
+      const priority = slugs.filter(s => LIVE_CACHE.map.get(s)?.live === true);
+      const batch = [];
+      const n = Math.min(YY_LIVE.clientBatchSize, slugs.length);
+      for (let i = 0; i < n; i++) {
+        const slug = slugs[(clientSweepCursor + i) % slugs.length];
+        if (!batch.includes(slug)) batch.push(slug);
+      }
+      clientSweepCursor = (clientSweepCursor + n) % slugs.length;
+      return [...new Set([...priority, ...batch])];
+    }
+
+    async function fetchKickClient(slug) {
+      const url = `https://kick.com/api/v2/channels/${encodeURIComponent(slug)}`;
+      const ac = new AbortController();
+      const timer = setTimeout(() => ac.abort(), 8000);
+      try {
+        const res = await fetch(url, {
+          signal: ac.signal,
+          cache: 'no-store',
+          headers: { accept: 'application/json' },
+        });
+        clearTimeout(timer);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const live = Boolean(data?.livestream);
+        return {
+          slug,
+          platform: 'kick',
+          live,
+          viewers: live ? (data?.livestream?.viewers ?? 0) : 0,
+          thumb: live ? (data?.livestream?.thumbnail?.url ?? null) : null,
+          updatedAt: new Date().toISOString(),
+          source: 'client',
+        };
+      } catch {
+        clearTimeout(timer);
+        return null;
+      }
+    }
+
+    async function fetchKickClientBatch(slugs) {
+      const out = [];
+      let i = 0;
+      const workers = Math.min(YY_LIVE.clientConcurrency, slugs.length);
+
+      async function worker() {
+        while (true) {
+          const idx = i++;
+          if (idx >= slugs.length) break;
+          const r = await fetchKickClient(slugs[idx]);
+          if (r) out.push(r);
+        }
+      }
+
+      await Promise.all(Array.from({ length: Math.max(1, workers) }, worker));
+      return out;
+    }
+
+    async function maybeClientKickRefresh() {
+      if (!YY_LIVE.clientKickRefresh || clientKickDisabled) return;
+      if (document.hidden || !needsLiveView()) return;
+      if (Date.now() - lastClientSweep < YY_LIVE.clientSweepMinGapMs) return;
+      if (!isLiveJsonStale() && !liveJsonHasErrors()) return;
+
+      const slugs = getClientPollSlugs();
+      if (!slugs.length) return;
+
+      lastClientSweep = Date.now();
+      const results = await fetchKickClientBatch(slugs);
+      if (!results.length) {
+        clientKickDisabled = true;
+        return;
+      }
+
+      for (const entry of results) {
+        LIVE_CACHE.map.set(entry.slug, entry);
+      }
+      LIVE_CACHE.jsonUpdatedAt = Date.now();
+    }
+
+    async function getLiveMap({ force = false } = {}) {
+      const now = Date.now();
+      if (!force && now - LIVE_CACHE.t < YY_LIVE.jsonTtlMs) return LIVE_CACHE.map;
+
+      try {
+        const res = await fetch(`live.json?t=${now}`, { cache: 'no-cache' });
+        if (!res.ok) return LIVE_CACHE.map;
+        const raw = await res.json();
+
+        const arr = (Array.isArray(raw) ? raw : []).filter(x => x && x.slug);
+        const map = new Map(arr.map(x => [String(x.slug).toLowerCase(), x]));
+        let jsonUpdatedAt = 0;
+        for (const x of arr) {
+          if (!x.updatedAt) continue;
+          const t = new Date(x.updatedAt).getTime();
+          if (Number.isFinite(t)) jsonUpdatedAt = Math.max(jsonUpdatedAt, t);
+        }
+
+        LIVE_CACHE = { t: now, map, jsonUpdatedAt: jsonUpdatedAt || now };
+      } catch {
+        /* keep previous cache */
+      }
+      return LIVE_CACHE.map;
     }
 
     // ===== MULTIKICK (sin "return" y leyendo live.json) =====
@@ -290,7 +422,8 @@
       }
 
       async function manualRefresh() {
-        LIVE_CACHE = { t: 0, map: new Map() };
+        LIVE_CACHE = { t: 0, map: new Map(), jsonUpdatedAt: 0 };
+        lastClientSweep = 0;
         await refresh(false);
       }
 
@@ -900,7 +1033,9 @@
     }
 
     async function refreshLiveState() {
-      const LIVE_MAP = await getLiveMap();
+      await getLiveMap();
+      await maybeClientKickRefresh();
+      const LIVE_MAP = LIVE_CACHE.map;
 
       let liveChanged = false;
       DATA.forEach(p => {
@@ -974,7 +1109,7 @@
 
     function scheduleRender(){
       clearTimeout(liveRefreshTimer);
-      const needsRefresh = (isViewVisible('personajes') || isViewVisible('inicio')) && !document.hidden;
+      const needsRefresh = (isViewVisible('personajes') || isViewVisible('inicio') || isViewVisible('multikick')) && !document.hidden;
       if (needsRefresh) {
         liveRefreshTimer = setTimeout(() => refreshLiveState(), 65_000);
       }
