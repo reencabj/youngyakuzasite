@@ -129,15 +129,13 @@
       clientKickRefresh: true,
       jsonTtlMs: 45_000,
       clientSweepMinGapMs: 90_000,
-      clientBatchSize: 8,
-      clientConcurrency: 3,
+      clientConcurrency: 4,
       clientRetryAfterMs: 5 * 60_000,
     };
 
     let LIVE_CACHE = { t: 0, map: new Map(), jsonUpdatedAt: 0 };
     let lastLiveSnapshot = new Map();
     let lastClientSweep = 0;
-    let clientSweepCursor = 0;
     let clientKickDisabledUntil = 0;
     let clientConsecutiveFails = 0;
 
@@ -191,15 +189,9 @@
       const slugs = getActiveKickSlugs();
       if (!slugs.length) return [];
 
-      const priority = slugs.filter(s => LIVE_CACHE.map.get(s)?.live === true);
-      const batch = [];
-      const n = Math.min(YY_LIVE.clientBatchSize, slugs.length);
-      for (let i = 0; i < n; i++) {
-        const slug = slugs[(clientSweepCursor + i) % slugs.length];
-        if (!batch.includes(slug)) batch.push(slug);
-      }
-      clientSweepCursor = (clientSweepCursor + n) % slugs.length;
-      return [...new Set([...priority, ...batch])];
+      const live = slugs.filter(s => LIVE_CACHE.map.get(s)?.live === true);
+      const rest = slugs.filter(s => !live.includes(s));
+      return [...live, ...rest];
     }
 
     async function fetchKickClient(slug) {
