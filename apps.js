@@ -315,13 +315,98 @@
         updateCount();
       }
 
-      function setGridCols(n) {
+      function bestMkGrid(n, w, h, gap = 6) {
+        const aspect = 16 / 9;
+        let best = { cols: 1, rows: n, score: 0 };
+        for (let cols = 1; cols <= n; cols++) {
+          const rows = Math.ceil(n / cols);
+          const cellW = (w - gap * (cols - 1)) / cols;
+          const cellH = (h - gap * (rows - 1)) / rows;
+          if (cellW <= 0 || cellH <= 0) continue;
+          const vidW = Math.min(cellW, cellH * aspect);
+          const vidH = Math.min(cellH, cellW / aspect);
+          const score = vidW * vidH;
+          if (score > best.score) best = { cols, rows, score };
+        }
+        return best;
+      }
+
+      function applyMkLayout(count = selected.size) {
         const grid = document.getElementById('mk-grid');
+        const root = document.getElementById('view-multikick');
         if (!grid) return;
+
         grid.classList.remove('mk-grid-cols-2', 'mk-grid-cols-3', 'mk-grid-cols-4');
-        if (n === 2) grid.classList.add('mk-grid-cols-2');
-        else if (n === 3) grid.classList.add('mk-grid-cols-3');
-        else if (n >= 4) grid.classList.add('mk-grid-cols-4');
+
+        if (!count) {
+          grid.style.removeProperty('grid-template-columns');
+          grid.style.removeProperty('grid-template-rows');
+          grid.style.removeProperty('--mk-gap');
+          delete grid.dataset.mkCount;
+          delete grid.dataset.mkCols;
+          delete grid.dataset.mkRows;
+          return;
+        }
+
+        const fullscreen = root?.classList.contains('mk-is-fullscreen');
+        const gap = fullscreen ? 6 : 16;
+        let cols;
+        let rows;
+
+        if (fullscreen) {
+          const layout = bestMkGrid(count, window.innerWidth, window.innerHeight, gap);
+          cols = layout.cols;
+          rows = layout.rows;
+          grid.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+          grid.style.gridTemplateRows = `repeat(${rows}, minmax(0, 1fr))`;
+        } else {
+          const w = grid.clientWidth || root?.clientWidth || window.innerWidth;
+          if (count === 1) {
+            cols = 1;
+            rows = 1;
+          } else if (w < 640) {
+            cols = 1;
+            rows = count;
+          } else if (count === 2) {
+            cols = 2;
+            rows = 1;
+          } else if (count === 3) {
+            cols = 2;
+            rows = 2;
+          } else if (count === 4) {
+            cols = 2;
+            rows = 2;
+          } else {
+            const layout = bestMkGrid(
+              count,
+              w,
+              Math.ceil(count / 2) * ((w / 2) * 9 / 16) + gap * Math.ceil(count / 2),
+              gap
+            );
+            cols = layout.cols;
+            rows = layout.rows;
+          }
+          grid.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+          grid.style.removeProperty('grid-template-rows');
+        }
+
+        grid.style.setProperty('--mk-gap', `${gap}px`);
+        grid.dataset.mkCount = String(count);
+        grid.dataset.mkCols = String(cols);
+        grid.dataset.mkRows = String(rows);
+      }
+
+      function bindMkLayoutWatch() {
+        if (bindMkLayoutWatch.done) return;
+        bindMkLayoutWatch.done = true;
+        const grid = document.getElementById('mk-grid');
+        const onResize = () => applyMkLayout();
+        window.addEventListener('resize', onResize);
+        if (grid) new ResizeObserver(onResize).observe(grid);
+      }
+
+      function setGridCols(n) {
+        applyMkLayout(n);
       }
 
       function playerSrc(slug) {
@@ -434,11 +519,17 @@
           document.addEventListener('yy:data-ready', () => { open(); }, { once: true });
           return;
         }
-        if (mkActive) return;
+        bindMkLayoutWatch();
+        if (mkActive) {
+          resumePlayers();
+          applyMkLayout();
+          return;
+        }
         mkActive = true;
 
         if (document.querySelectorAll('#mk-grid .mk-player').length) {
           resumePlayers();
+          applyMkLayout();
           return;
         }
         await refresh(true);
@@ -478,6 +569,7 @@
 
       MK.open = open; MK.stop = stop; MK.refresh = manualRefresh;
       MK.syncGrid = syncGrid;
+      MK.applyLayout = applyMkLayout;
     })();
 
     // ==== Fullscreen para MultiKick ====
@@ -533,6 +625,7 @@
         root.classList.remove('mk-hud-hidden');
         clearHideTimer();
         btn.textContent = active ? 'Salir' : 'Pantalla completa';
+        MK.applyLayout?.();
         if (active) scheduleHide();
       };
 
