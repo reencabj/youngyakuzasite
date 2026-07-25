@@ -648,5 +648,28 @@
         "href": "https://www.instagram.com/k4r3n.22"
       }
     ]
+  },
+  {
+    "nombre": "Emilia Doncic",
+    "ooc": "Romi",
+    "alias": "Emi Viernes",
+    "rango": 4,
+    "kick": "irominaa",
+    "foto": "img/ita.png",
+    "links": [
+      {
+        "label": "Instagram",
+        "href": "https://www.instagram.com/rooomiportillo/"
+      }
+    ]
+  },
+  {
+    "nombre": "Oil Nuggets",
+    "ooc": "Lognar_",
+    "alias": "down3",
+    "rango": 4,
+    "kick": "lognaar",
+    "foto": "img/lognar.png",
+    "links": []
   }
 ]
