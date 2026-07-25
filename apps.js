@@ -138,6 +138,7 @@
     let lastClientSweep = 0;
     let clientKickDisabledUntil = 0;
     let clientConsecutiveFails = 0;
+    let liveBootstrapped = false;
 
     function getActiveKickSlugs() {
       return [...new Set(
@@ -245,11 +246,11 @@
       return out;
     }
 
-    async function maybeClientKickRefresh({ force = false } = {}) {
+    async function maybeClientKickRefresh({ force = false, bootstrap = false } = {}) {
       if (!YY_LIVE.clientKickRefresh) return;
       if (Date.now() < clientKickDisabledUntil) return;
-      if (document.hidden || !needsLiveView()) return;
-      if (!force && Date.now() - lastClientSweep < YY_LIVE.clientSweepMinGapMs) return;
+      if (!bootstrap && (document.hidden || !needsLiveView())) return;
+      if (!force && !bootstrap && Date.now() - lastClientSweep < YY_LIVE.clientSweepMinGapMs) return;
 
       const slugs = getClientPollSlugs();
       if (!slugs.length) return;
@@ -269,15 +270,18 @@
       for (const entry of results) {
         LIVE_CACHE.map.set(entry.slug, entry);
       }
+      liveBootstrapped = true;
     }
 
-    async function getLiveMap({ force = false } = {}) {
+    async function getLiveMap({ force = false, skipClient = false } = {}) {
       const now = Date.now();
       const clientOverlay = preserveClientEntries();
 
       if (!force && now - LIVE_CACHE.t < YY_LIVE.jsonTtlMs) {
         mergeClientEntries(clientOverlay);
-        if (needsLiveView()) await maybeClientKickRefresh();
+        if (!skipClient && (needsLiveView() || !liveBootstrapped)) {
+          await maybeClientKickRefresh({ force: !liveBootstrapped });
+        }
         return LIVE_CACHE.map;
       }
 
@@ -285,7 +289,9 @@
         const res = await fetch(`live.json?t=${now}`, { cache: 'no-cache' });
         if (!res.ok) {
           mergeClientEntries(clientOverlay);
-          if (needsLiveView()) await maybeClientKickRefresh({ force: isLiveJsonStale() });
+          if (!skipClient && (needsLiveView() || !liveBootstrapped)) {
+            await maybeClientKickRefresh({ force: true });
+          }
           return LIVE_CACHE.map;
         }
         const raw = await res.json();
@@ -305,10 +311,18 @@
         mergeClientEntries(clientOverlay);
       }
 
-      if (needsLiveView()) {
-        await maybeClientKickRefresh({ force: isLiveJsonStale() });
+      if (!skipClient && (needsLiveView() || !liveBootstrapped)) {
+        await maybeClientKickRefresh({
+          force: !liveBootstrapped || force || isLiveJsonStale(),
+        });
       }
       return LIVE_CACHE.map;
+    }
+
+    async function bootstrapLiveStatus() {
+      if (!DATA.length || liveBootstrapped) return;
+      await getLiveMap({ force: true, skipClient: true });
+      await maybeClientKickRefresh({ force: true, bootstrap: true });
     }
 
     // ===== MULTIKICK (sin "return" y leyendo live.json) =====
@@ -804,6 +818,8 @@
         const json = await res.json();
         DATA = sanitizeCharacters(Array.isArray(json) ? json : []);
         document.dispatchEvent(new CustomEvent('yy:data-ready'));
+        // Kick real antes del primer render (live.json suele estar desactualizado)
+        await bootstrapLiveStatus();
         await renderHome();
         if (viewFromHash() === 'personajes') await render();
       } catch (e) {
