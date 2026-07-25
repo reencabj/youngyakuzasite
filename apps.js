@@ -813,6 +813,7 @@
     // ===== Data & render Personajes =====
     async function loadData() {
       try {
+        setHomeLiveLoading(true);
         const res = await fetch('data.json');
         if (!res.ok) throw new Error(`No se pudieron cargar los datos (HTTP ${res.status})`);
         const json = await res.json();
@@ -824,6 +825,7 @@
         if (viewFromHash() === 'personajes') await render();
       } catch (e) {
         console.error('Error cargando data.json', e);
+        setHomeLiveLoading(false);
         document.getElementById('grid').innerHTML =
           '<div class="text-red-400">Error cargando datos. Asegúrate de subir <code>data.json</code> válido.</div>';
       }
@@ -1047,10 +1049,18 @@
       `).join('');
     }
 
+    function setHomeLiveLoading(loading) {
+      document.getElementById('home-live-loading')?.classList.toggle('hidden', !loading);
+      if (!loading) return;
+      document.getElementById('home-live-theater')?.classList.add('hidden');
+      document.getElementById('home-live-empty')?.classList.add('hidden');
+    }
+
     async function renderHome() {
       if (!DATA.length) return;
 
       const LIVE_MAP = await getLiveMap();
+      setHomeLiveLoading(false);
       HOME_LIVE_LIST = DATA
         .filter(p => isCharacterActive(p) && p.kick && LIVE_MAP.get(p.kick)?.live === true)
         .sort((a, b) => norm(a.nombre).localeCompare(norm(b.nombre)));
