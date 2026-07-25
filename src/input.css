@@ -581,7 +581,7 @@
   }
 
   .home-picker {
-    @apply flex items-center gap-2 overflow-x-auto min-w-0 flex-1 justify-start;
+    @apply ml-auto flex items-center gap-2 overflow-x-auto min-w-0 justify-start;
     scrollbar-width: none;
   }
 
