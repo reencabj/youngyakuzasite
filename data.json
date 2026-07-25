@@ -612,5 +612,27 @@
     "kick": "lemonhazed",
     "foto": "img/rubia.jpg",
     "links": []
+  },
+  {
+    "nombre": "Leo Vidal",
+    "ooc": "Sven",
+    "alias": "PeChatito",
+    "rango": 3,
+    "kick": "svennkin",
+    "foto": "img/peru.png",
+    "links": [
+      {
+        "label": "Instagram",
+        "href": "https://www.instagram.com/svennkn_/"
+      },
+      {
+        "label": "YouTube",
+        "href": "https://www.youtube.com/@svenkin"
+      },
+      {
+        "label": "TikTok",
+        "href": "https://www.tiktok.com/@svennkin"
+      }
+    ]
   }
 ]
