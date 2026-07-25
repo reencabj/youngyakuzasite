@@ -1037,16 +1037,22 @@
       if (liveList.length <= 1) {
         picker.innerHTML = '';
         picker.classList.add('hidden');
+        picker.classList.remove('home-picker-labeled');
         return;
       }
 
+      const showAlias = liveList.length <= 4;
+      picker.classList.toggle('home-picker-labeled', showAlias);
       picker.classList.remove('hidden');
-      picker.innerHTML = liveList.map((p, i) => `
+      picker.innerHTML = liveList.map((p, i) => {
+        const label = showAlias ? String(p.alias || p.nombre || '').trim() : '';
+        return `
         <button type="button" class="home-picker-btn ${i === HOME_LIVE_INDEX ? 'home-picker-btn-active' : ''}"
                 data-home-index="${i}" aria-label="${escapeHtml(p.nombre)}">
           <img src="${p.foto || FALLBACK_AVATAR}" alt="" loading="lazy" decoding="async" />
-        </button>
-      `).join('');
+          ${label ? `<span class="home-picker-alias">${escapeHtml(label)}</span>` : ''}
+        </button>`;
+      }).join('');
     }
 
     function setHomeLiveLoading(loading) {
@@ -1061,9 +1067,23 @@
 
       const LIVE_MAP = await getLiveMap();
       setHomeLiveLoading(false);
+      const prevKick = HOME_LIVE_LIST[HOME_LIVE_INDEX]?.kick;
       HOME_LIVE_LIST = DATA
         .filter(p => isCharacterActive(p) && p.kick && LIVE_MAP.get(p.kick)?.live === true)
-        .sort((a, b) => norm(a.nombre).localeCompare(norm(b.nombre)));
+        .sort((a, b) => {
+          const ra = Number.isFinite(a.rango) ? a.rango : 999;
+          const rb = Number.isFinite(b.rango) ? b.rango : 999;
+          if (ra !== rb) return ra - rb; // izquierda → derecha: rango 0, 1, 2...
+          return norm(a.nombre).localeCompare(norm(b.nombre));
+        });
+
+      // Mantener el stream actual si sigue en vivo; si no, arrancar en el de la izquierda (menor rango)
+      if (prevKick) {
+        const keep = HOME_LIVE_LIST.findIndex(p => p.kick === prevKick);
+        HOME_LIVE_INDEX = keep >= 0 ? keep : 0;
+      } else {
+        HOME_LIVE_INDEX = 0;
+      }
 
       const theater = document.getElementById('home-live-theater');
       const empty = document.getElementById('home-live-empty');
