@@ -671,5 +671,28 @@
     "kick": "lognaar",
     "foto": "img/lognar.png",
     "links": []
+  },
+  {
+    "nombre": "John Knox",
+    "ooc": "Frxnn",
+    "alias": "El viejo",
+    "rango": 4,
+    "kick": "frxnn",
+    "foto": "img/viejardo.png",
+    "links": [
+      {
+        "label": "Instagram",
+        "href": "https://www.instagram.com/fran_poggio/"
+      }
+    ]
+  },
+  {
+    "nombre": "Owen Knox",
+    "ooc": "tonna",
+    "alias": "owen",
+    "rango": 4,
+    "kick": "tonna24",
+    "foto": "img/tona.png",
+    "links": []
   }
 ]
