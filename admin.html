@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Admin · Young Yakuza</title>
+  <link rel="icon" href="img/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <img src="img/logo.png" alt="" />
+      <div>
+        <strong>Panel</strong>
+        <span>Streamers, fondo y nombre</span>
+      </div>
+    </div>
+    <div class="auth">
+      <input id="token" type="password" placeholder="Token de GitHub (repo)" autocomplete="off" />
+      <button id="connect" type="button">Conectar</button>
+      <button id="publish" type="button" class="primary" disabled>Publicar</button>
+    </div>
+  </header>
+
+  <p id="status" class="status" role="status"></p>
+
+  <main class="layout">
+    <section class="card">
+      <h2>Sitio</h2>
+      <label>Nombre<input id="site-name" type="text" /></label>
+      <label>Subtítulo<input id="site-subtitle" type="text" /></label>
+      <label>Descripción<textarea id="site-description" rows="3"></textarea></label>
+      <label>Fondo (ruta o URL)<input id="site-background" type="text" placeholder="img/wallpaper.webp" /></label>
+      <label>Logo (ruta o URL)<input id="site-logo" type="text" placeholder="img/logo.png" /></label>
+      <div class="preview-row">
+        <img id="bg-preview" alt="" />
+        <img id="logo-preview" alt="" />
+      </div>
+      <h3>Rangos</h3>
+      <div id="ranks"></div>
+      <button id="add-rank" type="button" class="ghost">Agregar rango</button>
+    </section>
+
+    <section class="card">
+      <div class="row">
+        <h2>Streamers</h2>
+        <div class="row-actions">
+          <button id="import-legacy" type="button" class="ghost">Traer roster anterior</button>
+          <button id="add-person" type="button" class="primary">Nuevo</button>
+        </div>
+      </div>
+      <p class="hint">La lista pública arranca vacía. Lo que publiques acá reemplaza <code>data.json</code>.</p>
+      <div id="people" class="people"></div>
+    </section>
+  </main>
+
+  <dialog id="editor">
+    <form id="editor-form" method="dialog">
+      <h2 id="editor-title">Streamer</h2>
+      <label>Nombre del personaje<input name="nombre" required /></label>
+      <label>Nombre real / OOC<input name="ooc" /></label>
+      <label>Alias<input name="alias" /></label>
+      <label>Kick (usuario, sin URL)<input name="kick" placeholder="litkillah" /></label>
+      <label>Rango<select name="rango" id="editor-rank"></select></label>
+      <label>Foto (ruta o URL)<input name="foto" placeholder="img/foto.jpg" /></label>
+      <label class="check"><input name="activo" type="checkbox" checked /> Visible en la página</label>
+      <h3>Links</h3>
+      <div id="links"></div>
+      <button id="add-link" type="button" class="ghost">Agregar link</button>
+      <div class="dialog-actions">
+        <button type="button" id="editor-cancel" class="ghost">Cancelar</button>
+        <button type="submit" class="primary">Guardar en el panel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="admin.js"></script>
+</body>
+</html>

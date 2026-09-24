@@ -1,5 +1,18 @@
 ﻿    // ===== Utilidades =====
-    const RANKS = { "1": "Jefe", "2": "Campera", "3": "Yakuza", "4": "Shatei" };
+    let RANKS = { "1": "Jefe", "2": "Campera", "3": "Yakuza", "4": "Shatei" };
+    let SITE = {
+      name: "YAKUZA",
+      subtitle: "DOVUX LIFE RP",
+      description: "",
+      background: "img/wallpaper.webp",
+      logo: "img/logo.png",
+      ranks: [
+        { id: 1, label: "Jefe" },
+        { id: 2, label: "Campera" },
+        { id: 3, label: "Yakuza" },
+        { id: 4, label: "Shatei" }
+      ]
+    };
     const FALLBACK_AVATAR = 'img/logo.png';
     const rankLabel = v => RANKS[String(v)] ?? "-";
     const norm = s => (s || "").toString().normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase();
@@ -810,10 +823,55 @@
       if (tab) showView(tab.dataset.view);
     });
 
+    function applySite(site) {
+      const name = site.name || "YAKUZA";
+      const subtitle = site.subtitle || "";
+      const titleEl = document.querySelector(".header-title");
+      const subEl = document.querySelector(".header-subtitle");
+      if (titleEl) titleEl.textContent = name;
+      if (subEl) subEl.textContent = subtitle;
+      document.title = subtitle ? `${name} - ${subtitle}` : name;
+      const desc = document.querySelector('meta[name="description"]');
+      if (desc && site.description) desc.setAttribute("content", site.description);
+      const logo = document.querySelector(".header-logo");
+      if (logo && site.logo) logo.src = site.logo;
+      const bg = document.querySelector(".fixed picture img");
+      const source = document.querySelector(".fixed picture source");
+      if (site.background) {
+        if (bg) bg.src = site.background;
+        if (source) source.srcset = site.background;
+      }
+      if (Array.isArray(site.ranks) && site.ranks.length) {
+        RANKS = {};
+        site.ranks.forEach(r => { RANKS[String(r.id)] = r.label; });
+        const rango = document.getElementById("rango");
+        if (rango) {
+          const current = rango.value;
+          rango.innerHTML = '<option value="">Todos</option>' + site.ranks
+            .map(r => `<option value="${escapeHtml(r.id)}">${escapeHtml(r.label)}</option>`)
+            .join("");
+          rango.value = current;
+        }
+      }
+    }
+
+    async function loadSite() {
+      try {
+        const res = await fetch("site.json", { cache: "no-cache" });
+        if (!res.ok) return;
+        const site = await res.json();
+        SITE = { ...SITE, ...site };
+        applySite(SITE);
+      } catch (e) {
+        console.error("Error cargando site.json", e);
+      }
+    }
+
     // ===== Data & render Personajes =====
     async function loadData() {
       try {
         setHomeLiveLoading(true);
+        await loadSite();
         const res = await fetch('data.json');
         if (!res.ok) throw new Error(`No se pudieron cargar los datos (HTTP ${res.status})`);
         const json = await res.json();

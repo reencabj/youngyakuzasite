@@ -1,0 +1,13 @@
+{
+  "name": "YAKUZA",
+  "subtitle": "DOVUX LIFE RP",
+  "description": "Portal de la banda Yakuza: personajes, streams en vivo, galería, videos y lore.",
+  "background": "img/wallpaper.webp",
+  "logo": "img/logo.png",
+  "ranks": [
+    { "id": 1, "label": "Jefe" },
+    { "id": 2, "label": "Campera" },
+    { "id": 3, "label": "Yakuza" },
+    { "id": 4, "label": "Shatei" }
+  ]
+}
