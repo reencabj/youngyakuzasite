@@ -1,4 +1,4 @@
-const REPO = "reencabj/youngyakuzasite";
+const REPO = "wolfgamesfx-web/krenak";
 const TOKEN_KEY = "yy_admin_token";
 
 const statusEl = document.getElementById("status");
@@ -6,15 +6,18 @@ const tokenInput = document.getElementById("token");
 const publishBtn = document.getElementById("publish");
 
 let site = {
-  name: "YAKUZA",
+  name: "KRENAK",
   subtitle: "DOVUX LIFE RP",
+  kicker: "",
+  tagline: "",
+  kickUrl: "https://kick.com",
   description: "",
   background: "img/wallpaper.webp",
   logo: "img/logo.png",
   ranks: [
     { id: 1, label: "Jefe" },
     { id: 2, label: "Campera" },
-    { id: 3, label: "Yakuza" },
+    { id: 3, label: "Krenak" },
     { id: 4, label: "Shatei" }
   ]
 };
@@ -56,6 +59,9 @@ function b64utf8(str) {
 function readSiteForm() {
   site.name = document.getElementById("site-name").value.trim();
   site.subtitle = document.getElementById("site-subtitle").value.trim();
+  site.kicker = document.getElementById("site-kicker").value.trim();
+  site.tagline = document.getElementById("site-tagline").value.trim();
+  site.kickUrl = document.getElementById("site-kick").value.trim();
   site.description = document.getElementById("site-description").value.trim();
   site.background = document.getElementById("site-background").value.trim();
   site.logo = document.getElementById("site-logo").value.trim();
@@ -68,6 +74,9 @@ function readSiteForm() {
 function fillSiteForm() {
   document.getElementById("site-name").value = site.name || "";
   document.getElementById("site-subtitle").value = site.subtitle || "";
+  document.getElementById("site-kicker").value = site.kicker || "";
+  document.getElementById("site-tagline").value = site.tagline || "";
+  document.getElementById("site-kick").value = site.kickUrl || "";
   document.getElementById("site-description").value = site.description || "";
   document.getElementById("site-background").value = site.background || "";
   document.getElementById("site-logo").value = site.logo || "";
