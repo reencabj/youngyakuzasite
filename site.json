@@ -1,13 +1,16 @@
 {
-  "name": "YAKUZA",
+  "name": "KRENAK",
   "subtitle": "DOVUX LIFE RP",
-  "description": "Portal de la banda Yakuza: personajes, streams en vivo, galería, videos y lore.",
+  "kicker": "DOVUX LIFE RP / DIGITAL SYNDICATE",
+  "tagline": "NO PEDIMOS PERMISO. OCUPAMOS TERRITORIO.",
+  "kickUrl": "https://kick.com",
+  "description": "KRENAK. Territorio, familia y señal en Dovux Life RP.",
   "background": "img/wallpaper.webp",
   "logo": "img/logo.png",
   "ranks": [
     { "id": 1, "label": "Jefe" },
     { "id": 2, "label": "Campera" },
-    { "id": 3, "label": "Yakuza" },
+    { "id": 3, "label": "Krenak" },
     { "id": 4, "label": "Shatei" }
   ]
 }

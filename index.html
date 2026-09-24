@@ -3,442 +3,229 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Yakuza - Dovux Life RP</title>
-  <meta name="description" content="Portal de la banda Yakuza: personajes, streams en vivo, galería, videos y lore." />
+  <title>KRENAK</title>
+  <meta name="description" content="KRENAK. Territorio, familia y señal en Dovux Life RP." />
   <link rel="canonical" href="https://youngyakuza.reenz.site/" />
-  <meta property="og:title" content="Yakuza - Dovux Life RP" />
-  <meta property="og:description" content="Personajes, streams en vivo, galería, videos y lore de la banda Yakuza." />
+  <meta property="og:title" content="KRENAK" />
+  <meta property="og:description" content="Territorio, familia y señal." />
   <meta property="og:url" content="https://youngyakuza.reenz.site/" />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://youngyakuza.reenz.site/img/logo.png" />
-  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="theme-color" content="#070707" />
   <meta name="robots" content="index, follow" />
-  <meta property="og:locale" content="es_AR" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Yakuza - Dovux Life RP" />
-  <meta name="twitter:description" content="Personajes, streams en vivo y contenido de la banda Yakuza." />
-  <meta name="twitter:image" content="https://youngyakuza.reenz.site/img/logo.png" />
   <link rel="icon" href="img/logo.png" />
-  <link rel="alternate" type="text/html" href="https://youngyakuza.reenz.site/lore.html" title="Lore Yakuza" />
-
-  <!-- Tipografía -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
-
-  <!-- CSS generado por Tailwind en modo build -->
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
-
-  <!-- Perf: conexiones anticipadas a orígenes externos usados por iframes/medios -->
+  <link rel="stylesheet" href="krenak.css" />
   <link rel="preconnect" href="https://player.kick.com">
-  <link rel="preconnect" href="https://kick.com">
-  <link rel="preconnect" href="https://www.youtube-nocookie.com">
-  <link rel="preconnect" href="https://i.ytimg.com">
-  <link rel="dns-prefetch" href="https://player.kick.com">
-
-  <!-- Perf: precarga de assets críticos -->
   <link rel="preload" as="image" href="img/wallpaper.webp" type="image/webp">
-  <link rel="preload" as="fetch" href="data.json" crossorigin>
-
-<!-- Cloudflare Web Analytics -->
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "adb803349cc244de91d7e4bcc6261efc"}'></script> 
-<!-- End Cloudflare Web Analytics -->
-
 </head>
-<body class="min-h-screen bg-neutral-950 text-neutral-100 font-sans antialiased">
-  <!-- Fondo -->
-  <div class="fixed inset-0 -z-10">
-    <picture>
-      <source srcset="img/wallpaper.webp" type="image/webp">
-      <img src="img/wallpaper.png" alt="" class="w-full h-full object-cover" loading="eager" decoding="async" fetchpriority="high">
-    </picture>
-    <div class="absolute inset-0 bg-black/65"></div>
-  </div>
-
-  <!-- Header + Nav -->
+<body>
   <header class="site-header">
-    <div class="header-inner max-w-6xl mx-auto px-4">
-      <button type="button" data-goto="inicio" class="header-brand group flex items-center gap-2.5 sm:gap-3 text-left shrink-0">
-        <img src="img/logo.png" alt="" class="header-logo" loading="eager" decoding="async" />
-        <div class="header-title-block min-w-0">
-          <h1 id="site-name" class="header-title truncate">YAKUZA</h1>
-          <p id="site-subtitle" class="header-subtitle truncate">DOVUX LIFE RP</p>
-        </div>
+    <div class="header-inner">
+      <button type="button" data-goto="inicio" class="wordmark" id="site-name">KRENAK</button>
+      <button type="button" id="header-menu-toggle" class="menu-btn" aria-expanded="false" aria-controls="header-nav" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
       </button>
-      <div class="header-end">
-        <button type="button" id="header-menu-toggle" class="header-menu-btn" aria-expanded="false" aria-controls="header-nav" aria-label="Abrir menú">
-          <svg class="header-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-            <path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/>
-          </svg>
-        </button>
-        <nav id="header-nav" class="header-nav" aria-label="Secciones">
-          <button class="tab tab-active" data-view="inicio">Inicio</button>
-          <button class="tab" data-view="personajes">Personajes</button>
-          <button class="tab" data-view="galeria">Galería</button>
-          <button class="tab" data-view="videos">Videos</button>
-          <button class="tab" data-view="lore">Lore</button>
-          <button class="tab" data-view="multikick">MultiKick</button>
-        </nav>
-      </div>
+      <nav id="header-nav" class="header-nav" aria-label="Secciones">
+        <button class="tab tab-active" data-view="inicio">Inicio</button>
+        <button class="tab" data-view="personajes">Personajes</button>
+        <button class="tab" data-view="galeria">Galería</button>
+        <button class="tab" data-view="videos">Videos</button>
+        <button class="tab" data-view="lore">Lore</button>
+        <button class="tab" data-view="multikick">Multikick</button>
+        <a id="header-kick" class="kick-cta" href="https://kick.com" target="_blank" rel="noreferrer">Ver en Kick</a>
+      </nav>
     </div>
   </header>
 
-  <!-- VIEW: Inicio -->
-  <div id="view-inicio" class="py-6">
-    <section class="max-w-6xl mx-auto px-4 space-y-10 pb-10">
-      <div class="fade-in">
-        <div class="flex items-center gap-3 mb-4">
-          <h2 class="text-lg font-display font-semibold text-neutral-100 uppercase tracking-wide">En vivo ahora</h2>
-          <span id="home-live-count" class="text-xs px-2 py-0.5 rounded-full bg-yakuza/20 text-yakuza border border-yakuza/30 tabular-nums">0</span>
-          <div id="home-live-picker" class="home-picker"></div>
+  <div id="view-inicio">
+    <section class="hero">
+      <img class="hero-bg" src="img/wallpaper.webp" alt="" />
+      <div class="hero-shade"></div>
+      <div class="hero-copy">
+        <p id="hero-kicker" class="kicker">DOVUX LIFE RP / DIGITAL SYNDICATE</p>
+        <h1 id="hero-title">KRENAK</h1>
+        <p id="hero-tagline">NO PEDIMOS PERMISO. OCUPAMOS TERRITORIO.</p>
+        <div class="hero-actions">
+          <button type="button" class="btn-red" data-goto="personajes">Entrar al territorio</button>
+          <button type="button" class="btn-ghost" data-goto="lore">Conocer la historia</button>
         </div>
+      </div>
+      <div class="stamp"><span>EST. 2024</span><strong>KRK</strong><span>FAMILIA</span></div>
+    </section>
 
-        <!-- Theater: player + info + chat (estilo Kick/Twitch) -->
-        <div id="home-live-theater" class="hidden">
-          <div class="home-theater-shell">
-            <button id="home-prev" type="button" class="home-nav-arrow home-nav-prev hidden" aria-label="Anterior en vivo">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-            </button>
-
-            <div class="live-theater home-theater-mode-live rounded-xl overflow-hidden border border-white/10 bg-neutral-950/80 backdrop-blur-sm shadow-2xl shadow-black/40">
-              <div class="live-theater-grid">
-                <div class="live-theater-main flex flex-col min-w-0">
-                  <div class="relative aspect-video bg-black">
-                    <iframe id="home-player" class="absolute inset-0 w-full h-full" src=""
-                      title="Stream en vivo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" frameborder="0" loading="lazy"></iframe>
-                    <span id="home-live-badge" class="home-live-badge absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-600/90 text-white backdrop-blur-sm">
-                      <span class="live-pulse-dot w-1.5 h-1.5 rounded-full bg-white"></span>
-                      EN VIVO
-                    </span>
-                    <span id="home-video-badge" class="home-video-badge hidden absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold text-white backdrop-blur-sm">
-                      ÚLTIMO VIDEO
-                    </span>
-                    <span id="home-live-pos" class="home-live-pos hidden">1 / 1</span>
-                  </div>
-
-                  <div id="home-stream-info" class="p-3 sm:p-4 border-t border-white/5 bg-neutral-900/50">
-                    <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-                      <img id="home-info-avatar" src="" alt="" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover ring-2 ring-yakuza/40 shrink-0" />
-                      <div class="flex-1 min-w-0">
-                        <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-                          <h3 id="home-info-name" class="text-xl font-display font-bold text-neutral-100"></h3>
-                          <span id="home-info-alias" class="text-yakuza/80 text-sm font-medium"></span>
-                        </div>
-                        <p id="home-info-ooc" class="text-sm text-neutral-400 mt-0.5"></p>
-                        <p id="home-info-rank" class="text-xs text-neutral-500 mt-1"></p>
-                      </div>
-                      <div class="home-info-actions">
-                        <div id="home-info-links" class="flex flex-wrap gap-1.5"></div>
-                        <a id="home-info-kick" href="#" target="_blank" rel="noreferrer"
-                           class="inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-semibold bg-yakuza hover:bg-yakuza-light text-white transition shrink-0">
-                          Ver en Kick
-                        </a>
-                        <button type="button" data-goto="videos" id="home-info-videos"
-                                class="hidden inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-semibold border border-yakuza/35 bg-yakuza/10 text-yakuza hover:bg-yakuza/15 transition shrink-0">
-                          Ver videos
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+    <section class="block">
+      <div class="block-head">
+        <div>
+          <p class="eyebrow">Ahora mismo</p>
+          <h2>EN VIVO <em>AHORA</em></h2>
+        </div>
+        <p class="block-note">La familia transmite desde el corazón de Dovux.</p>
+      </div>
+      <div id="home-live-picker" class="home-picker"></div>
+      <div id="home-live-theater" class="hidden theater-wrap">
+        <button id="home-prev" type="button" class="nav-arrow" aria-label="Anterior">‹</button>
+        <div class="live-theater home-theater-mode-live">
+          <div class="live-theater-grid">
+            <div class="live-theater-main">
+              <div class="player-frame">
+                <iframe id="home-player" title="Stream en vivo" allow="autoplay; fullscreen" loading="lazy"></iframe>
+                <span id="home-live-badge" class="live-pill">EN VIVO</span>
+                <span id="home-video-badge" class="live-pill hidden">ÚLTIMO VIDEO</span>
+                <span id="home-live-pos" class="pos hidden"></span>
+              </div>
+              <div id="home-stream-info" class="stream-info">
+                <img id="home-info-avatar" alt="" />
+                <div>
+                  <h3 id="home-info-name"></h3>
+                  <p id="home-info-alias"></p>
+                  <p id="home-info-ooc"></p>
+                  <p id="home-info-rank"></p>
                 </div>
-
-                <aside class="live-theater-chat flex flex-col border-t lg:border-t-0 lg:border-l border-white/10 bg-neutral-950/90 min-h-[320px] lg:min-h-0">
-                  <div class="flex items-center justify-between px-3 py-2.5 border-b border-white/10 shrink-0">
-                    <span class="text-sm font-semibold text-neutral-300">Chat</span>
-                    <a id="home-chat-link" href="#" target="_blank" rel="noreferrer"
-                       class="text-xs text-yakuza hover:text-yakuza-light transition">Abrir ↗</a>
-                  </div>
-                  <iframe id="home-chat" class="flex-1 w-full min-h-[280px] lg:min-h-0 bg-black" src=""
-                    title="Chat de Kick" frameborder="0" loading="lazy"></iframe>
-                </aside>
+                <div id="home-info-links" class="info-links"></div>
+                <a id="home-info-kick" class="btn-red" href="#" target="_blank" rel="noreferrer">Ver stream</a>
+                <button type="button" id="home-info-videos" class="btn-ghost hidden" data-goto="videos">Ver videos</button>
               </div>
             </div>
-
-            <button id="home-next" type="button" class="home-nav-arrow home-nav-next hidden" aria-label="Siguiente en vivo">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
+            <aside class="live-theater-chat">
+              <div class="chat-bar"><span>Chat</span><a id="home-chat-link" href="#" target="_blank" rel="noreferrer">Abrir</a></div>
+              <iframe id="home-chat" title="Chat de Kick" loading="lazy"></iframe>
+            </aside>
           </div>
         </div>
-
-        <div id="home-live-loading" class="home-live-loading" role="status" aria-live="polite">
-          <div class="home-live-loading-bar" aria-hidden="true"><span></span></div>
-          <div class="home-live-loading-body">
-            <div class="home-live-loading-player" aria-hidden="true"></div>
-            <p class="home-live-loading-text">Buscando quién está en vivo…</p>
-          </div>
-        </div>
-
-        <p id="home-live-empty" class="hidden text-neutral-500 text-center py-12 rounded-xl bg-neutral-900/30 border border-white/5">
-          Nadie está en vivo en este momento. Volvé más tarde o revisá el roster completo en Personajes.
-        </p>
+        <button id="home-next" type="button" class="nav-arrow" aria-label="Siguiente">›</button>
       </div>
+      <div id="home-live-loading" class="loading-line">Buscando quién está en vivo…</div>
+      <p id="home-live-empty" class="empty hidden">Nadie está en vivo. El territorio sigue en silencio.</p>
+      <span id="home-live-count" class="hidden">0</span>
+    </section>
 
-      <div class="fade-in">
-        <h2 class="text-lg font-display font-semibold text-neutral-100 mb-4">Explorar</h2>
-        <div class="explore-bar">
-          <div class="explore-grid">
-            <button type="button" data-goto="personajes" class="explore-link group">
-              <span class="explore-link-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              </span>
-              <span class="explore-link-body">
-                <span class="explore-link-title">Personajes</span>
-                <span class="explore-link-desc">Roster por rango</span>
-              </span>
-            </button>
-            <button type="button" data-goto="galeria" class="explore-link group">
-              <span class="explore-link-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-              </span>
-              <span class="explore-link-body">
-                <span class="explore-link-title">Galería</span>
-                <span class="explore-link-desc">Fotos de la banda</span>
-              </span>
-            </button>
-            <button type="button" data-goto="videos" class="explore-link group">
-              <span class="explore-link-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m22 8-6 4 6 4V8Z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>
-              </span>
-              <span class="explore-link-body">
-                <span class="explore-link-title">Videos</span>
-                <span class="explore-link-desc">YouTube</span>
-              </span>
-            </button>
-            <button type="button" data-goto="lore" class="explore-link group">
-              <span class="explore-link-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-              </span>
-              <span class="explore-link-body">
-                <span class="explore-link-title">Lore</span>
-                <span class="explore-link-desc">Historia de la banda</span>
-              </span>
-            </button>
-            <button type="button" data-goto="multikick" class="explore-link group">
-              <span class="explore-link-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="m7 8 3 3-3 3M13 14h4"/></svg>
-              </span>
-              <span class="explore-link-body">
-                <span class="explore-link-title">MultiKick</span>
-                <span class="explore-link-desc">Streams simultáneos</span>
-              </span>
-            </button>
-          </div>
-        </div>
+    <section class="block">
+      <p class="eyebrow">Elige tu ruta</p>
+      <h2>EXPLORAR <em data-site-name>KRENAK</em></h2>
+      <div class="explore">
+        <button type="button" data-goto="personajes"><span>01</span><strong>Personajes</strong><small>Conocé a quienes sostienen el código.</small></button>
+        <button type="button" data-goto="galeria"><span>02</span><strong>Galería</strong><small>El archivo visual del territorio.</small></button>
+        <button type="button" data-goto="videos"><span>03</span><strong>Videos</strong><small>Momentos que quedaron grabados.</small></button>
+        <button type="button" data-goto="lore"><span>04</span><strong>Lore</strong><small>Todo empezó por una razón.</small></button>
+        <button type="button" data-goto="multikick"><span>05</span><strong>MultiKick</strong><small>Varias señales, una familia.</small></button>
       </div>
     </section>
   </div>
 
-  <!-- VIEW: Personajes -->
-  <div id="view-personajes" class="py-6 hidden">
-    <section class="max-w-6xl mx-auto px-4">
-      <div class="filters-bar rounded-xl border border-white/10 bg-neutral-950/55 backdrop-blur-md p-3 sm:p-4 shadow-lg shadow-black/20">
-        <div class="flex flex-col lg:flex-row lg:items-end gap-3 lg:gap-4">
-          <div class="filter-field flex-1 min-w-0">
-            <label for="q" class="filter-label">Buscar</label>
-            <div class="relative">
-              <svg class="filter-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
-              </svg>
-              <input id="q" type="search" placeholder="Mikaro, Yoshi, etc."
-                     class="filter-input filter-input-search" />
-            </div>
-          </div>
-          <div class="filter-field w-full lg:w-40 lg:shrink-0">
-            <label for="sort" class="filter-label">Ordenar</label>
-            <select id="sort" class="filter-input filter-select">
-              <option value="rango-desc">Rango (↓)</option>
-              <option value="rango-asc">Rango (↑)</option>
-              <option value="nombre-asc">Nombre (A→Z)</option>
-              <option value="nombre-desc">Nombre (Z→A)</option>
-              <option value="live-desc">En vivo primero</option>
-            </select>
-          </div>
-          <div class="filter-field w-full lg:w-40 lg:shrink-0">
-            <label for="rango" class="filter-label">Rango</label>
-            <select id="rango" class="filter-input filter-select">
-              <option value="">Todos</option>
-              <option value="1">Jefe</option>
-              <option value="2">Campera</option>
-              <option value="3">Yakuza</option>
-              <option value="4">Shatei</option>
-            </select>
-          </div>
-          <div class="filter-field-clear">
-            <button id="clear" type="button" class="filter-btn-clear">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <path d="M18 6 6 18M6 6l12 12"/>
-              </svg>
-              Limpiar
-            </button>
-          </div>
+  <div id="view-personajes" class="hidden">
+    <section class="block">
+      <div class="block-head">
+        <div>
+          <p class="eyebrow">La familia</p>
+          <h2>PERSONAJES <em>DEL BLOQUE</em></h2>
         </div>
+        <p class="block-note">Cada nombre tiene una historia. Cada historia, un precio.</p>
       </div>
-    </section>
-
-    <main class="max-w-6xl mx-auto px-4">
-      <div id="grid" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 pt-8 pb-4"></div>
-      <p id="empty" class="hidden text-neutral-300 text-center pb-16">No se encontraron personajes con esos filtros.</p>
-      <div id="inactivos-section" class="hidden pb-10">
-        <div class="personajes-inactivos-sep" role="separator" aria-label="Personajes inactivos">
-          <span>Inactivos</span>
-        </div>
-        <div id="grid-inactivos" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 pt-6"></div>
-      </div>
-    </main>
-  </div>
-
-  <!-- VIEW: Galería -->
-  <section id="view-galeria" class="max-w-6xl mx-auto px-4 hidden py-6">
-    <div id="galeria-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1.5 pb-10"></div>
-  </section>
-
-  <!-- VIEW: Videos -->
-  <section id="view-videos" class="max-w-6xl mx-auto px-4 hidden py-6">
-    <header class="videos-header">
-      <div class="videos-header-text">
-        <h2 class="videos-title">Videos</h2>
-        <p class="videos-subtitle">Highlights y edits de la banda en YouTube, creados por la comunidad.</p>
-      </div>
-      <div class="filter-field videos-header-filter">
-        <label for="videos-editor" class="filter-label">Editor</label>
-        <select id="videos-editor" class="filter-input filter-select">
-          <option value="">Todos los editores</option>
+      <div class="filters">
+        <input id="q" type="search" placeholder="Buscar por nombre…" />
+        <div id="rank-chips" class="chips"></div>
+        <select id="rango" class="sr" aria-label="Rango">
+          <option value="">Todos</option>
+          <option value="1">Jefe</option>
+          <option value="2">Campera</option>
+          <option value="3">Krenak</option>
+          <option value="4">Shatei</option>
         </select>
+        <select id="sort" aria-label="Ordenar">
+          <option value="rango-desc">Rango</option>
+          <option value="nombre-asc">Nombre A-Z</option>
+          <option value="nombre-desc">Nombre Z-A</option>
+          <option value="live-desc">En vivo primero</option>
+          <option value="rango-asc">Rango inverso</option>
+        </select>
+        <button id="clear" type="button" class="btn-ghost">Limpiar</button>
       </div>
-    </header>
-    <div id="videos-grid" class="grid md:grid-cols-2 gap-x-6 gap-y-10 pb-10"></div>
-    <p id="videos-empty" class="hidden text-neutral-400 text-center py-12">No hay videos para este editor.</p>
-  </section>
-
-  <!-- VIEW: Lore -->
-  <section id="view-lore" class="max-w-6xl mx-auto px-4 hidden py-6">
-    <noscript>
-      <article class="lore-page pb-10 max-w-4xl mx-auto">
-        <h1 class="text-2xl font-display font-bold text-neutral-100 mb-3">Yakuza — Lore</h1>
-        <p class="text-neutral-400 leading-relaxed mb-4">
-          De Japón a Los Santos, la Yakuza llegó con sed de venganza por la muerte de Akira, hermano caído de los líderes.
-          Honor, lealtad y poder marcan la crónica del clan en Dovux Life RP.
-        </p>
-        <p><a href="lore.html" class="text-yakuza hover:underline">Leer la crónica completa</a></p>
-      </article>
-    </noscript>
-    <article id="lore-body" class="lore-page pb-10 max-w-4xl mx-auto"></article>
-  </section>
-
-  <!-- VIEW: MultiKick -->
-  <section id="view-multikick" class="max-w-6xl mx-auto px-4 hidden py-6">
-    <h2 class="mk-title text-lg font-display font-semibold text-neutral-100 uppercase tracking-wide mb-4">MultiKick</h2>
-
-    <div class="mk-toolbar">
-      <div class="mk-bar">
-        <div class="mk-controls">
-          <button id="mk-select-all" type="button" class="mk-btn mk-btn-primary">Mostrar todos</button>
-          <button id="mk-clear" type="button" class="mk-btn">Limpiar</button>
-          <button id="mk-refresh" type="button" class="mk-btn mk-btn-icon" title="Actualizar en vivo" aria-label="Actualizar en vivo">
-            <svg class="mk-btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M21 12a9 9 0 1 1-2.64-6.36"/>
-              <path d="M21 3v6h-6"/>
-            </svg>
-          </button>
-          <button id="mk-full" type="button" class="mk-btn">Pantalla completa</button>
-        </div>
-        <div id="mk-live-list" class="mk-picker"></div>
-        <span id="mk-count" class="mk-count">0 seleccionados</span>
+      <div id="grid" class="roster"></div>
+      <p id="empty" class="empty hidden">Todavía no hay nombres en el bloque.</p>
+      <div id="inactivos-section" class="hidden">
+        <p class="eyebrow">Inactivos</p>
+        <div id="grid-inactivos" class="roster"></div>
       </div>
-    </div>
-
-    <div id="mk-grid" class="mk-grid"></div>
-  </section>
-
-  <!-- Rotador flotante -->
-  <div id="live-rotator" class="live-rotator hidden fixed right-4 bottom-4 z-50 w-[min(92vw,380px)]">
-    <div class="flex items-center justify-between px-3 py-2.5 border-b border-white/5 bg-neutral-900/60">
-      <div class="flex items-center gap-2 min-w-0">
-        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide bg-red-600/90 text-white">
-          <span class="live-pulse-dot w-1.5 h-1.5 rounded-full bg-white"></span>
-          En vivo
-        </span>
-        <span id="live-rotator-counter" class="text-xs text-neutral-500 tabular-nums"></span>
-      </div>
-      <div class="flex items-center gap-1 shrink-0">
-        <button id="live-prev" class="live-rotator-btn" title="Anterior" aria-label="Stream anterior">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-        </button>
-        <button id="live-next" class="live-rotator-btn" title="Siguiente" aria-label="Stream siguiente">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-        </button>
-        <button id="live-close" class="live-rotator-btn live-rotator-btn-close" title="Cerrar" aria-label="Cerrar">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-        </button>
-      </div>
-    </div>
-    <div class="relative aspect-video bg-black">
-      <iframe id="live-iframe" src="" allow="autoplay; fullscreen; picture-in-picture" frameborder="0" class="absolute inset-0 w-full h-full" loading="lazy"></iframe>
-    </div>
-    <div class="p-3 border-t border-white/5 bg-neutral-900/70">
-      <div class="flex items-center gap-3">
-        <img id="live-rotator-avatar" src="" alt="" class="w-11 h-11 rounded-full object-cover ring-2 ring-yakuza/40 shrink-0" />
-        <div class="flex-1 min-w-0">
-          <p id="live-rotator-name" class="font-semibold text-sm text-neutral-100 truncate"></p>
-          <p id="live-rotator-ooc" class="text-xs text-neutral-500 truncate"></p>
-        </div>
-        <a id="live-link" href="#" target="_blank" rel="noreferrer"
-           class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold bg-yakuza hover:bg-yakuza-light text-white transition">
-          Kick
-        </a>
-      </div>
-    </div>
+    </section>
   </div>
 
-<footer class="max-w-6xl mx-auto px-4 pb-10 text-center">
-  <a href="https://x.com/i/communities/1829991651260899419"
-     target="_blank" rel="noreferrer"
-     class="footer-cta group">
-    <svg class="footer-cta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-      <circle cx="9" cy="7" r="4"/>
-      <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
-    </svg>
-    <span>Unite a la Comunidad</span>
-  </a>
-</footer>
-
-  <!-- Lightbox / Galería -->
-  <div id="yy-lightbox" class="hidden fixed inset-0 z-50" role="dialog" aria-modal="true" aria-labelledby="yy-caption" aria-hidden="true">
-    <button id="yy-close" type="button" class="yy-lb-close" aria-label="Cerrar">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-        <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
-      </svg>
-    </button>
-    <div class="yy-lb-shell">
-      <button id="yy-prev" type="button" class="yy-lb-nav yy-lb-nav-prev" aria-label="Anterior">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="m15 18-6-6 6-6"/>
-        </svg>
-      </button>
-      <div class="yy-lb-frame">
-        <div class="yy-lb-media">
-          <img id="yy-img" src="" alt="" />
-          <div class="yy-lb-overlay">
-            <p id="yy-caption" class="yy-lb-caption"></p>
-            <a id="yy-dl" download class="yy-lb-dl" title="Descargar" aria-label="Descargar">
-              <svg class="yy-lb-dl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M12 3v12"/>
-                <path d="m7 11 5 5 5-5"/>
-                <path d="M5 21h14"/>
-              </svg>
-            </a>
-          </div>
-        </div>
-      </div>
-      <button id="yy-next" type="button" class="yy-lb-nav yy-lb-nav-next" aria-label="Siguiente">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="m9 18 6-6-6-6"/>
-        </svg>
-      </button>
-    </div>
+  <div id="view-galeria" class="hidden">
+    <section class="block">
+      <p class="eyebrow">Archivo visual</p>
+      <h2>GALERÍA <em>DE CALLE</em></h2>
+      <div id="galeria-grid" class="gallery"></div>
+    </section>
   </div>
 
+  <div id="view-videos" class="hidden">
+    <section class="block">
+      <p class="eyebrow">Prueba en video</p>
+      <h2>MOMENTOS <em>EN LOOP</em></h2>
+      <select id="videos-editor" class="videos-filter" aria-label="Canal"></select>
+      <div id="videos-grid" class="videos"></div>
+      <p id="videos-empty" class="empty hidden">No hay videos cargados.</p>
+    </section>
+  </div>
+
+  <div id="view-lore" class="hidden">
+    <section class="block">
+      <p class="eyebrow">Archivos clasificados</p>
+      <h2>EL <em>LORE</em></h2>
+      <div id="lore-body"></div>
+    </section>
+  </div>
+
+  <div id="view-multikick" class="hidden">
+    <section class="block">
+      <div class="block-head">
+        <div>
+          <p class="eyebrow">Control room</p>
+          <h2>MULTI<em>KICK</em></h2>
+        </div>
+        <p class="block-note">Varias perspectivas. Un solo territorio.</p>
+      </div>
+      <div class="mk-tools">
+        <div id="mk-live-list" class="mk-picks"></div>
+        <span id="mk-count"></span>
+        <button id="mk-full" type="button" class="btn-ghost">Pantalla</button>
+      </div>
+      <div id="mk-grid" class="mk-grid"></div>
+    </section>
+  </div>
+
+  <footer class="site-foot">
+    <strong data-site-name>KRENAK</strong>
+    <span>Territorio, familia y señal.</span>
+    <span id="site-subtitle" class="hidden">DOVUX LIFE RP</span>
+    <small>© 2026 KRENAK / DOVUX LIFE RP</small>
+  </footer>
+
+  <div id="live-rotator" class="hidden rotator">
+    <img id="live-rotator-avatar" alt="" />
+    <div>
+      <strong id="live-rotator-name"></strong>
+      <p id="live-rotator-ooc"></p>
+      <span id="live-rotator-counter"></span>
+    </div>
+    <iframe id="live-iframe" title="Rotador"></iframe>
+    <a id="live-link" href="#" target="_blank" rel="noreferrer">Kick</a>
+    <button id="live-prev" type="button">‹</button>
+    <button id="live-next" type="button">›</button>
+    <button id="live-close" type="button">Cerrar</button>
+  </div>
+
+  <div id="yy-lightbox" class="hidden lb" role="dialog" aria-modal="true">
+    <button id="yy-close" type="button" aria-label="Cerrar">×</button>
+    <button id="yy-prev" type="button" aria-label="Anterior">‹</button>
+    <img id="yy-img" alt="" />
+    <button id="yy-next" type="button" aria-label="Siguiente">›</button>
+    <p id="yy-caption"></p>
+    <a id="yy-dl" download>Descargar</a>
+  </div>
 
   <script defer src="apps.js"></script>
 </body>

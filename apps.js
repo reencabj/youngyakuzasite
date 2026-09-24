@@ -748,7 +748,7 @@
     });
 
     document.addEventListener('click', (e) => {
-      if (!e.target.closest('.header-end')) closeHeaderMenu();
+      if (!e.target.closest('.site-header')) closeHeaderMenu();
     });
 
     function viewFromHash() {
@@ -830,7 +830,18 @@
       const subEl = document.querySelector(".header-subtitle");
       if (titleEl) titleEl.textContent = name;
       if (subEl) subEl.textContent = subtitle;
-      document.title = subtitle ? `${name} - ${subtitle}` : name;
+      document.querySelectorAll("[data-site-name]").forEach(el => { el.textContent = name; });
+      const heroTitle = document.getElementById("hero-title");
+      const wordmark = document.getElementById("site-name");
+      if (heroTitle) heroTitle.textContent = name;
+      if (wordmark) wordmark.textContent = name;
+      const kicker = document.getElementById("hero-kicker");
+      if (kicker && site.kicker) kicker.textContent = site.kicker;
+      const tagline = document.getElementById("hero-tagline");
+      if (tagline && site.tagline) tagline.textContent = site.tagline;
+      const kickCta = document.getElementById("header-kick");
+      if (kickCta && site.kickUrl) kickCta.href = site.kickUrl;
+      document.title = name || "KRENAK";
       const desc = document.querySelector('meta[name="description"]');
       if (desc && site.description) desc.setAttribute("content", site.description);
       const logo = document.querySelector(".header-logo");
@@ -840,6 +851,8 @@
       if (site.background) {
         if (bg) bg.src = site.background;
         if (source) source.srcset = site.background;
+        const heroBg = document.querySelector(".hero-bg");
+        if (heroBg) heroBg.src = site.background;
       }
       if (Array.isArray(site.ranks) && site.ranks.length) {
         RANKS = {};
@@ -851,6 +864,12 @@
             .map(r => `<option value="${escapeHtml(r.id)}">${escapeHtml(r.label)}</option>`)
             .join("");
           rango.value = current;
+        }
+        const chips = document.getElementById("rank-chips");
+        if (chips) {
+          chips.innerHTML = `<button type="button" class="chip on" data-rank="">Todos</button>` + site.ranks
+            .map(r => `<button type="button" class="chip" data-rank="${escapeHtml(r.id)}">${escapeHtml(r.label)}</button>`)
+            .join("");
         }
       }
     }
@@ -1349,6 +1368,14 @@
     }
 
     // Eventos Personajes (debounced)
+    document.getElementById('rank-chips')?.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-rank]');
+      if (!btn) return;
+      const rango = document.getElementById('rango');
+      rango.value = btn.dataset.rank;
+      document.querySelectorAll('#rank-chips .chip').forEach(c => c.classList.toggle('on', c === btn));
+      rango.dispatchEvent(new Event('change'));
+    });
     document.getElementById('q').addEventListener('input', debounce(render, 200));
     document.getElementById('rango').addEventListener('change', render);
     document.getElementById('sort').addEventListener('change', render);
